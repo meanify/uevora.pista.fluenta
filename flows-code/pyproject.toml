@@ -1,0 +1,27 @@
+[project]
+name = "pista-flows"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13.2"
+dependencies = [
+    "apache-airflow-task-sdk>=1.1.5",
+    "apache-airflow[cncf-kubernetes,kubernetes,otel]>=3.1.5",
+    "autopep8>=2.3.2",
+    "citric>=2.0.0",
+    "pandas>=2.3.3",
+    "pendulum>=3.1.0",
+    "psycopg2-binary>=2.9.11",
+    "python-dotenv>=1.0.0",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.45",
+]
+
+[dependencies-groups]
+dev = [
+    "pylint>=4.0.4",
+    "requests>=2.32.5",
+]
+
+[tool.uv.workspace]
+members = []

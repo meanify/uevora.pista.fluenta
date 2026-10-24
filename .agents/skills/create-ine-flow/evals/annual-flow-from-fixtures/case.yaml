@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: annual-flow-from-fixtures
+expected_outcome: |
+  A new annual module ine_0009875_flow.py exists with INDICATOR, MONTHLY = False,
+  TABLE_NAME, CREATE_TABLE_SQL and processar_indicador_ine; it produces exactly the DDL
+  columns in order, maps NUTS I/II and accommodation-type labels from metadata, turns ..
+  and x into null while keeping 0, and reuses the shared ine_api and ine_output helpers.
+  The indicator is registered in the CLI, the README supported-indicator table lists it,
+  a dedicated dags/dags_ine_0009875.py registers annual database-only DAGs using the
+  shared factory without duplicate IDs, and registration/task tests pass.
+  Tests built from the saved fixtures pass, and no live database or INE call was needed.
+context:
+  scaffold_script: place-files.sh

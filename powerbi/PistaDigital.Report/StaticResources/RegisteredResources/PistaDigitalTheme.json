@@ -1,0 +1,219 @@
+{
+  "name": "Pista Digital",
+  "dataColors": [
+    "#001F44",
+    "#FFAD00",
+    "#2066BC",
+    "#4E4F50",
+    "#CED4DA",
+    "#154373",
+    "#007FFF",
+    "#1D2127"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1D2127",
+  "tableAccent": "#001F44",
+  "good": "#28A745",
+  "bad": "#DC3545",
+  "neutral": "#FFAD00",
+  "maximum": "#001F44",
+  "center": "#CED4DA",
+  "minimum": "#FFFFFF",
+  "firstLevelElements": "#1D2127",
+  "secondLevelElements": "#4E4F50",
+  "thirdLevelElements": "#CED4DA",
+  "fourthLevelElements": "#CED4DA",
+  "secondaryBackground": "#CED4DA",
+  "hyperlink": "#2066BC",
+  "visitedHyperlink": "#154373",
+  "textClasses": {
+    "callout": {
+      "fontSize": 28,
+      "fontFace": "Montserrat",
+      "color": "#001F44"
+    },
+    "title": {
+      "fontSize": 14,
+      "fontFace": "Montserrat",
+      "color": "#001F44"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Montserrat",
+      "color": "#001F44"
+    },
+    "label": {
+      "fontSize": 11,
+      "fontFace": "Montserrat",
+      "color": "#1D2127"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "*": [
+          {
+            "fontFamily": "Montserrat",
+            "wordWrap": true
+          }
+        ],
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": false,
+            "radius": 0
+          }
+        ],
+        "title": [
+          {
+            "show": true,
+            "fontFamily": "Montserrat",
+            "fontSize": 12,
+            "bold": true,
+            "fontColor": {
+              "solid": {
+                "color": "#001F44"
+              }
+            },
+            "alignment": "left"
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#F7F7F7"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "outspace": [
+          {
+            "color": {
+              "solid": {
+                "color": "#F7F7F7"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [
+          {
+            "color": {
+              "solid": {
+                "color": "#001F44"
+              }
+            },
+            "fontSize": 28,
+            "fontFamily": "Montserrat"
+          }
+        ],
+        "categoryLabels": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#4E4F50"
+              }
+            },
+            "fontSize": 11
+          }
+        ]
+      }
+    },
+    "slicer": {
+      "*": {
+        "header": [
+          {
+            "fontColor": {
+              "solid": {
+                "color": "#001F44"
+              }
+            },
+            "bold": true
+          }
+        ],
+        "items": [
+          {
+            "fontColor": {
+              "solid": {
+                "color": "#1D2127"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "columnHeaders": [
+          {
+            "backColor": {
+              "solid": {
+                "color": "#001F44"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ],
+        "grid": [
+          {
+            "outlineColor": {
+              "solid": {
+                "color": "#CED4DA"
+              }
+            },
+            "gridVertical": false
+          }
+        ]
+      }
+    },
+    "pivotTable": {
+      "*": {
+        "columnHeaders": [
+          {
+            "backColor": {
+              "solid": {
+                "color": "#001F44"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ]
+      }
+    }
+  }
+}

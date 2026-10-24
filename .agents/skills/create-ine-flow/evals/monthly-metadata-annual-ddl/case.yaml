@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: monthly-metadata-annual-ddl
+expected_outcome: |
+  The run reads the saved metadata, identifies that 0009181 is monthly (Periodic
+  Mensal, period code S3A202503 for March 2025), and notices that the supplied DDL has no
+  mes column and a primary key of only (nuts_ii, tipo_alojamento, ano). It does not
+  silently build an annual flow, drop the month, or alter the table: it stops and asks
+  the user how to resolve the DDL conflict (for example adding mes to the table and key),
+  reporting the frequency and the exact period code it found.
+context:
+  scaffold_script: place-files.sh

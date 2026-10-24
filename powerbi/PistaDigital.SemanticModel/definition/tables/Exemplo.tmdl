@@ -1,0 +1,23 @@
+table Exemplo
+	lineageTag: 6f1c0e0e-0000-4000-8000-000000000001
+
+	column Categoria
+		dataType: string
+		lineageTag: 6f1c0e0e-0000-4000-8000-000000000002
+		summarizeBy: none
+		sourceColumn: Categoria
+
+	column Valor
+		dataType: int64
+		formatString: 0
+		lineageTag: 6f1c0e0e-0000-4000-8000-000000000003
+		summarizeBy: sum
+		sourceColumn: Valor
+
+	partition Exemplo = m
+		mode: import
+		source =
+				let
+				    Source = #table({"Categoria", "Valor"}, {{"A", 1}, {"B", 2}, {"C", 3}})
+				in
+				    Source

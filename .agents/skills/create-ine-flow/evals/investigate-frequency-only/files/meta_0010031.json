@@ -1,0 +1,2406 @@
+[
+ {
+  "IndicadorCod": "0010031",
+  "IndicadorDsg": "Proveitos totais (€) dos estabelecimentos de alojamento turístico por Localização geográfica (NUTS - 2024) e Escalão de dimensão; Anual",
+  "MetaInfUrl": "",
+  "DataUltimoAtualizacao": "2025-07-15",
+  "Periodic": "Anual",
+  "PrimeiroPeriodo": "2009",
+  "UltimoPeriodo": "2024",
+  "UnidadeMedida": "N.º",
+  "Potencia10": "0",
+  "PrecisaoDecimal": "0",
+  "Lingua": "PT",
+  "DimensaoNum": "4",
+  "Dimensoes": {
+   "Descricao_Dim": [
+    {
+     "dim_num": "1",
+     "abrv": "Período de referência dos dados"
+    },
+    {
+     "dim_num": "2",
+     "abrv": "Localização geográfica (NUTS - 2024)"
+    },
+    {
+     "dim_num": "3",
+     "abrv": "Tipo de alojamento"
+    },
+    {
+     "dim_num": "4",
+     "abrv": "Escalão"
+    }
+   ],
+   "Categoria_Dim": [
+    {
+     "Dim_Num1_S7A2009": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2009",
+       "categ_dsg": "2009",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2010": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2010",
+       "categ_dsg": "2010",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2011": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2011",
+       "categ_dsg": "2011",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2012": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2012",
+       "categ_dsg": "2012",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2013": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2013",
+       "categ_dsg": "2013",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2014": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2014",
+       "categ_dsg": "2014",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2015": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2015",
+       "categ_dsg": "2015",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2016": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2016",
+       "categ_dsg": "2016",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2017": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2017",
+       "categ_dsg": "2017",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2018": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2018",
+       "categ_dsg": "2018",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2019": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2019",
+       "categ_dsg": "2019",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2020": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2020",
+       "categ_dsg": "2020",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2021": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2021",
+       "categ_dsg": "2021",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2022": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2022",
+       "categ_dsg": "2022",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2023": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2023",
+       "categ_dsg": "2023",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2024": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2024",
+       "categ_dsg": "2024",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num2": [
+      {
+       "dim_num": "2",
+       "categ_cod": "PT",
+       "categ_dsg": "Portugal",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1",
+       "categ_dsg": "Continente",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "11",
+       "categ_dsg": "Norte",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "16",
+       "categ_dsg": "Centro",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "17",
+       "categ_dsg": "Grande Lisboa",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "18",
+       "categ_dsg": "Alentejo",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "15",
+       "categ_dsg": "Algarve",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "2",
+       "categ_dsg": "Região Autónoma dos Açores",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "20",
+       "categ_dsg": "Região Autónoma dos Açores",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "3",
+       "categ_dsg": "Região Autónoma da Madeira",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "30",
+       "categ_dsg": "Região Autónoma da Madeira",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101001",
+       "categ_dsg": "Município 11-1-1",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101002",
+       "categ_dsg": "Município 11-1-2",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101003",
+       "categ_dsg": "Município 11-1-3",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101004",
+       "categ_dsg": "Município 11-1-4",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101005",
+       "categ_dsg": "Município 11-1-5",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101006",
+       "categ_dsg": "Município 11-1-6",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101007",
+       "categ_dsg": "Município 11-1-7",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101008",
+       "categ_dsg": "Município 11-1-8",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101009",
+       "categ_dsg": "Município 11-1-9",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101010",
+       "categ_dsg": "Município 11-1-10",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101011",
+       "categ_dsg": "Município 11-1-11",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101012",
+       "categ_dsg": "Município 11-1-12",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101013",
+       "categ_dsg": "Município 11-1-13",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101014",
+       "categ_dsg": "Município 11-1-14",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101015",
+       "categ_dsg": "Município 11-1-15",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101016",
+       "categ_dsg": "Município 11-1-16",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101017",
+       "categ_dsg": "Município 11-1-17",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101018",
+       "categ_dsg": "Município 11-1-18",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101019",
+       "categ_dsg": "Município 11-1-19",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101020",
+       "categ_dsg": "Município 11-1-20",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101021",
+       "categ_dsg": "Município 11-1-21",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101022",
+       "categ_dsg": "Município 11-1-22",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101023",
+       "categ_dsg": "Município 11-1-23",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101024",
+       "categ_dsg": "Município 11-1-24",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101025",
+       "categ_dsg": "Município 11-1-25",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101026",
+       "categ_dsg": "Município 11-1-26",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101027",
+       "categ_dsg": "Município 11-1-27",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101028",
+       "categ_dsg": "Município 11-1-28",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101029",
+       "categ_dsg": "Município 11-1-29",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101030",
+       "categ_dsg": "Município 11-1-30",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101031",
+       "categ_dsg": "Município 11-1-31",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101032",
+       "categ_dsg": "Município 11-1-32",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101033",
+       "categ_dsg": "Município 11-1-33",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101034",
+       "categ_dsg": "Município 11-1-34",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101035",
+       "categ_dsg": "Município 11-1-35",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101036",
+       "categ_dsg": "Município 11-1-36",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101037",
+       "categ_dsg": "Município 11-1-37",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101038",
+       "categ_dsg": "Município 11-1-38",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101039",
+       "categ_dsg": "Município 11-1-39",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101040",
+       "categ_dsg": "Município 11-1-40",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101041",
+       "categ_dsg": "Município 11-1-41",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101042",
+       "categ_dsg": "Município 11-1-42",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101043",
+       "categ_dsg": "Município 11-1-43",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101044",
+       "categ_dsg": "Município 11-1-44",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101045",
+       "categ_dsg": "Município 11-1-45",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101046",
+       "categ_dsg": "Município 11-1-46",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101047",
+       "categ_dsg": "Município 11-1-47",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101048",
+       "categ_dsg": "Município 11-1-48",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101049",
+       "categ_dsg": "Município 11-1-49",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101050",
+       "categ_dsg": "Município 11-1-50",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101051",
+       "categ_dsg": "Município 11-1-51",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101052",
+       "categ_dsg": "Município 11-1-52",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101053",
+       "categ_dsg": "Município 11-1-53",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101054",
+       "categ_dsg": "Município 11-1-54",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101055",
+       "categ_dsg": "Município 11-1-55",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101056",
+       "categ_dsg": "Município 11-1-56",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101057",
+       "categ_dsg": "Município 11-1-57",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101058",
+       "categ_dsg": "Município 11-1-58",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101059",
+       "categ_dsg": "Município 11-1-59",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101060",
+       "categ_dsg": "Município 11-1-60",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101061",
+       "categ_dsg": "Município 11-1-61",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1101062",
+       "categ_dsg": "Município 11-1-62",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602001",
+       "categ_dsg": "Município 16-2-1",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602002",
+       "categ_dsg": "Município 16-2-2",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602003",
+       "categ_dsg": "Município 16-2-3",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602004",
+       "categ_dsg": "Município 16-2-4",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602005",
+       "categ_dsg": "Município 16-2-5",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602006",
+       "categ_dsg": "Município 16-2-6",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602007",
+       "categ_dsg": "Município 16-2-7",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602008",
+       "categ_dsg": "Município 16-2-8",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602009",
+       "categ_dsg": "Município 16-2-9",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602010",
+       "categ_dsg": "Município 16-2-10",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602011",
+       "categ_dsg": "Município 16-2-11",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602012",
+       "categ_dsg": "Município 16-2-12",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602013",
+       "categ_dsg": "Município 16-2-13",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602014",
+       "categ_dsg": "Município 16-2-14",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602015",
+       "categ_dsg": "Município 16-2-15",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602016",
+       "categ_dsg": "Município 16-2-16",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602017",
+       "categ_dsg": "Município 16-2-17",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602018",
+       "categ_dsg": "Município 16-2-18",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602019",
+       "categ_dsg": "Município 16-2-19",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602020",
+       "categ_dsg": "Município 16-2-20",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602021",
+       "categ_dsg": "Município 16-2-21",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602022",
+       "categ_dsg": "Município 16-2-22",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602023",
+       "categ_dsg": "Município 16-2-23",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602024",
+       "categ_dsg": "Município 16-2-24",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602025",
+       "categ_dsg": "Município 16-2-25",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602026",
+       "categ_dsg": "Município 16-2-26",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602027",
+       "categ_dsg": "Município 16-2-27",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602028",
+       "categ_dsg": "Município 16-2-28",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602029",
+       "categ_dsg": "Município 16-2-29",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602030",
+       "categ_dsg": "Município 16-2-30",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602031",
+       "categ_dsg": "Município 16-2-31",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602032",
+       "categ_dsg": "Município 16-2-32",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602033",
+       "categ_dsg": "Município 16-2-33",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602034",
+       "categ_dsg": "Município 16-2-34",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602035",
+       "categ_dsg": "Município 16-2-35",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602036",
+       "categ_dsg": "Município 16-2-36",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602037",
+       "categ_dsg": "Município 16-2-37",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602038",
+       "categ_dsg": "Município 16-2-38",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602039",
+       "categ_dsg": "Município 16-2-39",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602040",
+       "categ_dsg": "Município 16-2-40",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602041",
+       "categ_dsg": "Município 16-2-41",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602042",
+       "categ_dsg": "Município 16-2-42",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602043",
+       "categ_dsg": "Município 16-2-43",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602044",
+       "categ_dsg": "Município 16-2-44",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602045",
+       "categ_dsg": "Município 16-2-45",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602046",
+       "categ_dsg": "Município 16-2-46",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602047",
+       "categ_dsg": "Município 16-2-47",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602048",
+       "categ_dsg": "Município 16-2-48",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602049",
+       "categ_dsg": "Município 16-2-49",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602050",
+       "categ_dsg": "Município 16-2-50",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602051",
+       "categ_dsg": "Município 16-2-51",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602052",
+       "categ_dsg": "Município 16-2-52",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602053",
+       "categ_dsg": "Município 16-2-53",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602054",
+       "categ_dsg": "Município 16-2-54",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602055",
+       "categ_dsg": "Município 16-2-55",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602056",
+       "categ_dsg": "Município 16-2-56",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602057",
+       "categ_dsg": "Município 16-2-57",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602058",
+       "categ_dsg": "Município 16-2-58",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602059",
+       "categ_dsg": "Município 16-2-59",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602060",
+       "categ_dsg": "Município 16-2-60",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602061",
+       "categ_dsg": "Município 16-2-61",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1602062",
+       "categ_dsg": "Município 16-2-62",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703001",
+       "categ_dsg": "Município 17-3-1",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703002",
+       "categ_dsg": "Município 17-3-2",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703003",
+       "categ_dsg": "Município 17-3-3",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703004",
+       "categ_dsg": "Município 17-3-4",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703005",
+       "categ_dsg": "Município 17-3-5",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703006",
+       "categ_dsg": "Município 17-3-6",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703007",
+       "categ_dsg": "Município 17-3-7",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703008",
+       "categ_dsg": "Município 17-3-8",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703009",
+       "categ_dsg": "Município 17-3-9",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703010",
+       "categ_dsg": "Município 17-3-10",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703011",
+       "categ_dsg": "Município 17-3-11",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703012",
+       "categ_dsg": "Município 17-3-12",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703013",
+       "categ_dsg": "Município 17-3-13",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703014",
+       "categ_dsg": "Município 17-3-14",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703015",
+       "categ_dsg": "Município 17-3-15",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703016",
+       "categ_dsg": "Município 17-3-16",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703017",
+       "categ_dsg": "Município 17-3-17",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703018",
+       "categ_dsg": "Município 17-3-18",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703019",
+       "categ_dsg": "Município 17-3-19",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703020",
+       "categ_dsg": "Município 17-3-20",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703021",
+       "categ_dsg": "Município 17-3-21",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703022",
+       "categ_dsg": "Município 17-3-22",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703023",
+       "categ_dsg": "Município 17-3-23",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703024",
+       "categ_dsg": "Município 17-3-24",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703025",
+       "categ_dsg": "Município 17-3-25",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703026",
+       "categ_dsg": "Município 17-3-26",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703027",
+       "categ_dsg": "Município 17-3-27",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703028",
+       "categ_dsg": "Município 17-3-28",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703029",
+       "categ_dsg": "Município 17-3-29",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703030",
+       "categ_dsg": "Município 17-3-30",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703031",
+       "categ_dsg": "Município 17-3-31",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703032",
+       "categ_dsg": "Município 17-3-32",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703033",
+       "categ_dsg": "Município 17-3-33",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703034",
+       "categ_dsg": "Município 17-3-34",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703035",
+       "categ_dsg": "Município 17-3-35",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703036",
+       "categ_dsg": "Município 17-3-36",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703037",
+       "categ_dsg": "Município 17-3-37",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703038",
+       "categ_dsg": "Município 17-3-38",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703039",
+       "categ_dsg": "Município 17-3-39",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703040",
+       "categ_dsg": "Município 17-3-40",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703041",
+       "categ_dsg": "Município 17-3-41",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703042",
+       "categ_dsg": "Município 17-3-42",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703043",
+       "categ_dsg": "Município 17-3-43",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703044",
+       "categ_dsg": "Município 17-3-44",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703045",
+       "categ_dsg": "Município 17-3-45",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703046",
+       "categ_dsg": "Município 17-3-46",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703047",
+       "categ_dsg": "Município 17-3-47",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703048",
+       "categ_dsg": "Município 17-3-48",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703049",
+       "categ_dsg": "Município 17-3-49",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703050",
+       "categ_dsg": "Município 17-3-50",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703051",
+       "categ_dsg": "Município 17-3-51",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703052",
+       "categ_dsg": "Município 17-3-52",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703053",
+       "categ_dsg": "Município 17-3-53",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703054",
+       "categ_dsg": "Município 17-3-54",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703055",
+       "categ_dsg": "Município 17-3-55",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703056",
+       "categ_dsg": "Município 17-3-56",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703057",
+       "categ_dsg": "Município 17-3-57",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703058",
+       "categ_dsg": "Município 17-3-58",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703059",
+       "categ_dsg": "Município 17-3-59",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703060",
+       "categ_dsg": "Município 17-3-60",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703061",
+       "categ_dsg": "Município 17-3-61",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1703062",
+       "categ_dsg": "Município 17-3-62",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804001",
+       "categ_dsg": "Município 18-4-1",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804002",
+       "categ_dsg": "Município 18-4-2",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804003",
+       "categ_dsg": "Município 18-4-3",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804004",
+       "categ_dsg": "Município 18-4-4",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804005",
+       "categ_dsg": "Município 18-4-5",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804006",
+       "categ_dsg": "Município 18-4-6",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804007",
+       "categ_dsg": "Município 18-4-7",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804008",
+       "categ_dsg": "Município 18-4-8",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804009",
+       "categ_dsg": "Município 18-4-9",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804010",
+       "categ_dsg": "Município 18-4-10",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804011",
+       "categ_dsg": "Município 18-4-11",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804012",
+       "categ_dsg": "Município 18-4-12",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804013",
+       "categ_dsg": "Município 18-4-13",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804014",
+       "categ_dsg": "Município 18-4-14",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804015",
+       "categ_dsg": "Município 18-4-15",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804016",
+       "categ_dsg": "Município 18-4-16",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804017",
+       "categ_dsg": "Município 18-4-17",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804018",
+       "categ_dsg": "Município 18-4-18",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804019",
+       "categ_dsg": "Município 18-4-19",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804020",
+       "categ_dsg": "Município 18-4-20",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804021",
+       "categ_dsg": "Município 18-4-21",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804022",
+       "categ_dsg": "Município 18-4-22",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804023",
+       "categ_dsg": "Município 18-4-23",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804024",
+       "categ_dsg": "Município 18-4-24",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804025",
+       "categ_dsg": "Município 18-4-25",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804026",
+       "categ_dsg": "Município 18-4-26",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804027",
+       "categ_dsg": "Município 18-4-27",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804028",
+       "categ_dsg": "Município 18-4-28",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804029",
+       "categ_dsg": "Município 18-4-29",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804030",
+       "categ_dsg": "Município 18-4-30",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804031",
+       "categ_dsg": "Município 18-4-31",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804032",
+       "categ_dsg": "Município 18-4-32",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804033",
+       "categ_dsg": "Município 18-4-33",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804034",
+       "categ_dsg": "Município 18-4-34",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804035",
+       "categ_dsg": "Município 18-4-35",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804036",
+       "categ_dsg": "Município 18-4-36",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804037",
+       "categ_dsg": "Município 18-4-37",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804038",
+       "categ_dsg": "Município 18-4-38",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804039",
+       "categ_dsg": "Município 18-4-39",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804040",
+       "categ_dsg": "Município 18-4-40",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804041",
+       "categ_dsg": "Município 18-4-41",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804042",
+       "categ_dsg": "Município 18-4-42",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804043",
+       "categ_dsg": "Município 18-4-43",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804044",
+       "categ_dsg": "Município 18-4-44",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804045",
+       "categ_dsg": "Município 18-4-45",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804046",
+       "categ_dsg": "Município 18-4-46",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804047",
+       "categ_dsg": "Município 18-4-47",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804048",
+       "categ_dsg": "Município 18-4-48",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804049",
+       "categ_dsg": "Município 18-4-49",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804050",
+       "categ_dsg": "Município 18-4-50",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804051",
+       "categ_dsg": "Município 18-4-51",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804052",
+       "categ_dsg": "Município 18-4-52",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804053",
+       "categ_dsg": "Município 18-4-53",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804054",
+       "categ_dsg": "Município 18-4-54",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804055",
+       "categ_dsg": "Município 18-4-55",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804056",
+       "categ_dsg": "Município 18-4-56",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804057",
+       "categ_dsg": "Município 18-4-57",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804058",
+       "categ_dsg": "Município 18-4-58",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804059",
+       "categ_dsg": "Município 18-4-59",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804060",
+       "categ_dsg": "Município 18-4-60",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804061",
+       "categ_dsg": "Município 18-4-61",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1804062",
+       "categ_dsg": "Município 18-4-62",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505001",
+       "categ_dsg": "Município 15-5-1",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505002",
+       "categ_dsg": "Município 15-5-2",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505003",
+       "categ_dsg": "Município 15-5-3",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505004",
+       "categ_dsg": "Município 15-5-4",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505005",
+       "categ_dsg": "Município 15-5-5",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505006",
+       "categ_dsg": "Município 15-5-6",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505007",
+       "categ_dsg": "Município 15-5-7",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505008",
+       "categ_dsg": "Município 15-5-8",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505009",
+       "categ_dsg": "Município 15-5-9",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505010",
+       "categ_dsg": "Município 15-5-10",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505011",
+       "categ_dsg": "Município 15-5-11",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505012",
+       "categ_dsg": "Município 15-5-12",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505013",
+       "categ_dsg": "Município 15-5-13",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505014",
+       "categ_dsg": "Município 15-5-14",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505015",
+       "categ_dsg": "Município 15-5-15",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505016",
+       "categ_dsg": "Município 15-5-16",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505017",
+       "categ_dsg": "Município 15-5-17",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505018",
+       "categ_dsg": "Município 15-5-18",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505019",
+       "categ_dsg": "Município 15-5-19",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505020",
+       "categ_dsg": "Município 15-5-20",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505021",
+       "categ_dsg": "Município 15-5-21",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505022",
+       "categ_dsg": "Município 15-5-22",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505023",
+       "categ_dsg": "Município 15-5-23",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505024",
+       "categ_dsg": "Município 15-5-24",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505025",
+       "categ_dsg": "Município 15-5-25",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505026",
+       "categ_dsg": "Município 15-5-26",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505027",
+       "categ_dsg": "Município 15-5-27",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505028",
+       "categ_dsg": "Município 15-5-28",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505029",
+       "categ_dsg": "Município 15-5-29",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505030",
+       "categ_dsg": "Município 15-5-30",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505031",
+       "categ_dsg": "Município 15-5-31",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505032",
+       "categ_dsg": "Município 15-5-32",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505033",
+       "categ_dsg": "Município 15-5-33",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505034",
+       "categ_dsg": "Município 15-5-34",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505035",
+       "categ_dsg": "Município 15-5-35",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505036",
+       "categ_dsg": "Município 15-5-36",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505037",
+       "categ_dsg": "Município 15-5-37",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505038",
+       "categ_dsg": "Município 15-5-38",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505039",
+       "categ_dsg": "Município 15-5-39",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505040",
+       "categ_dsg": "Município 15-5-40",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505041",
+       "categ_dsg": "Município 15-5-41",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505042",
+       "categ_dsg": "Município 15-5-42",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505043",
+       "categ_dsg": "Município 15-5-43",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505044",
+       "categ_dsg": "Município 15-5-44",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505045",
+       "categ_dsg": "Município 15-5-45",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505046",
+       "categ_dsg": "Município 15-5-46",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505047",
+       "categ_dsg": "Município 15-5-47",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505048",
+       "categ_dsg": "Município 15-5-48",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505049",
+       "categ_dsg": "Município 15-5-49",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505050",
+       "categ_dsg": "Município 15-5-50",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505051",
+       "categ_dsg": "Município 15-5-51",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505052",
+       "categ_dsg": "Município 15-5-52",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505053",
+       "categ_dsg": "Município 15-5-53",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505054",
+       "categ_dsg": "Município 15-5-54",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505055",
+       "categ_dsg": "Município 15-5-55",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505056",
+       "categ_dsg": "Município 15-5-56",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505057",
+       "categ_dsg": "Município 15-5-57",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505058",
+       "categ_dsg": "Município 15-5-58",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505059",
+       "categ_dsg": "Município 15-5-59",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505060",
+       "categ_dsg": "Município 15-5-60",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505061",
+       "categ_dsg": "Município 15-5-61",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1505062",
+       "categ_dsg": "Município 15-5-62",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num3": [
+      {
+       "dim_num": "3",
+       "categ_cod": "T",
+       "categ_dsg": "Total",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "3",
+       "categ_cod": "1",
+       "categ_dsg": "Hotelaria",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "3",
+       "categ_cod": "2",
+       "categ_dsg": "Alojamento local",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "3",
+       "categ_cod": "3",
+       "categ_dsg": "Turismo no espaço rural e de habitação",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num4": [
+      {
+       "dim_num": "4",
+       "categ_cod": "T",
+       "categ_dsg": "Total",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "01",
+       "categ_dsg": "Escalão 1",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "02",
+       "categ_dsg": "Escalão 2",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "03",
+       "categ_dsg": "Escalão 3",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "04",
+       "categ_dsg": "Escalão 4",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "05",
+       "categ_dsg": "Escalão 5",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "06",
+       "categ_dsg": "Escalão 6",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "07",
+       "categ_dsg": "Escalão 7",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "08",
+       "categ_dsg": "Escalão 8",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "09",
+       "categ_dsg": "Escalão 9",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "10",
+       "categ_dsg": "Escalão 10",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "11",
+       "categ_dsg": "Escalão 11",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "12",
+       "categ_dsg": "Escalão 12",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "13",
+       "categ_dsg": "Escalão 13",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "14",
+       "categ_dsg": "Escalão 14",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "15",
+       "categ_dsg": "Escalão 15",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "16",
+       "categ_dsg": "Escalão 16",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "17",
+       "categ_dsg": "Escalão 17",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "18",
+       "categ_dsg": "Escalão 18",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "19",
+       "categ_dsg": "Escalão 19",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "20",
+       "categ_dsg": "Escalão 20",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "21",
+       "categ_dsg": "Escalão 21",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "22",
+       "categ_dsg": "Escalão 22",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "23",
+       "categ_dsg": "Escalão 23",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "24",
+       "categ_dsg": "Escalão 24",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "25",
+       "categ_dsg": "Escalão 25",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "26",
+       "categ_dsg": "Escalão 26",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "27",
+       "categ_dsg": "Escalão 27",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "28",
+       "categ_dsg": "Escalão 28",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "29",
+       "categ_dsg": "Escalão 29",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "30",
+       "categ_dsg": "Escalão 30",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "31",
+       "categ_dsg": "Escalão 31",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "32",
+       "categ_dsg": "Escalão 32",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "33",
+       "categ_dsg": "Escalão 33",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "34",
+       "categ_dsg": "Escalão 34",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "35",
+       "categ_dsg": "Escalão 35",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "36",
+       "categ_dsg": "Escalão 36",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "37",
+       "categ_dsg": "Escalão 37",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "38",
+       "categ_dsg": "Escalão 38",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "39",
+       "categ_dsg": "Escalão 39",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "4",
+       "categ_cod": "40",
+       "categ_dsg": "Escalão 40",
+       "categ_nivel": "1"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

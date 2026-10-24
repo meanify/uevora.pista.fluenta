@@ -1,0 +1,47 @@
+## REDIS
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-redis
+  namespace: fluenta   
+  labels:
+    app: airflow
+    service: airflow-redis
+spec:
+  type: NodePort
+  ports:
+    - port: 6379
+      name: http
+      nodePort: 31116
+  selector:
+    app: airflow
+    service: airflow-redis
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-redis
+  namespace: fluenta 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      service: airflow-redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: airflow
+        service: airflow-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379

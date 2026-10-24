@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-cleaner-scripts
+  namespace: fluenta
+data:
+  airflow-log_cleaner.sh: |
+    #!/bin/bash
+    find ../logs -mtime +30 -type f | while read file; do
+        String="ERROR"
+        if ! grep -q "$String" "$file" ; then
+            echo "Deleted file: '$file'"
+            rm "$file"
+        else
+            echo "'$file' has the string ERROR"
+        fi
+    done
+    find ../logs -type d -empty -delete
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: log-cleaner
+  namespace: fluenta  
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  schedule: 0 16 * * *
+  successfulJobsHistoryLimit: 3
+  suspend: false
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          containers:
+            - name: log-cleaner
+              image: ubuntu:20.10
+              imagePullPolicy: IfNotPresent
+              command:
+              - /bin/sh
+              - -c
+              - /log_cleaner/airflow-log_cleaner.sh
+              volumeMounts:
+                - name: airflow-logs-vol
+                  mountPath: /airflow_logs
+                  subPath: airflow-logs
+                - name: log-cleaner-scripts
+                  mountPath: /log_cleaner
+          restartPolicy: Never
+          volumes:
+          - name: airflow-logs-vol
+            persistentVolumeClaim:
+              claimName: airflow-logs-pvc  
+          - name: log-cleaner-scripts
+            configMap:
+                name: log-cleaner-scripts
+                defaultMode: 0777

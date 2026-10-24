@@ -1,0 +1,10 @@
+Airflow uses Fernet to encrypt passwords in the connection configuration
+ and the variable configuration.
+
+from cryptography.fernet import Fernet
+
+fernet_key = Fernet.generate_key()
+print(fernet_key.decode())
+
+
+python3 generate_fernet.py

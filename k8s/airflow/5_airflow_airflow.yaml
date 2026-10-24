@@ -1,0 +1,401 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-web
+  namespace: fluenta
+  labels:
+    app: airflow
+    service: airflow-web
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      nodePort: 30115
+  selector:
+    app: airflow
+    service: airflow-web
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-web
+  namespace: fluenta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      service: airflow-web
+  template:
+    metadata:
+      labels:
+        app: airflow
+        service: airflow-web
+    spec:
+      containers:
+      - image: apache/airflow:3.1.3-python3.12
+        name: airflow-web
+        command: ["airflow", "api-server"]
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: AIRFLOW_CONFIG
+            value: '/opt/airflow/config/airflow.cfg'
+          - name: PYTHONPATH
+            value: '/opt/airflow/dependencies'
+          - name: AIRFLOW__CORE__EXECUTOR
+            value: "CeleryExecutor"
+          - name: AIRFLOW__CELERY__RESULT_BACKEND
+            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__CELERY__BROKER_URL
+            value: "redis://airflow-redis:6379"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
+            value: "public"
+          - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
+            value: "600"
+          - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+            value: "Europe/Lisbon"
+          - name: AIRFLOW__CORE__LOAD_EXAMPLES
+            value: "False"
+          - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+            value: "True"
+          - name: AIRFLOW__WEBSERVER__RBAC
+            value: "False"
+          - name: AIRFLOW__CORE__FERNET_KEY
+            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+          - name: AIRFLOW__API__AUTH_BACKEND
+            value: "airflow.api.auth.backend.deny_all"
+          - name: AIRFLOW__CORE__SECURE_MODE
+            value: "True"
+          - name: GUNICORN_CMD_ARGS
+            value: "--log-level 'info'"
+          # - name: AIRFLOW_CONN_KUBERNETES_DEFAULT
+          #   value: 'kubernetes://?in_cluster=True&kube_config_path=~%2F.kube%2Fconfig&kube_config=kubeconfig+json&namespace=fluenta'
+          # - name: AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+          #   value: 'airflow'
+          # - name: AIRFLOW__KUBERNETES__NAMESPACE
+          #   value: "fluenta"
+          - name: AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+            value: 'true'
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: airflow-vol
+            mountPath: /opt/airflow
+          - name: survey-exports-vol
+            mountPath: /home/airflow/survey-exports
+      volumes:
+        - name: airflow-vol
+          persistentVolumeClaim:
+            claimName: fluenta-airflow-pvc
+        - name: survey-exports-vol
+          persistentVolumeClaim:
+            claimName: survey-exports-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler
+  namespace: fluenta  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      service: scheduler
+  template:
+    metadata:
+      labels:
+        app: airflow
+        service: scheduler
+    spec:
+      containers:
+      - image: apache/airflow:3.1.3-python3.12
+        name: scheduler
+        command: ["airflow", "scheduler"]
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: AIRFLOW_CONFIG
+            value: '/opt/airflow/config/airflow.cfg'
+          - name: PYTHONPATH
+            value: '/opt/airflow/dependencies'
+          - name: AIRFLOW__CORE__EXECUTOR
+            value: "CeleryExecutor"
+          - name: AIRFLOW__CELERY__RESULT_BACKEND
+            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__CELERY__BROKER_URL
+            value: "redis://airflow-redis:6379"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
+            value: "public"
+          - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
+            value: "600"
+          - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+            value: "Europe/Lisbon"
+          - name: AIRFLOW__CORE__LOAD_EXAMPLES
+            value: "False"
+          - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+            value: "True"
+          - name: AIRFLOW__WEBSERVER__RBAC
+            value: "False"
+          - name: AIRFLOW__CORE__FERNET_KEY
+            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+          - name: AIRFLOW__API__AUTH_BACKEND
+            value: "airflow.api.auth.backend.deny_all"
+          - name: AIRFLOW__CORE__SECURE_MODE
+            value: "True"
+          - name: GUNICORN_CMD_ARGS
+            value: "--log-level 'info'"
+            # Kubernetes Executor Settings
+          #- name: AIRFLOW_CONN_KUBERNETES_DEFAULT
+          #  value: 'kubernetes://?in_cluster=True&kube_config_path=~%2F.kube%2Fconfig&kube_config=kubeconfig+json&namespace=fluenta'
+          # - name: AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+          #   value: 'airflow'
+          # - name: AIRFLOW__KUBERNETES__NAMESPACE
+          #   value: "fluenta"
+          - name: AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+            value: 'true'
+        volumeMounts:
+          - name: scheduler-vol
+            mountPath: /opt/airflow
+      volumes:
+        - name: scheduler-vol
+          persistentVolumeClaim:
+            claimName: fluenta-airflow-pvc
+
+--- 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-triggerer
+  namespace: fluenta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      service: airflow-triggerer
+  template:
+    metadata:
+      labels:
+        app: airflow
+        service: airflow-triggerer
+    spec:
+      containers:
+      - image: apache/airflow:3.1.3-python3.12
+        name: airflow-triggerer
+        command: ["airflow", "triggerer"]
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: AIRFLOW_CONFIG
+            value: '/opt/airflow/config/airflow.cfg'
+          - name: PYTHONPATH
+            value: '/opt/airflow/dependencies'
+          - name: AIRFLOW__CORE__EXECUTOR
+            value: "CeleryExecutor"
+          - name: AIRFLOW__CELERY__RESULT_BACKEND
+            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__CELERY__BROKER_URL
+            value: "redis://airflow-redis:6379"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
+            value: "public"
+          - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
+            value: "600"
+          - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+            value: "Europe/Lisbon"
+          - name: AIRFLOW__CORE__LOAD_EXAMPLES
+            value: "False"
+          - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+            value: "True"
+          - name: AIRFLOW__WEBSERVER__RBAC
+            value: "False"
+          - name: AIRFLOW__CORE__FERNET_KEY
+            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+          - name: AIRFLOW__API__AUTH_BACKEND
+            value: "airflow.api.auth.backend.deny_all"
+          - name: AIRFLOW__CORE__SECURE_MODE
+            value: "True"
+          - name: GUNICORN_CMD_ARGS
+            value: "--log-level 'info'"
+          # - name: AIRFLOW_CONN_KUBERNETES_DEFAULT
+          #   value: 'kubernetes://?in_cluster=True&kube_config_path=~%2F.kube%2Fconfig&kube_config=kubeconfig+json&namespace=fluenta'
+          # - name: AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+          #   value: 'airflow'
+          # - name: AIRFLOW__KUBERNETES__NAMESPACE
+          #   value: "fluenta"
+          - name: AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+            value: 'true'
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: triggerer-vol
+            mountPath: /opt/airflow/dags
+      volumes:
+        - name: triggerer-vol
+          persistentVolumeClaim:
+            claimName: fluenta-airflow-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-dag-processor
+  namespace: fluenta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      service: airflow-dag-processor
+  template:
+    metadata:
+      labels:
+        app: airflow
+        service: airflow-dag-processor
+    spec:
+      containers:
+      - image: apache/airflow:3.1.3-python3.12
+        name: dag-processor
+        command: ["airflow", "dag-processor"]
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: AIRFLOW_CONFIG
+            value: '/opt/airflow/config/airflow.cfg'
+          - name: PYTHONPATH
+            value: '/opt/airflow/dependencies'
+          - name: AIRFLOW__CORE__EXECUTOR
+            value: "CeleryExecutor"
+          - name: AIRFLOW__CELERY__RESULT_BACKEND
+            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__CELERY__BROKER_URL
+            value: "redis://airflow-redis:6379"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
+            value: "public"
+          - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
+            value: "600"
+          - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+            value: "Europe/Lisbon"
+          - name: AIRFLOW__CORE__LOAD_EXAMPLES
+            value: "False"
+          - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+            value: "True"
+          - name: AIRFLOW__WEBSERVER__RBAC
+            value: "False"
+          - name: AIRFLOW__CORE__FERNET_KEY
+            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+          - name: AIRFLOW__API__AUTH_BACKEND
+            value: "airflow.api.auth.backend.deny_all"
+          - name: AIRFLOW__CORE__SECURE_MODE
+            value: "True"
+          - name: GUNICORN_CMD_ARGS
+            value: "--log-level 'info'"
+          # - name: AIRFLOW_CONN_KUBERNETES_DEFAULT
+          #   value: 'kubernetes://?in_cluster=True&kube_config_path=~%2F.kube%2Fconfig&kube_config=kubeconfig+json&namespace=fluenta'
+          # - name: AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+          #   value: 'airflow'
+          # - name: AIRFLOW__KUBERNETES__NAMESPACE
+          #   value: "fluenta"
+          - name: AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+            value: 'true'
+        volumeMounts:
+          - name: dag-processor-vol
+            mountPath: /opt/airflow
+      volumes:
+        - name: dag-processor-vol
+          persistentVolumeClaim:
+            claimName: fluenta-airflow-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-celery-worker
+  namespace: fluenta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+      service: airflow-celery-worker
+  template:
+    metadata:
+      labels:
+        app: airflow
+        service: airflow-celery-worker
+    spec:
+      containers:
+      - image: apache/airflow:3.1.3-python3.12
+        name: airflow-celery-worker
+        command: ["airflow", "celery", "worker"]
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: AIRFLOW_CONFIG
+            value: '/opt/airflow/config/airflow.cfg'
+          - name: PYTHONPATH
+            value: '/opt/airflow/dependencies'
+          - name: AIRFLOW__CORE__EXECUTOR
+            value: "CeleryExecutor"
+          - name: AIRFLOW__CELERY__RESULT_BACKEND
+            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__CELERY__BROKER_URL
+            value: "redis://airflow-redis:6379"
+          - name: AIRFLOW__CORE__EXECUTION_API_SERVER_URL
+            value: "http://airflow-web:8080/execution/"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
+            value: "public"
+          - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
+            value: "600"
+          - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+            value: "Europe/Lisbon"
+          - name: AIRFLOW__CORE__LOAD_EXAMPLES
+            value: "False"
+          - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+            value: "true"
+          - name: AIRFLOW__WEBSERVER__RBAC
+            value: "false"
+          - name: AIRFLOW__CORE__FERNET_KEY
+            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+          - name: AIRFLOW__API__AUTH_BACKEND
+            value: "airflow.api.auth.backend.deny_all"
+          - name: AIRFLOW__CORE__SECURE_MODE
+            value: "true"
+          - name: GUNICORN_CMD_ARGS
+            value: "--log-level 'info'"
+          # - name: AIRFLOW_CONN_KUBERNETES_DEFAULT
+          #   value: 'kubernetes://?in_cluster=True&kube_config_path=~%2F.kube%2Fconfig&kube_config=kubeconfig+json&namespace=fluenta'
+          # - name: AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+          #   value: 'airflow'
+          # - name: AIRFLOW__KUBERNETES__NAMESPACE
+          #   value: "fluenta"
+          - name: AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+            value: 'True'
+        volumeMounts:
+          - name: airflow-vol
+            mountPath: /opt/airflow
+          - name: survey-exports-vol
+            mountPath: /home/airflow/survey-exports
+      volumes:
+        - name: airflow-vol
+          persistentVolumeClaim:
+            claimName: fluenta-airflow-pvc
+        - name: survey-exports-vol
+          persistentVolumeClaim:
+            claimName: survey-exports-pvc
+
+---

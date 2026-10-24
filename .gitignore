@@ -1,0 +1,34 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Python build output
+build/
+dist/
+*.egg-info/
+
+# Generated flow exports and logs
+/ine-*.csv
+*.log
+
+# Power BI local state (keep report and semantic model definitions)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# macOS metadata
+.DS_Store
+._*

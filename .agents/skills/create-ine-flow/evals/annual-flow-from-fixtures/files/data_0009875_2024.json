@@ -1,0 +1,340 @@
+[
+ {
+  "IndicadorCod": "0009875",
+  "Sucesso": {
+   "Verdadeiro": [
+    {
+     "Msg": "Pedido efetuado com sucesso"
+    }
+   ]
+  },
+  "Dados": {
+   "2024": [
+    {
+     "geocod": "PT",
+     "geodsg": "Portugal",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "412345",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "PT",
+     "geodsg": "Portugal",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "398001",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "PT",
+     "geodsg": "Portugal",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "120440",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "PT",
+     "geodsg": "Portugal",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "88012",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "1",
+     "geodsg": "Continente",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "105233",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "1",
+     "geodsg": "Continente",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "31877",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "1",
+     "geodsg": "Continente",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "52011",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "1",
+     "geodsg": "Continente",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "..",
+     "sinal_conv": "..",
+     "sinal_conv_desc": "Valor não disponível"
+    },
+    {
+     "geocod": "11",
+     "geodsg": "Norte",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "0",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "11",
+     "geodsg": "Norte",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "14329",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "11",
+     "geodsg": "Norte",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "x",
+     "sinal_conv": "x",
+     "sinal_conv_desc": "Valor confidencial"
+    },
+    {
+     "geocod": "11",
+     "geodsg": "Norte",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "22103",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "16",
+     "geodsg": "Centro",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "412345",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "16",
+     "geodsg": "Centro",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "398001",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "16",
+     "geodsg": "Centro",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "120440",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "16",
+     "geodsg": "Centro",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "88012",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "17",
+     "geodsg": "Grande Lisboa",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "105233",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "17",
+     "geodsg": "Grande Lisboa",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "31877",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "17",
+     "geodsg": "Grande Lisboa",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "52011",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "17",
+     "geodsg": "Grande Lisboa",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "..",
+     "sinal_conv": "..",
+     "sinal_conv_desc": "Valor não disponível"
+    },
+    {
+     "geocod": "18",
+     "geodsg": "Alentejo",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "0",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "18",
+     "geodsg": "Alentejo",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "14329",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "18",
+     "geodsg": "Alentejo",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "x",
+     "sinal_conv": "x",
+     "sinal_conv_desc": "Valor confidencial"
+    },
+    {
+     "geocod": "18",
+     "geodsg": "Alentejo",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "22103",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "15",
+     "geodsg": "Algarve",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "412345",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "15",
+     "geodsg": "Algarve",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "398001",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "15",
+     "geodsg": "Algarve",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "120440",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "15",
+     "geodsg": "Algarve",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "88012",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "2",
+     "geodsg": "Região Autónoma dos Açores",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "105233",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "2",
+     "geodsg": "Região Autónoma dos Açores",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "31877",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "2",
+     "geodsg": "Região Autónoma dos Açores",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "52011",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "2",
+     "geodsg": "Região Autónoma dos Açores",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "..",
+     "sinal_conv": "..",
+     "sinal_conv_desc": "Valor não disponível"
+    },
+    {
+     "geocod": "3",
+     "geodsg": "Região Autónoma da Madeira",
+     "dim_3": "T",
+     "dim_3_t": "Total",
+     "valor": "0",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "3",
+     "geodsg": "Região Autónoma da Madeira",
+     "dim_3": "1",
+     "dim_3_t": "Hotelaria",
+     "valor": "14329",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    },
+    {
+     "geocod": "3",
+     "geodsg": "Região Autónoma da Madeira",
+     "dim_3": "2",
+     "dim_3_t": "Alojamento local",
+     "valor": "x",
+     "sinal_conv": "x",
+     "sinal_conv_desc": "Valor confidencial"
+    },
+    {
+     "geocod": "3",
+     "geodsg": "Região Autónoma da Madeira",
+     "dim_3": "3",
+     "dim_3_t": "Turismo no espaço rural e de habitação",
+     "valor": "22103",
+     "sinal_conv": "",
+     "sinal_conv_desc": ""
+    }
+   ]
+  }
+ }
+]

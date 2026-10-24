@@ -1,0 +1,13 @@
+Add these variables to Airflow
+
+BACO_HOST = http://baco-service-np.baco:9000/
+GOLD_LABEL = diretoria
+COMPONENT = airflow
+DOCUMENTS_SIZE = 500
+DOCKER_TAG_TRANSFORMATIONS = 2.11.3
+FAST_API_HOST = http://193.136.218.171:31015
+
+
+Add this connections to Airflow
+
+latest_files postgres 193.136.218.171  31055   (And add user and password)

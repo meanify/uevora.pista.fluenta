@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: investigate-frequency-only
+expected_outcome: |
+  A short answer, with no code or repository changes, stating that 0010031 is annual
+  (Periodic Anual), listing its four dimensions (reference period, geography NUTS 2024,
+  accommodation type, size band), the first period 2009 and the latest period 2024 (code
+  S7A2024), and a few example category codes, without dumping the full catalogue of
+  municipalities or bands.
+context:
+  scaffold_script: place-files.sh

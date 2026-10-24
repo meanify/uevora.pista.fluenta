@@ -1,0 +1,252 @@
+[
+ {
+  "IndicadorCod": "0009875",
+  "IndicadorDsg": "Capacidade de alojamento (N.º) nos estabelecimentos de alojamento turístico por Localização geográfica (NUTS - 2024) e Tipo de alojamento; Anual",
+  "MetaInfUrl": "",
+  "DataUltimoAtualizacao": "2025-07-15",
+  "Periodic": "Anual",
+  "PrimeiroPeriodo": "2013",
+  "UltimoPeriodo": "2024",
+  "UnidadeMedida": "N.º",
+  "Potencia10": "0",
+  "PrecisaoDecimal": "0",
+  "Lingua": "PT",
+  "DimensaoNum": "3",
+  "Dimensoes": {
+   "Descricao_Dim": [
+    {
+     "dim_num": "1",
+     "abrv": "Período de referência dos dados"
+    },
+    {
+     "dim_num": "2",
+     "abrv": "Localização geográfica (NUTS - 2024)"
+    },
+    {
+     "dim_num": "3",
+     "abrv": "Tipo de alojamento"
+    }
+   ],
+   "Categoria_Dim": [
+    {
+     "Dim_Num1_S7A2013": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2013",
+       "categ_dsg": "2013",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2014": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2014",
+       "categ_dsg": "2014",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2015": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2015",
+       "categ_dsg": "2015",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2016": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2016",
+       "categ_dsg": "2016",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2017": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2017",
+       "categ_dsg": "2017",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2018": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2018",
+       "categ_dsg": "2018",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2019": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2019",
+       "categ_dsg": "2019",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2020": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2020",
+       "categ_dsg": "2020",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2021": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2021",
+       "categ_dsg": "2021",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2022": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2022",
+       "categ_dsg": "2022",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2023": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2023",
+       "categ_dsg": "2023",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num1_S7A2024": [
+      {
+       "dim_num": "1",
+       "categ_cod": "S7A2024",
+       "categ_dsg": "2024",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num2": [
+      {
+       "dim_num": "2",
+       "categ_cod": "PT",
+       "categ_dsg": "Portugal",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "1",
+       "categ_dsg": "Continente",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "11",
+       "categ_dsg": "Norte",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "16",
+       "categ_dsg": "Centro",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "17",
+       "categ_dsg": "Grande Lisboa",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "18",
+       "categ_dsg": "Alentejo",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "15",
+       "categ_dsg": "Algarve",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "2",
+       "categ_dsg": "Região Autónoma dos Açores",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "20",
+       "categ_dsg": "Região Autónoma dos Açores",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "3",
+       "categ_dsg": "Região Autónoma da Madeira",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "2",
+       "categ_cod": "30",
+       "categ_dsg": "Região Autónoma da Madeira",
+       "categ_nivel": "1"
+      }
+     ]
+    },
+    {
+     "Dim_Num3": [
+      {
+       "dim_num": "3",
+       "categ_cod": "T",
+       "categ_dsg": "Total",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "3",
+       "categ_cod": "1",
+       "categ_dsg": "Hotelaria",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "3",
+       "categ_cod": "2",
+       "categ_dsg": "Alojamento local",
+       "categ_nivel": "1"
+      },
+      {
+       "dim_num": "3",
+       "categ_cod": "3",
+       "categ_dsg": "Turismo no espaço rural e de habitação",
+       "categ_nivel": "1"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]
