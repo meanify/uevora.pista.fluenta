@@ -121,7 +121,7 @@ already supplied.
 
 Read the README sections "Supported indicators", "Adding monthly indicators",
 and "INE implementation reference" in
-[flows-code/README.md](../../../flows-code/README.md). For annual flows, use
+[README.md](../../../README.md). For annual flows, use
 [ine_annual.py](../../../flows-code/pistadigital/utils/ine_annual.py) and compare
 [ine_0009930_flow.py](../../../flows-code/pistadigital/utils/ine_0009930_flow.py)
 (residence), [ine_0009876_flow.py](../../../flows-code/pistadigital/utils/ine_0009876_flow.py)

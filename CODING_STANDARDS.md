@@ -19,5 +19,5 @@ existing callers and helpers, including callers outside the diff.
 - Check all affected entry points for preserved filenames, delimiters, empty
   results, database transaction boundaries, and error reporting.
 
-Use the focused tests documented in [the README](flows-code/README.md#ine-tests)
+Use the focused tests documented in [the README](README.md#ine-tests)
 to verify behavior; successful tests do not replace cross-caller review.

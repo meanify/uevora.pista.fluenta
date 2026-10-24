@@ -1,6 +1,6 @@
 # Workspace navigation
 
-- Application code and usage: [flows-code/README.md](flows-code/README.md).
+- Application code and usage: [README.md](README.md).
 - CLI dispatch: [flows-code/pistadigital/cli/](flows-code/pistadigital/cli/).
 - INE API helpers: [ine_api.py](flows-code/pistadigital/utils/ine_api.py).
 - INE CSV/database output: [ine_output.py](flows-code/pistadigital/utils/ine_output.py).
