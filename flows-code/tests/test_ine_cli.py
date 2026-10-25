@@ -12,6 +12,7 @@ from unittest.mock import Mock, patch
 import pandas as pd
 
 from pistadigital.cli import ine_flows as cli
+from pistadigital.utils import ine_0009808_flow as monthly_flow
 from pistadigital.utils import ine_0009929_flow as ine
 from pistadigital.utils import ine_annual as annual
 from pistadigital.utils import ine_api, ine_output
@@ -41,6 +42,25 @@ RECORD = {
     "geocod": "1231401", "geodsg": "Abrantes", "dim_3": "01",
     "valor": "12,5", "anocod": "2024",
 }
+
+
+def monthly_metadata():
+    return [{
+        "IndicadorCod": "0009808", "Periodic": "Mensal",
+        "Dimensoes": {"Categoria_Dim": [{"categories": [
+            {"dim_num": dimension, "categ_cod": code, "categ_dsg": label}
+            for dimension, labels in {
+                "1": {
+                    "S3A202403": "Marco de 2024",
+                    "S3A202312": "Dezembro de 2023",
+                    "S3A202401": "Janeiro de 2024",
+                },
+                "2": {"PT": "Portugal"},
+                "3": {"T": "Total"},
+            }.items()
+            for code, label in labels.items()
+        ]}]},
+    }]
 
 
 class CliTests(unittest.TestCase):
@@ -204,12 +224,176 @@ class CliTests(unittest.TestCase):
         self.assertIn("--database", help_result.stdout)
         self.assertIn("--csv", help_result.stdout)
         self.assertIn("--all-years", help_result.stdout)
+        self.assertIn("--all-months", help_result.stdout)
+        self.assertIn("--all-years-months", help_result.stdout)
         invalid = subprocess.run(
             [sys.executable, str(entrypoint), "-i", "9929", "-y", "2024"],
             capture_output=True, text=True,
         )
         self.assertEqual(invalid.returncode, 2)
         self.assertIn("Choose at least one output", invalid.stderr)
+
+
+class MonthlyBatchCliTests(unittest.TestCase):
+    def test_batches_select_published_periods_and_preserve_output_modes(self):
+        modes = [
+            (["-y", "2024", "--all-months"], [(2024, 1), (2024, 3)]),
+            (["--all-years-months"], [(2023, 12), (2024, 1), (2024, 3)]),
+        ]
+        for code in ("9808", "9812", "12093", "10735", "10736"):
+            module = cli.importlib.import_module(cli.INDICATORS[code.zfill(7)])
+            for selectors, periods in modes:
+                for flags in (["--csv"], ["--database"], ["--database", "--csv"]):
+                    with self.subTest(code=code, selectors=selectors, flags=flags), \
+                            tempfile.TemporaryDirectory() as directory:
+                        output = Path(directory) / "batch.csv"
+                        frames = [
+                            pd.DataFrame({"ano": [year], "mes": [f"{month:02d}"]})
+                            for year, month in periods
+                        ]
+                        with patch.object(
+                            cli, "fetch_indicator_metadata", return_value=monthly_metadata()
+                        ) as fetch, patch.object(
+                            module, "processar_indicador_ine", side_effect=frames
+                        ) as process:
+                            args = ["-i", code, *selectors, *flags]
+                            if "--csv" in flags:
+                                args.extend(["--output", str(output)])
+                            self.assertEqual(cli.main(args), 0)
+                        fetch.assert_called_once_with(code.zfill(7))
+                        self.assertEqual(
+                            [call.kwargs for call in process.call_args_list],
+                            [
+                                {
+                                    "varcd": code.zfill(7), "ano": year, "mes": month,
+                                    "exportar_csv": False, "gravar_bd": "--database" in flags,
+                                }
+                                for year, month in periods
+                            ],
+                        )
+                        if "--csv" in flags:
+                            frame = pd.read_csv(output, dtype={"mes": str})
+                            self.assertEqual(
+                                list(zip(frame.ano, frame.mes)),
+                                [(year, f"{month:02d}") for year, month in periods],
+                            )
+                        else:
+                            self.assertFalse(output.exists())
+
+    def test_default_csv_paths_and_empty_headers(self):
+        for selectors, suffix in (
+            (["-y", "2024", "--all-months"], "2024_all_months"),
+            (["--all-years-months"], "all_years_months"),
+        ):
+            empty = pd.DataFrame(columns=monthly_flow.SCHEMA_COLUMNS)
+            with self.subTest(selectors=selectors), patch.object(
+                cli, "fetch_indicator_metadata", return_value=monthly_metadata()
+            ), patch.object(
+                monthly_flow, "processar_indicador_ine", return_value=empty
+            ), patch.object(cli, "write_csv") as write:
+                self.assertEqual(cli.main(["-i", "9808", *selectors, "--csv"]), 0)
+            write.assert_called_once()
+            frame, path = write.call_args.args
+            self.assertTrue(frame.empty)
+            self.assertEqual(frame.columns.tolist(), monthly_flow.SCHEMA_COLUMNS)
+            self.assertEqual(path, Path("/tmp") / f"ine_0009808_{suffix}_tratado.csv")
+
+    def test_invalid_combinations_fail_before_network_or_processing(self):
+        cases = [
+            ["-i", "9808", "--all-months"],
+            ["-i", "9808", "-y", "2024", "--all-months", "-m", "1"],
+            ["-i", "9808", "--all-years", "--all-months"],
+            ["-i", "9808", "--all-years-months", "--all-months"],
+            ["-i", "9808", "--all-years-months", "-y", "2024"],
+            ["-i", "9808", "--all-years-months", "--all-years"],
+            ["-i", "9808", "--all-years-months", "-m", "1"],
+            ["-i", "9808", "--all-years"],
+            ["-i", "9929", "-y", "2024", "--all-months"],
+            ["-i", "9929", "--all-years-months"],
+        ]
+        for args in cases:
+            with self.subTest(args=args), patch.object(cli, "fetch_indicator_metadata") as fetch, \
+                    patch.object(monthly_flow, "processar_indicador_ine") as process, \
+                    patch.object(ine, "processar_indicador_ine") as annual_process, \
+                    contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as error:
+                    cli.main([*args, "--csv"])
+                self.assertEqual(error.exception.code, 2)
+                fetch.assert_not_called()
+                process.assert_not_called()
+                annual_process.assert_not_called()
+
+    def test_discovery_failures_do_not_process_or_export(self):
+        for selectors, response in (
+            (["--all-years-months"], RuntimeError("metadata unavailable")),
+            (["--all-years-months"], [{"Periodic": "Anual"}]),
+            (["--all-years-months"], []),
+            (["-y", "2025", "--all-months"], monthly_metadata()),
+        ):
+            with self.subTest(selectors=selectors, response=response), patch.object(
+                cli, "fetch_indicator_metadata",
+                **({"side_effect": response} if isinstance(response, Exception)
+                   else {"return_value": response}),
+            ), patch.object(monthly_flow, "processar_indicador_ine") as process, \
+                    patch.object(cli, "write_csv") as write, \
+                    self.assertLogs(cli.logger, level="ERROR"):
+                self.assertEqual(cli.main(["-i", "9808", *selectors, "--csv"]), 1)
+            process.assert_not_called()
+            write.assert_not_called()
+
+    def test_processing_failure_stops_batch_and_preserves_existing_csv(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "batch.csv"
+            output.write_text("existing CSV\n")
+            with patch.object(
+                cli, "fetch_indicator_metadata", return_value=monthly_metadata()
+            ), patch.object(
+                monthly_flow, "processar_indicador_ine",
+                side_effect=[pd.DataFrame({"ano": [2023]}), RuntimeError("API failure")],
+            ) as process, self.assertLogs(cli.logger, level="ERROR"):
+                self.assertEqual(cli.main([
+                    "-i", "9808", "--all-years-months", "--database", "--csv",
+                    "--output", str(output),
+                ]), 1)
+            self.assertEqual(process.call_count, 2)
+            self.assertTrue(all(call.kwargs["gravar_bd"] for call in process.call_args_list))
+            self.assertEqual(output.read_text(), "existing CSV\n")
+
+    def test_csv_only_runs_real_monthly_flows_without_database_access(self):
+        responses = []
+        meta = monthly_metadata()
+        discovery = Mock()
+        discovery.json.return_value = meta
+        responses.append(discovery)
+        for label in ("Dezembro de 2023", "Janeiro de 2024", "Marco de 2024"):
+            metadata_response, data_response = Mock(), Mock()
+            metadata_response.json.return_value = meta
+            data_response.json.return_value = [{"Dados": {label: [
+                {"geocod": "PT", "dim_3": "T", "valor": "0"},
+            ]}}]
+            responses.extend([metadata_response, data_response])
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "batch.csv"
+            with patch.dict(os.environ, {}, clear=True), patch.object(
+                ine_api.requests, "get", side_effect=responses
+            ) as get, patch.object(
+                ine_output, "get_engine", side_effect=AssertionError("Must not connect")
+            ):
+                self.assertEqual(cli.main([
+                    "-i", "9808", "--all-years-months", "--csv", "-o", str(output),
+                ]), 0)
+            frame = pd.read_csv(output, dtype={"mes": str})
+            self.assertEqual(frame.columns.tolist(), monthly_flow.SCHEMA_COLUMNS)
+            self.assertEqual(list(zip(frame.ano, frame.mes)), [(2023, "12"), (2024, "01"), (2024, "03")])
+            self.assertTrue(frame.dormidas.eq(0).all())
+            data_urls = [
+                call.args[0] for call in get.call_args_list
+                if call.args[0].startswith(ine_api.DATA_URL + "?")
+            ]
+            self.assertEqual(data_urls, [
+                f"{ine_api.DATA_URL}?op=2&varcd=0009808&lang=PT&Dim1=S3A{period}"
+                for period in ("202312", "202401", "202403")
+            ])
 
 
 if __name__ == "__main__":

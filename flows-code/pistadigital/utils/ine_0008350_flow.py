@@ -6,7 +6,7 @@ from pistadigital.utils.ine_transform import nuts_2013_fields
 
 INDICATOR = "0008350"
 MONTHLY = False
-TABLE_NAME = f"ine_{INDICATOR}"
+TABLE_NAME = f"ine_{INDICATOR}_ds"
 VALUE_COLUMN = "superficie_unidades_territoriais"
 COLUMN_LENGTHS = {
     "nuts_i": 64, "nuts_ii": 64, "nuts_iii": 64, "distrito": 128,

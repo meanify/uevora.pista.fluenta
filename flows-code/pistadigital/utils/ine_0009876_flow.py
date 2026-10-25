@@ -6,7 +6,7 @@ from pistadigital.utils.ine_transform import accommodation_fields, nuts_2013_fie
 
 INDICATOR = "0009876"
 MONTHLY = False
-TABLE_NAME = f"ine_{INDICATOR}"
+TABLE_NAME = f"ine_{INDICATOR}_ds"
 VALUE_COLUMN = "hospedes"
 COLUMN_LENGTHS = {
     "nuts_i": 64, "nuts_ii": 64, "nuts_iii": 64, "distrito": 64,
@@ -54,5 +54,6 @@ def processar_indicador_ine(
         indicator=INDICATOR, table_name=TABLE_NAME,
         create_table_sql=CREATE_TABLE_SQL, columns=SCHEMA_COLUMNS,
         lengths=COLUMN_LENGTHS, metric=VALUE_COLUMN,
-        transform_dimensions=transform_dimensions, required_dimensions=("2", "3"),
+        transform_dimensions=transform_dimensions, required_dimensions=(
+            "2", "3"),
     )

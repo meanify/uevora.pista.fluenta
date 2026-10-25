@@ -60,7 +60,8 @@ def processar_indicador_ine(
         indicator=INDICATOR, table_name=TABLE_NAME,
         create_table_sql=CREATE_TABLE_SQL, columns=SCHEMA_COLUMNS,
         lengths=COLUMN_LENGTHS, metric=VALUE_COLUMN,
-        transform_dimensions=transform_dimensions, required_dimensions=("2", "3"),
+        transform_dimensions=transform_dimensions, required_dimensions=(
+            "2", "3"),
     )
 
 

@@ -57,24 +57,25 @@ of `python` with that environment.
 
 | Code | Description | Period | PostgreSQL table |
 | --- | --- | --- | --- |
-| `0012093` (or `12093`) | Hóspedes por tipo de alojamento (NUTS-2024 I/II) | Monthly | `ine_0012093` |
-| `0008350` (or `8350`) | Superfície das unidades territoriais | Annual | `ine_0008350` |
-| `0009183` (or `9183`) | Dormidas por local de residência | Annual | `ine_0009183` |
-| `0009808` (or `9808`) | Dormidas por tipo de alojamento (NUTS I/II) | Monthly | `ine_0009808` |
-| `0009812` (or `9812`) | Hóspedes por tipo de alojamento (NUTS-2013 I/II) | Monthly | `ine_0009812_monthly` |
-| `0009873` (or `9873`) | Estabelecimentos de alojamento turístico | Annual | `ine_0009873` |
-| `0009874` (or `9874`) | Quartos em estabelecimentos de alojamento turístico | Annual | `ine_0009874` |
-| `0009876` (or `9876`) | Hóspedes por tipo de alojamento | Annual | `ine_0009876` |
-| `0009877` (or `9877`) | Dormidas por tipo de alojamento | Annual | `ine_0009877` |
-| `0009880` (or `9880`) | Estada média por tipo de alojamento | Annual | `ine_0009880` |
+| `0012093` (or `12093`) | Hóspedes por tipo de alojamento (NUTS-2024 I/II) | Monthly | `ine_0012093_ds` |
+| `0008350` (or `8350`) | Superfície das unidades territoriais | Annual | `ine_0008350_ds` |
+| `0009183` (or `9183`) | Dormidas por local de residência | Annual | `ine_0009183_ds` |
+| `0009808` (or `9808`) | Dormidas por tipo de alojamento (NUTS I/II) | Monthly | `ine_0009808_ds` |
+| `0009812` (or `9812`) | Hóspedes por tipo de alojamento (NUTS-2013 I/II) | Monthly | `ine_0009812_ds` |
+| `0009873` (or `9873`) | Estabelecimentos de alojamento turístico | Annual | `ine_0009873_ds` |
+| `0009874` (or `9874`) | Quartos em estabelecimentos de alojamento turístico | Annual | `ine_0009874_ds` |
+| `0009876` (or `9876`) | Hóspedes por tipo de alojamento | Annual | `ine_0009876_ds` |
+| `0009877` (or `9877`) | Dormidas por tipo de alojamento | Annual | `ine_0009877_ds` |
+| `0009880` (or `9880`) | Estada média por tipo de alojamento | Annual | `ine_0009880_ds` |
 | `0009929` (or `9929`) | Rendimento médio por quarto | Annual | `ine_0009929_ds` |
-| `0009930` (or `9930`) | Hóspedes por local de residência | Annual | `ine_0009930` |
-| `0011140` (or `11140`) | Estada média por local de residência | Annual | `ine_0011140` |
-| `0010735` (or `10735`) | Dormidas por segmento de alojamento (NUTS-2013) | Monthly | `ine_0010735` |
-| `0010736` (or `10736`) | Hóspedes por segmento de alojamento (NUTS-2013) | Monthly | `ine_0010736` |
+| `0009930` (or `9930`) | Hóspedes por local de residência | Annual | `ine_0009930_ds` |
+| `0011140` (or `11140`) | Estada média por local de residência | Annual | `ine_0011140_ds` |
+| `0010735` (or `10735`) | Dormidas por segmento de alojamento (NUTS-2013) | Monthly | `ine_0010735_ds` |
+| `0010736` (or `10736`) | Hóspedes por segmento de alojamento (NUTS-2013) | Monthly | `ine_0010736_ds` |
 
-All listed indicators are registered in the CLI. Monthly indicators require both
-`--year` and `--month`; `--all-years` is not supported for monthly indicators.
+All listed indicators are registered in the CLI. Monthly indicators accept
+`--year` with either `--month` or `--all-months`, or `--all-years-months` for
+all published periods. `--all-years` remains annual-only.
 
 Indicator 12093 uses an approved new schema modeled on 9808, with metric
 `hospedes REAL`, four `CHAR(64)` label dimensions, `ano INTEGER`, `mes CHAR(2)`,
@@ -219,7 +220,8 @@ Both [ine_flows.py](flows-code/ine_flows.py) and [lime_flows.py](flows-code/lime
 output and diagnostic options:
 
 This table lists only shared flags, not the required source selectors.
-**INE requires `-i/--indicator` and either `-y/--year` or `--all-years`;
+**INE requires `-i/--indicator` and one of `-y/--year`, `--all-years`, or
+`--all-years-months`;
 LimeSurvey requires `-s/--survey`.** See [all INE options](#all-ine-options) and the
 [LimeSurvey-specific options](#limesurvey-specific-options) below.
 Note that `-i` means **indicator** for INE but **increment** for LimeSurvey;
@@ -260,8 +262,8 @@ LimeSurvey response exports infer column types across the entire CSV rather
 than parser chunks, avoiding mixed-type inference warnings for large surveys.
 This uses more parsing memory; numeric and text answers remain intact.
 
-From `flows-code`, run `ine_flows.py` with an indicator, either a year or
-`--all-years`, and at least one output option. Short indicator codes such as
+From `flows-code`, run `ine_flows.py` with an indicator, a period selector,
+and at least one output option. Short indicator codes such as
 `9929` and `9873` are accepted.
 
 ```bash
@@ -281,6 +283,12 @@ python ine_flows.py -i 9929 --all-years --csv
 python ine_flows.py -i 9929 --all-years --database --csv \
   --output /tmp/ine-9929-all-years.csv
 
+# Monthly indicators: one month, all published months in a year, or all history.
+python ine_flows.py -i 9808 -y 2024 -m 1 --csv
+python ine_flows.py -i 9808 -y 2024 --all-months --csv
+python ine_flows.py -i 9808 --all-years-months --database --csv \
+  --output /tmp/ine-9808-all-months.csv
+
 python ine_flows.py --help
 ```
 
@@ -291,7 +299,9 @@ python ine_flows.py --help
 | `-i`, `--indicator` | Required indicator code; leading zeros are optional. |
 | `-y`, `--year` | Process one reference year, from 1 to 9999; data must be published by INE. |
 | `--all-years` | Process every annual period listed in INE metadata; mutually exclusive with `--year`. |
-| `-m`, `--month` | Required month from 1 to 12 for monthly indicators; rejected for annual indicators. |
+| `--all-months` | Monthly-only: process every published month of `--year`; cannot be combined with `--month` or either all-years flag. |
+| `--all-years-months` | Monthly-only: process every published year/month; cannot be combined with `--year`, `--month`, `--all-months`, or `--all-years`. |
+| `-m`, `--month` | Single month from 1 to 12; monthly indicators require this with `--year` unless using a monthly batch flag. Rejected for annual indicators. |
 | `--database` | Create the table if necessary and replace the requested period. |
 | `--csv` | Export records to CSV; overwrites the destination if it already exists. |
 | `-o`, `--output` | Custom CSV path; requires `--csv`. The parent directory must exist. |
@@ -304,6 +314,18 @@ exported as empty cells. `--all-years --csv` combines all available annual
 periods into one file; without `--output`, the default is
 `/tmp/ine_<indicator>_all_years_tratado.csv`. Database writes still replace each
 year independently. All-years mode is for annual indicators only.
+
+Monthly batch modes select only periods listed in INE metadata, oldest first;
+they do not attempt missing or unpublished months, including in partial years.
+`--all-months` fails if the selected year has no published months.
+Both modes combine CSV output into one file, with `--output` supported.
+Default paths are `/tmp/ine_<indicator>_<year>_all_months_tratado.csv` and
+`/tmp/ine_<indicator>_all_years_months_tratado.csv`.
+Database replacement remains independent for each year/month, preserving other
+periods. Like annual batches, monthly batches stop at the first failure and
+return a nonzero status; earlier database commits remain. The combined CSV is
+written only after all selected periods succeed, so a processing failure leaves
+any existing destination CSV untouched.
 
 Alternatively, run `python -m pistadigital.cli.ine_flows` with the same options.
 The container image copies both `ine_flows.py` and `lime_flows.py`; its default

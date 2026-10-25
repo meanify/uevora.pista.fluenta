@@ -8,7 +8,10 @@ from pathlib import Path
 import pandas as pd
 
 from pistadigital.cli.environment import load_project_environment
-from pistadigital.utils.ine_api import fetch_available_annual_years
+from pistadigital.utils.ine_api import (
+    available_monthly_periods, fetch_available_annual_years,
+    fetch_indicator_metadata,
+)
 from pistadigital.utils.ine_output import write_csv
 
 
@@ -58,8 +61,17 @@ def main(command_line=None):
         "--all-years", action="store_true",
         help="Process every annual period available in INE metadata.",
     )
-    parser.add_argument("-m", "--month", type=int, choices=range(1, 13),
-                        help="Required for monthly indicators; invalid for annual ones.")
+    period.add_argument(
+        "--all-years-months", action="store_true",
+        help="Process every published year/month for a monthly indicator.",
+    )
+    months = parser.add_mutually_exclusive_group()
+    months.add_argument("-m", "--month", type=int, choices=range(1, 13),
+                        help="Single month for monthly indicators; invalid for annual ones.")
+    months.add_argument(
+        "--all-months", action="store_true",
+        help="Process every published month of --year for a monthly indicator.",
+    )
     parser.add_argument("--database", action="store_true",
                         help="Write records to PostgreSQL.")
     parser.add_argument("--csv", action="store_true",
@@ -73,40 +85,73 @@ def main(command_line=None):
         parser.error("Choose at least one output: --database and/or --csv.")
     if args.output is not None and not args.csv:
         parser.error("--output requires --csv.")
+    if args.all_months and args.year is None:
+        parser.error("--all-months requires --year.")
+    if args.all_years_months and args.month is not None:
+        parser.error("--all-years-months cannot be combined with --month.")
 
     load_project_environment()
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
     module = importlib.import_module(INDICATORS[args.indicator])
     if args.all_years and module.MONTHLY:
         parser.error("--all-years is only supported for annual indicators.")
-    if module.MONTHLY and args.month is None:
-        parser.error("This indicator is monthly; --month is required.")
+    monthly_batch = args.all_months or args.all_years_months
+    if monthly_batch and not module.MONTHLY:
+        parser.error("--all-months and --all-years-months require a monthly indicator.")
+    if module.MONTHLY and args.month is None and not monthly_batch:
+        parser.error("This indicator is monthly; --month or --all-months is required.")
     if not module.MONTHLY and args.month is not None:
         parser.error(
             f"Indicator {args.indicator} is annual; do not supply --month.")
 
     try:
-        if args.all_years:
-            years = fetch_available_annual_years(args.indicator)
+        if args.all_years or monthly_batch:
+            if monthly_batch:
+                periods = available_monthly_periods(
+                    fetch_indicator_metadata(args.indicator)
+                )
+                if args.all_months:
+                    periods = [
+                        (year, month) for year, month in periods
+                        if year == args.year
+                    ]
+                    if not periods:
+                        raise ValueError(
+                            f"No published monthly periods found for year {args.year}."
+                        )
+                suffix = (
+                    f"{args.year}_all_months" if args.all_months
+                    else "all_years_months"
+                )
+            else:
+                periods = [
+                    (year, None)
+                    for year in fetch_available_annual_years(args.indicator)
+                ]
+                suffix = "all_years"
             logger.info(
-                "Processing INE %s for all available years: %s",
+                "Processing INE %s for available periods: %s",
                 args.indicator,
-                ", ".join(map(str, years)),
+                ", ".join(
+                    str(year) if month is None else f"{year:04d}-{month:02d}"
+                    for year, month in periods
+                ),
             )
-            yearly_frames = [
+            frames = [
                 module.processar_indicador_ine(
                     varcd=args.indicator,
                     ano=year,
                     exportar_csv=False,
                     gravar_bd=args.database,
+                    **({"mes": month} if month is not None else {}),
                 )
-                for year in years
+                for year, month in periods
             ]
-            df = pd.concat(yearly_frames, ignore_index=True)
+            df = pd.concat(frames, ignore_index=True)
             if args.csv:
                 output = args.output or (
                     Path("/tmp")
-                    / f"ine_{args.indicator}_all_years_tratado.csv"
+                    / f"ine_{args.indicator}_{suffix}_tratado.csv"
                 )
                 write_csv(df, output)
         else:
