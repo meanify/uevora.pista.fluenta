@@ -56,13 +56,13 @@ class ProjectEnvironmentTests(unittest.TestCase):
             (
                 ine_flows,
                 ["-i", "9929", "-y", "2024", "--csv"],
-                "pistadigital.utils.ine_0009929_flow",
+                "pistadigital.flows.ine_0009929_flow",
                 "processar_indicador_ine",
             ),
             (
                 lime_flows,
                 ["--survey", "666914", "--csv"],
-                "pistadigital.utils.limesurvey_flows",
+                "pistadigital.flows.limesurvey_flows",
                 "processar_inquerito",
             ),
         ):

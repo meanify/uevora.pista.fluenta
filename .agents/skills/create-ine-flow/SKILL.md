@@ -123,14 +123,14 @@ Read the README sections "Supported indicators", "Adding monthly indicators",
 and "INE implementation reference" in
 [README.md](../../../README.md). For annual flows, use
 [ine_annual.py](../../../flows-code/pistadigital/utils/ine_annual.py) and compare
-[ine_0009930_flow.py](../../../flows-code/pistadigital/utils/ine_0009930_flow.py)
-(residence), [ine_0009876_flow.py](../../../flows-code/pistadigital/utils/ine_0009876_flow.py)
-(accommodation), or [ine_0008350_flow.py](../../../flows-code/pistadigital/utils/ine_0008350_flow.py)
+[ine_0009930_flow.py](../../../flows-code/pistadigital/flows/ine_0009930_flow.py)
+(residence), [ine_0009876_flow.py](../../../flows-code/pistadigital/flows/ine_0009876_flow.py)
+(accommodation), or [ine_0008350_flow.py](../../../flows-code/pistadigital/flows/ine_0008350_flow.py)
 (geography only). Their shared tests are in
 [test_ine_annual.py](../../../flows-code/tests/test_ine_annual.py).
-The migrated [9873](../../../flows-code/pistadigital/utils/ine_0009873_flow.py),
-[9874](../../../flows-code/pistadigital/utils/ine_0009874_flow.py), and
-[9929](../../../flows-code/pistadigital/utils/ine_0009929_flow.py) use the same
+The migrated [9873](../../../flows-code/pistadigital/flows/ine_0009873_flow.py),
+[9874](../../../flows-code/pistadigital/flows/ine_0009874_flow.py), and
+[9929](../../../flows-code/pistadigital/flows/ine_0009929_flow.py) use the same
 runner; their compatibility contracts are tested in
 [test_ine_legacy.py](../../../flows-code/tests/test_ine_legacy.py).
 Do not reintroduce per-indicator annual orchestration.
@@ -147,7 +147,7 @@ Confirm each indicator's dimensions, codes, and geography version independently.
   Monthly flows with the verified S3A encoding reuse
   `monthly_dimension_labels`, `monthly_records`, and
   `fetch_monthly_indicator_data`; compare
-  [9808](../../../flows-code/pistadigital/utils/ine_0009808_flow.py).
+  [9808](../../../flows-code/pistadigital/flows/ine_0009808_flow.py).
   Pin the exact request URL in tests rather than guessing the encoding.
 - Output goes through `validate_period`, `write_csv`, and `replace_period_data`
   in [ine_output.py](../../../flows-code/pistadigital/utils/ine_output.py). They

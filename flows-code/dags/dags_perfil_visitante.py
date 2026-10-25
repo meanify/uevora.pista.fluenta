@@ -9,7 +9,7 @@ from airflow.providers.standard.operators.python import PythonVirtualenvOperator
 from airflow.providers.standard.operators.bash import BashOperator
 import logging
 
-import pistadigital.utils.limesurvey_flows as flows_utils
+import pistadigital.flows.limesurvey_flows as flows_utils
 # from utils.mappings.mappings import survey_mappings as survey_mappings
 
 # https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/example_dags/index.html
@@ -32,7 +32,7 @@ dags = [
 
 def execute_sync_pistadigital(survey, from_response_id, increment):
     """Example of a synchronous task."""
-    import pistadigital.utils.limesurvey_flows as flows_utils
+    import pistadigital.flows.limesurvey_flows as flows_utils
     import logging
 
     logger = logging.getLogger(__name__)

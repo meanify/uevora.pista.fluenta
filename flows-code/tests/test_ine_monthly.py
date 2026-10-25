@@ -57,7 +57,7 @@ def record(**options):
 
 class MonthlyFlowTests(unittest.TestCase):
     def process(self, code, rows, **options):
-        module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+        module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
         rows = [
             (row | {
                 "geocod": ("11" if INDICATORS[code][1] else "11A1304")
@@ -79,7 +79,7 @@ class MonthlyFlowTests(unittest.TestCase):
     def test_mapping_metrics_schema_and_period(self):
         for code, (metric, accommodation) in INDICATORS.items():
             with self.subTest(code=code):
-                module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+                module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
                 frame = self.process(code, [
                     record(), record(geocod="PT", dim_3="T", valor="0"),
                     record(geocod="1", dim_3="01", valor=".."),
@@ -124,7 +124,7 @@ class MonthlyFlowTests(unittest.TestCase):
                     self.process(code, rows, exportar_csv=True, gravar_bd=True)
                 csv.assert_not_called()
                 database.assert_not_called()
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             for options in ({"mes": None}, {"mes": 13}, {"ano": True}, {"varcd": "wrong"}):
                 with patch.object(monthly, "fetch_indicator_metadata") as fetch, self.assertRaises(ValueError):
                     module.processar_indicador_ine(**({"ano": 2026, "mes": 8} | options))
@@ -136,7 +136,7 @@ class MonthlyFlowTests(unittest.TestCase):
 
     def test_foreign_periods_malformed_payloads_and_unpublished_months(self):
         for code in INDICATORS:
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             for payload in (
                 [], {}, [{"Dados": []}], [{"Dados": {"Agosto de 2026": {}}}],
                 [{"Dados": {"Julho de 2026": []}}],
@@ -163,7 +163,7 @@ class MonthlyFlowTests(unittest.TestCase):
 
     def test_length_validation_and_unknown_ancestor(self):
         for code, (_, accommodation) in INDICATORS.items():
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             meta = metadata(code)
             categories = meta[0]["Dimensoes"]["Categoria_Dim"][0]["categories"]
             next(c for c in categories if c["dim_num"] == "3" and c["categ_cod"] == "01")["categ_dsg"] = "X" * 65
@@ -182,7 +182,7 @@ class MonthlyFlowTests(unittest.TestCase):
 
     def test_outputs_csv_empty_and_cli(self):
         for code in INDICATORS:
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             order = Mock()
             with patch.object(monthly, "replace_period_data", order.database), \
                     patch.object(monthly, "write_csv", order.csv):
@@ -206,7 +206,7 @@ class MonthlyFlowTests(unittest.TestCase):
 
     def test_failures_propagate_without_later_outputs(self):
         for code in INDICATORS:
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             with patch.object(monthly, "replace_period_data", side_effect=RuntimeError("DB down")), \
                     patch.object(monthly, "write_csv") as csv, \
                     self.assertRaisesRegex(RuntimeError, "DB down"):
@@ -223,7 +223,7 @@ class MonthlyFlowTests(unittest.TestCase):
 
     def test_database_period_isolation_and_rollback(self):
         for code in INDICATORS:
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             frame = self.process(code, [record()])
             engine = create_engine("sqlite://")
             try:

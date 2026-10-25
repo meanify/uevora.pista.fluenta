@@ -17,21 +17,21 @@ from pistadigital.utils.ine_output import write_csv
 
 logger = logging.getLogger("pista.fluenta.ine_cli")
 INDICATORS = {
-    "0008350": "pistadigital.utils.ine_0008350_flow",
-    "0009183": "pistadigital.utils.ine_0009183_flow",
-    "0009808": "pistadigital.utils.ine_0009808_flow",
-    "0009812": "pistadigital.utils.ine_0009812_flow",
-    "0009873": "pistadigital.utils.ine_0009873_flow",
-    "0009874": "pistadigital.utils.ine_0009874_flow",
-    "0009876": "pistadigital.utils.ine_0009876_flow",
-    "0009877": "pistadigital.utils.ine_0009877_flow",
-    "0009880": "pistadigital.utils.ine_0009880_flow",
-    "0009929": "pistadigital.utils.ine_0009929_flow",
-    "0009930": "pistadigital.utils.ine_0009930_flow",
-    "0010735": "pistadigital.utils.ine_0010735_flow",
-    "0010736": "pistadigital.utils.ine_0010736_flow",
-    "0011140": "pistadigital.utils.ine_0011140_flow",
-    "0012093": "pistadigital.utils.ine_0012093_flow",
+    "0008350": "pistadigital.flows.ine_0008350_flow",
+    "0009183": "pistadigital.flows.ine_0009183_flow",
+    "0009808": "pistadigital.flows.ine_0009808_flow",
+    "0009812": "pistadigital.flows.ine_0009812_flow",
+    "0009873": "pistadigital.flows.ine_0009873_flow",
+    "0009874": "pistadigital.flows.ine_0009874_flow",
+    "0009876": "pistadigital.flows.ine_0009876_flow",
+    "0009877": "pistadigital.flows.ine_0009877_flow",
+    "0009880": "pistadigital.flows.ine_0009880_flow",
+    "0009929": "pistadigital.flows.ine_0009929_flow",
+    "0009930": "pistadigital.flows.ine_0009930_flow",
+    "0010735": "pistadigital.flows.ine_0010735_flow",
+    "0010736": "pistadigital.flows.ine_0010736_flow",
+    "0011140": "pistadigital.flows.ine_0011140_flow",
+    "0012093": "pistadigital.flows.ine_0012093_flow",
 }
 
 

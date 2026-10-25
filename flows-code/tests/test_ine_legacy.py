@@ -53,7 +53,7 @@ def record(value="12,5", **fields):
 
 class LegacyFlowTests(unittest.TestCase):
     def module(self, code):
-        return importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+        return importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
 
     def process(self, code, rows, **options):
         year = LEGACY[code][1]

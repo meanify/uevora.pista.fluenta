@@ -8,7 +8,7 @@ from citric.exceptions import LimeSurveyError, ResponseMismatchError
 import requests
 
 from pistadigital.cli.environment import load_project_environment
-from pistadigital.utils import limesurvey_flows as flows
+from pistadigital.flows import limesurvey_flows as flows
 
 
 logger = logging.getLogger("pista.fluenta.lime_cli")

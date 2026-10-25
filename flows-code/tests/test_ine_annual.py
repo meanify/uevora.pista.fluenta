@@ -87,7 +87,7 @@ def accommodation_metadata(year=2025):
 
 class AnnualFlowTests(unittest.TestCase):
     def module(self, code):
-        return importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+        return importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
 
     def process(self, module, records, year=2025, **options):
         meta = metadata(year)
@@ -376,7 +376,7 @@ class AnnualFlowTests(unittest.TestCase):
 class AnnualApiValidationTests(unittest.TestCase):
     def test_missing_required_dimensions_fail_before_data_request(self):
         for code in INDICATORS:
-            module = importlib.import_module(f"pistadigital.utils.ine_{code}_flow")
+            module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
             for dimension in (("2",) if code == "0008350" else ("2", "3")):
                 meta = metadata()
                 categories = meta[0]["Dimensoes"]["Categoria_Dim"][0]["categories"]
@@ -428,7 +428,7 @@ class AnnualApiValidationTests(unittest.TestCase):
             ), patch.object(annual, "write_csv") as csv:
                 with self.assertRaisesRegex(RuntimeError, "API unavailable"):
                     importlib.import_module(
-                        "pistadigital.utils.ine_0009930_flow"
+                        "pistadigital.flows.ine_0009930_flow"
                     ).processar_indicador_ine()
                 csv.assert_not_called()
 

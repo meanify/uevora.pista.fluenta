@@ -14,14 +14,20 @@ This project has multiple components:
 - [Supported indicators](#supported-indicators)
 - [INE command-line interface](#ine-command-line-interface)
 - [Configuration and Airflow](#configuration)
+- [Deploying to Airflow](#deploying-to-airflow)
 - [INE troubleshooting](#ine-troubleshooting)
 - [Lime Survey flows](#lime-survey-flows)
 - [INE implementation reference](#ine-implementation-reference)
 - [Debugging either CLI](#debugging-either-cli)
 
 There are two families of flows:
-- **Lime Survey flows** — export survey answers and load them into PostgreSQL ([module](flows-code/pistadigital/utils/limesurvey_flows.py), [CLI](flows-code/lime_flows.py))
+- **Lime Survey flows** — export survey answers and load them into PostgreSQL ([module](flows-code/pistadigital/flows/limesurvey_flows.py), [CLI](flows-code/lime_flows.py))
 - **INE flows** — extract indicators from the INE public API and load them into PostgreSQL (see [supported indicators](#supported-indicators)).
+
+Indicator-specific INE and LimeSurvey flows live in
+[`flows-code/pistadigital/flows`](flows-code/pistadigital/flows); shared
+processing and helper modules remain in
+[`flows-code/pistadigital/utils`](flows-code/pistadigital/utils).
 
 ## Quick start
 
@@ -367,7 +373,7 @@ The underlying function returns a Pandas DataFrame and can be called without
 the CLI. Importing it does not start a flow.
 
 ```python
-from pistadigital.utils.ine_0009929_flow import processar_indicador_ine
+from pistadigital.flows.ine_0009929_flow import processar_indicador_ine
 
 # CSV only (the default), without a database connection.
 df = processar_indicador_ine(ano=2024)
@@ -392,7 +398,7 @@ print(df.head())
 
 ### Adding monthly indicators
 
-Indicator [9808](flows-code/pistadigital/utils/ine_0009808_flow.py) is the monthly
+Indicator [9808](flows-code/pistadigital/flows/ine_0009808_flow.py) is the monthly
 implementation reference. All monthly modules use
 [ine_monthly.py](flows-code/pistadigital/utils/ine_monthly.py) for metadata/period
 validation, numeric parsing, schema/key checks, and database-first output.
@@ -473,6 +479,75 @@ workflow runs when these files are published to the owning GitHub
 repository with GitHub Actions enabled.
 
 ## Configuration
+
+### Deploying to Airflow
+
+The Kubernetes manifests in [k8s/airflow](k8s/airflow) deploy the Airflow
+stack into the `fluenta` namespace. Before applying them, review the
+environment-specific node names, persistent-volume paths, storage classes, and
+secret configuration. Provision credentials through Kubernetes Secrets or an
+approved secret manager; do not commit credentials or encryption keys.
+
+Create the namespace, then apply storage, access, database, Redis, and mapping
+resources:
+
+```bash
+kubectl create namespace fluenta --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f k8s/airflow/0_secrets_and_volumes.yaml
+kubectl apply -f k8s/airflow/1_airflow_rbac.yaml
+kubectl apply -f k8s/airflow/2_airflow_postgres.yaml
+kubectl apply -f k8s/airflow/3_airflow_redis.yaml
+kubectl apply -f k8s/airflow/6_airflow_configmap.yaml
+kubectl rollout status deployment/airflow-postgres -n fluenta
+kubectl rollout status deployment/airflow-redis -n fluenta
+kubectl apply -f k8s/airflow/4_airflow_dbmigration.yaml
+kubectl wait --for=condition=complete job/db-migration -n fluenta --timeout=10m
+kubectl apply -f k8s/airflow/5_airflow_airflow.yaml
+kubectl apply -f k8s/airflow/7_airflow_logcleaner.yaml
+```
+
+To deploy or update the project code, place the DAG files from
+[`flows-code/dags`](flows-code/dags) in `/opt/airflow/dags` and the complete
+[`pistadigital` package](flows-code/pistadigital) in
+`/opt/airflow/dependencies/pistadigital`. The supplied manifests mount a
+shared Airflow volume at `/opt/airflow` and set
+`PYTHONPATH=/opt/airflow/dependencies`; sync the files through your approved
+release process or a pod with that volume mounted. For a manual copy from the
+repository root:
+
+```bash
+POD="$(kubectl get pods -n fluenta -l app=airflow,service=scheduler \
+  -o jsonpath='{.items[0].metadata.name}')"
+kubectl exec -n fluenta "$POD" -- \
+  mkdir -p /opt/airflow/dags /opt/airflow/dependencies
+kubectl cp flows-code/dags/. "fluenta/$POD:/opt/airflow/dags"
+kubectl cp flows-code/pistadigital "fluenta/$POD:/opt/airflow/dependencies/"
+```
+
+Replace stale deployed files as well as copying updates, particularly obsolete
+DAG entry points, to avoid duplicate DAG IDs. The package must be available to
+both the DAG processor and task workers.
+
+The current Airflow manifest uses an Airflow image based on Python 3.12, while
+the DAG virtualenv operators request Python 3.13.2. Make Python 3.13.2
+available to task workers before enabling those DAGs; workers also need to
+create virtual environments and install the declared requirements. Create the
+`pista_db` Airflow connection before running INE DAGs. The LimeSurvey visitor
+DAG also expects a `limesurvey` connection with the remote-control URL in Host
+and its username and password in Login and Password. See the database
+connection fields below.
+
+After deployment, check that Airflow has parsed the DAGs and inspect scheduler
+and DAG-processor logs for import errors:
+
+```bash
+kubectl get pods -n fluenta
+kubectl exec -n fluenta deployment/airflow-scheduler -- airflow dags list
+```
+
+Use the Airflow UI or `airflow dags trigger <dag-id>` to test a DAG. Keep it
+paused until its connections, Python runtime, package imports, and database
+permissions have been verified.
 
 ### INE Airflow tasks
 
@@ -802,7 +877,7 @@ CSV-only behavior and starts at 1 by default; `export_and_load` resumes and
 produces both outputs. Use `processar_inquerito` for explicit control:
 
 ```python
-from pistadigital.utils.limesurvey_flows import processar_inquerito
+from pistadigital.flows.limesurvey_flows import processar_inquerito
 
 df = processar_inquerito(
     survey_id="666914",
@@ -848,15 +923,15 @@ CLI, and output suites. The unrelated LimeSurvey DAG is not changed.
 | [ine_annual.py](flows-code/pistadigital/utils/ine_annual.py) | Single-year orchestration and validation for every annual flow. |
 | [ine_monthly.py](flows-code/pistadigital/utils/ine_monthly.py) | Single-month orchestration and validation for every monthly flow, retaining padded CHAR(2) months. |
 | [ine_transform.py](flows-code/pistadigital/utils/ine_transform.py) | Verified NUTS-2013/accommodation mapping and numeric parsing. |
-| [ine_0009873_flow.py](flows-code/pistadigital/utils/ine_0009873_flow.py) | Annual establishment counts, supplied table schema, transformation, and output selection. |
-| [ine_0009874_flow.py](flows-code/pistadigital/utils/ine_0009874_flow.py) | Annual room counts, supplied table schema, transformation, and output selection. |
-| [ine_0009929_flow.py](flows-code/pistadigital/utils/ine_0009929_flow.py) | Annual revenue schema and transformation, using the shared runner and existing _ds table. |
-| [ine_0009930_flow.py](flows-code/pistadigital/utils/ine_0009930_flow.py), [ine_0011140_flow.py](flows-code/pistadigital/utils/ine_0011140_flow.py), [ine_0009183_flow.py](flows-code/pistadigital/utils/ine_0009183_flow.py) | Indicator-specific annual residence-country schemas and transformations. |
-| [ine_0009876_flow.py](flows-code/pistadigital/utils/ine_0009876_flow.py), [ine_0009877_flow.py](flows-code/pistadigital/utils/ine_0009877_flow.py), [ine_0009880_flow.py](flows-code/pistadigital/utils/ine_0009880_flow.py) | Indicator-specific annual accommodation-type schemas and transformations. |
-| [ine_0008350_flow.py](flows-code/pistadigital/utils/ine_0008350_flow.py) | Annual territorial-area schema and geography-only transformation. |
-| [ine_0009808_flow.py](flows-code/pistadigital/utils/ine_0009808_flow.py) | Monthly overnight stays with explicit year/month isolation and the existing CHAR(2) month schema. |
-| [ine_0012093_flow.py](flows-code/pistadigital/utils/ine_0012093_flow.py), [ine_0009812_flow.py](flows-code/pistadigital/utils/ine_0009812_flow.py) | Monthly guest counts by accommodation type using independently verified NUTS-2024/2013 geography. |
-| [ine_0010735_flow.py](flows-code/pistadigital/utils/ine_0010735_flow.py), [ine_0010736_flow.py](flows-code/pistadigital/utils/ine_0010736_flow.py) | Monthly overnight stays/guests by municipality and accommodation segment. |
+| [ine_0009873_flow.py](flows-code/pistadigital/flows/ine_0009873_flow.py) | Annual establishment counts, supplied table schema, transformation, and output selection. |
+| [ine_0009874_flow.py](flows-code/pistadigital/flows/ine_0009874_flow.py) | Annual room counts, supplied table schema, transformation, and output selection. |
+| [ine_0009929_flow.py](flows-code/pistadigital/flows/ine_0009929_flow.py) | Annual revenue schema and transformation, using the shared runner and existing _ds table. |
+| [ine_0009930_flow.py](flows-code/pistadigital/flows/ine_0009930_flow.py), [ine_0011140_flow.py](flows-code/pistadigital/flows/ine_0011140_flow.py), [ine_0009183_flow.py](flows-code/pistadigital/flows/ine_0009183_flow.py) | Indicator-specific annual residence-country schemas and transformations. |
+| [ine_0009876_flow.py](flows-code/pistadigital/flows/ine_0009876_flow.py), [ine_0009877_flow.py](flows-code/pistadigital/flows/ine_0009877_flow.py), [ine_0009880_flow.py](flows-code/pistadigital/flows/ine_0009880_flow.py) | Indicator-specific annual accommodation-type schemas and transformations. |
+| [ine_0008350_flow.py](flows-code/pistadigital/flows/ine_0008350_flow.py) | Annual territorial-area schema and geography-only transformation. |
+| [ine_0009808_flow.py](flows-code/pistadigital/flows/ine_0009808_flow.py) | Monthly overnight stays with explicit year/month isolation and the existing CHAR(2) month schema. |
+| [ine_0012093_flow.py](flows-code/pistadigital/flows/ine_0012093_flow.py), [ine_0009812_flow.py](flows-code/pistadigital/flows/ine_0009812_flow.py) | Monthly guest counts by accommodation type using independently verified NUTS-2024/2013 geography. |
+| [ine_0010735_flow.py](flows-code/pistadigital/flows/ine_0010735_flow.py), [ine_0010736_flow.py](flows-code/pistadigital/flows/ine_0010736_flow.py) | Monthly overnight stays/guests by municipality and accommodation segment. |
 | [ine_output.py](flows-code/pistadigital/utils/ine_output.py) | Shared CSV writing, period validation, and transactional replacement. |
 | [database.py](flows-code/pistadigital/utils/database.py) | PostgreSQL environment configuration shared with LimeSurvey. |
 | [distritos.py](flows-code/pistadigital/utils/distritos.py) | Shared mapping of district codes to names. |

@@ -20,7 +20,7 @@ def execute_indicator(indicator, year, month=None):
     validate_period(year, month)
     logger = logging.getLogger("airflow.task")
     module = importlib.import_module(
-        f"pistadigital.utils.ine_{indicator}_flow"
+        f"pistadigital.flows.ine_{indicator}_flow"
     )
     if module.MONTHLY != (month is not None):
         raise ValueError(f"INE {indicator} received an incompatible month argument.")

@@ -12,8 +12,8 @@ from unittest.mock import Mock, patch
 import pandas as pd
 
 from pistadigital.cli import ine_flows as cli
-from pistadigital.utils import ine_0009808_flow as monthly_flow
-from pistadigital.utils import ine_0009929_flow as ine
+from pistadigital.flows import ine_0009808_flow as monthly_flow
+from pistadigital.flows import ine_0009929_flow as ine
 from pistadigital.utils import ine_annual as annual
 from pistadigital.utils import ine_api, ine_output
 

@@ -11,7 +11,7 @@ from sqlalchemy import create_engine, text
 
 from pistadigital.cli import ine_flows as cli
 from pistadigital.utils import ine_api as api
-from pistadigital.utils import ine_0009808_flow as flow
+from pistadigital.flows import ine_0009808_flow as flow
 from pistadigital.utils import ine_monthly as monthly
 from pistadigital.utils.ine_output import replace_period_data
 

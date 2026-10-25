@@ -14,7 +14,7 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 
 from pistadigital.cli import lime_flows as cli
-from pistadigital.utils import limesurvey_flows as flows
+from pistadigital.flows import limesurvey_flows as flows
 
 
 SURVEY = "237583"
