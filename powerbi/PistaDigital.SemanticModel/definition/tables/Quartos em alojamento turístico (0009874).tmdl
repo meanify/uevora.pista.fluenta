@@ -1,0 +1,110 @@
+table 'Quartos em alojamento turístico (0009874)'
+	lineageTag: d3b82074-0a55-51aa-aaeb-dc894b34dae3
+
+	measure 'Quartos' = SUM('Quartos em alojamento turístico (0009874)'[quartos])
+		formatString: #,0
+		lineageTag: 3f891145-37cc-5377-8b64-7367c36567d4
+
+	column nuts_i
+		dataType: string
+		lineageTag: e22685a3-307a-5f67-8429-78d5dbfed573
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 3be2b2d3-5c39-5ee0-9b28-991990ac3906
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: d6126317-882f-5a7d-8163-dc35784894d3
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: 828664ee-ca4e-5e55-96e5-f48a60bca6d1
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: d16e7938-7f66-512c-84ff-7d2941fcee46
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: 2b52b387-184b-59cd-8b30-7b51eb2b4968
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: a8ec4bfd-bb09-52fa-8ff9-829fa97c2db1
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column classificacao
+		dataType: string
+		lineageTag: 988e01fa-32c4-534d-ae46-a2cd5f0885c4
+		summarizeBy: none
+		sourceColumn: classificacao
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: efe4127d-9b00-5828-ba6b-607fc5bb00ef
+		summarizeBy: none
+		sourceColumn: ano
+
+	column quartos
+		dataType: double
+		formatString: #,0
+		lineageTag: e4900528-fa79-5f49-8446-ca645599721e
+		summarizeBy: sum
+		sourceColumn: quartos
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 3af221d0-5837-5d6f-98a2-8007b10c2e67
+		summarizeBy: none
+		sourceColumn: create_date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 67f26d9d-307c-5bd7-8091-976ad018b592
+		summarizeBy: none
+		sourceColumn: update_date
+
+	column 'GeoKey'
+		dataType: string
+		isHidden
+		lineageTag: 80abe0ea-fc36-5d5c-bf52-dd7d07826c14
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column 'NutsIIKey'
+		dataType: string
+		isHidden
+		lineageTag: 86b46955-ecc9-5a5f-8a28-7086616e86ed
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Quartos em alojamento turístico (0009874)' = m
+		mode: import
+		source =
+				let
+				    Origem = Fonte{[Schema="public", Item="ine_0009874_ds"]}[Data],
+				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"nuts_iii", Text.Trim, type text}, {"distrito", Text.Trim, type text}, {"municipio", Text.Trim, type text}, {"tipo_alojamento", Text.Trim, type text}, {"subtipo_alojamento", Text.Trim, type text}, {"classificacao", Text.Trim, type text}}),
+				    GeoKey = Table.AddColumn(Texto, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+

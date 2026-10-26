@@ -1,0 +1,110 @@
+table 'Hóspedes por tipo de alojamento (0009876)'
+	lineageTag: f256b1f1-1268-5212-a401-7bc5061acbf1
+
+	measure 'Hóspedes (tipo)' = SUM('Hóspedes por tipo de alojamento (0009876)'[hospedes])
+		formatString: #,0
+		lineageTag: 79025c97-231f-5060-9495-db51da0c57ea
+
+	column nuts_i
+		dataType: string
+		lineageTag: 0d3fdab9-db51-59f1-8c18-9f52be5ae1c4
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 4147dd3b-a847-5699-bf13-6d681a2f961a
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: 0dff51bb-4381-5f7d-ba9b-6c1e309900e6
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: 6ae2bff0-fe9d-5556-94f3-f4ec24df1896
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: e1ca14e0-bbd5-5b16-be00-d5eeffb61cb6
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: 28880566-b8ea-5eb5-9949-1f5ea7c720a5
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 6b0e42e0-0ae7-5cf0-aa27-736e60fb0af7
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column classificacao
+		dataType: string
+		lineageTag: b93dabd0-8606-5172-a9ab-10e2f6e55642
+		summarizeBy: none
+		sourceColumn: classificacao
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: c181119b-5e42-5917-8424-6af12545fe5e
+		summarizeBy: none
+		sourceColumn: ano
+
+	column hospedes
+		dataType: double
+		formatString: #,0
+		lineageTag: c0e57712-f0cd-5c18-9482-1c886a98a143
+		summarizeBy: sum
+		sourceColumn: hospedes
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 01ffd35c-21f2-5854-8768-493a33d697ea
+		summarizeBy: none
+		sourceColumn: create_date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 12170c78-eb31-5781-af6c-dfe82d622841
+		summarizeBy: none
+		sourceColumn: update_date
+
+	column 'GeoKey'
+		dataType: string
+		isHidden
+		lineageTag: 45254961-bd5d-5b55-9489-eefee7c3f898
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column 'NutsIIKey'
+		dataType: string
+		isHidden
+		lineageTag: 94b8cfe9-ab97-569c-993c-a9313098cb3a
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Hóspedes por tipo de alojamento (0009876)' = m
+		mode: import
+		source =
+				let
+				    Origem = Fonte{[Schema="public", Item="ine_0009876_ds"]}[Data],
+				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"nuts_iii", Text.Trim, type text}, {"distrito", Text.Trim, type text}, {"municipio", Text.Trim, type text}, {"tipo_alojamento", Text.Trim, type text}, {"subtipo_alojamento", Text.Trim, type text}, {"classificacao", Text.Trim, type text}}),
+				    GeoKey = Table.AddColumn(Texto, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+

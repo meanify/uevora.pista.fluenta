@@ -1,0 +1,67 @@
+/// Calendário diário cobrindo os indicadores mensais. Os factos mensais ligam ao dia 1 de cada mês.
+table 'Calendário'
+	lineageTag: c48fc1a2-12f5-53e2-a34a-d1803450195f
+	dataCategory: Time
+
+	column 'Date'
+		dataType: dateTime
+		isKey
+		lineageTag: 1d37c00e-8a85-5497-9686-b3bf3704f45b
+		summarizeBy: none
+		sourceColumn: [Date]
+
+	column 'Ano'
+		dataType: int64
+		lineageTag: f29352b0-7141-53a3-b323-aab3fdbb24be
+		summarizeBy: none
+		sourceColumn: [Ano]
+
+	column 'Mês'
+		dataType: int64
+		lineageTag: 837e4d74-bf7b-5a40-9006-212d96313c12
+		summarizeBy: none
+		sourceColumn: [Mês]
+
+	column 'Nome do mês'
+		dataType: string
+		lineageTag: 22432042-5950-53b8-99e7-ca8535fb05e3
+		summarizeBy: none
+		sourceColumn: [Nome do mês]
+
+	column 'Ano-Mês'
+		dataType: string
+		lineageTag: 3f9b0ee0-083b-5c5b-a54c-4662c66b18d6
+		summarizeBy: none
+		sourceColumn: [Ano-Mês]
+
+	column 'Trimestre'
+		dataType: string
+		lineageTag: 1d8e49d9-2d00-576f-a950-430f11b9235a
+		summarizeBy: none
+		sourceColumn: [Trimestre]
+
+	partition 'Calendário' = calculated
+		mode: import
+		source =
+				VAR Datas =
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)', "Data", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[Data]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)', "Data", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[Data]),
+				            SELECTCOLUMNS('Dormidas mensais por segmento (0010735)', "Data", 'Dormidas mensais por segmento (0010735)'[Data]),
+				            SELECTCOLUMNS('Hóspedes mensais por segmento (0010736)', "Data", 'Hóspedes mensais por segmento (0010736)'[Data]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)', "Data", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[Data])
+				        )
+				    )
+				VAR Inicio = DATE(YEAR(MINX(Datas, [Data])), 1, 1)
+				VAR Fim = EOMONTH(MAXX(Datas, [Data]), 0)
+				RETURN
+				    ADDCOLUMNS(
+				        CALENDAR(Inicio, Fim),
+				        "Ano", YEAR([Date]),
+				        "Mês", MONTH([Date]),
+				        "Nome do mês", FORMAT([Date], "mmmm"),
+				        "Ano-Mês", FORMAT([Date], "yyyy-mm"),
+				        "Trimestre", "T" & FORMAT([Date], "q")
+				    )
+

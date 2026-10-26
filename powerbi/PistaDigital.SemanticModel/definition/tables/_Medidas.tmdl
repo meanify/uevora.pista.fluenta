@@ -1,0 +1,72 @@
+/// Medidas derivadas e comparações entre indicadores.
+table '_Medidas'
+	lineageTag: 40c97a2c-dba6-5d5f-824c-75dcd526dab0
+
+	/// Dormidas / hóspedes do mesmo grão. Preferir a esta medida a média simples do INE.
+	measure 'Estada média ponderada (tipo)' = DIVIDE([Dormidas (tipo)], [Hóspedes (tipo)])
+		formatString: #,0.00
+		lineageTag: cfe807e0-516b-596f-8845-0add2d0fa9f1
+
+	/// Dormidas / hóspedes por país de residência.
+	measure 'Estada média ponderada (residência)' = DIVIDE([Dormidas (residência)], [Hóspedes (residência)])
+		formatString: #,0.00
+		lineageTag: 3a516c8f-da01-5347-8810-fa27535439a9
+
+	measure 'Estada média mensal ponderada (segmento)' = DIVIDE([Dormidas mensais (segmento)], [Hóspedes mensais (segmento)])
+		formatString: #,0.00
+		lineageTag: c4b948a1-2367-5218-b1df-98fe42d619ca
+
+	measure 'Quartos por estabelecimento' = DIVIDE([Quartos], [Estabelecimentos])
+		formatString: #,0.00
+		lineageTag: 10b32e41-cc27-5727-b9fd-1a813fe4f650
+
+	/// Dormidas do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Dormidas (ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			IF(
+			NOT ISBLANK(AnoAtual),
+			CALCULATE([Dormidas (tipo)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			)
+		formatString: #,0
+		lineageTag: e5605908-5b6a-562f-9e25-209ca406dee6
+
+	measure 'Dormidas YoY %' =
+			VAR Atual = [Dormidas (tipo)]
+			VAR Anterior = [Dormidas (ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 9dfadbc5-6d7f-5863-8e38-61253ae0e2ca
+
+	measure 'Dormidas mensais (mês anterior)' = CALCULATE([Dormidas mensais (segmento)], DATEADD('Calendário'[Date], -1, MONTH))
+		formatString: #,0
+		lineageTag: ddfaf998-52d5-5057-aee7-5ea8366483ea
+
+	measure 'Dormidas mensais MoM %' =
+			VAR Atual = [Dormidas mensais (segmento)]
+			VAR Anterior = [Dormidas mensais (mês anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 78b54416-8d19-5562-b74d-62f058b8104a
+
+	/// Intensidade turística: dormidas anuais por quilómetro quadrado.
+	measure 'Dormidas por km²' = DIVIDE([Dormidas (tipo)], [Superfície (km²)])
+		formatString: #,0.00
+		lineageTag: a0ce9310-df2b-5ccc-915b-e1311766ae43
+
+	measure 'Hóspedes por km²' = DIVIDE([Hóspedes (tipo)], [Superfície (km²)])
+		formatString: #,0.00
+		lineageTag: 6eb98aae-b580-54f4-b123-4445d89a55ce
+
+	column '_'
+		dataType: string
+		isHidden
+		lineageTag: 5f334fff-3cc3-54c4-a0d8-1281fc66faaf
+		summarizeBy: none
+		sourceColumn: [_]
+
+	partition '_Medidas' = calculated
+		mode: import
+		source =
+				ROW("_", BLANK())
+

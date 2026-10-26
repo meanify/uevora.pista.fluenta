@@ -1,0 +1,147 @@
+relationship 7cf98932-3fa5-5a15-b338-b7ea3386d73b
+	fromColumn: 'Superfície das unidades territoriais (0008350)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship 7a4fee93-4dc9-5d9e-9673-37d9b160290f
+	fromColumn: 'Dormidas por país de residência (0009183)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship c2b7a7f0-db22-5699-b13a-dc83f75f6347
+	fromColumn: 'Estabelecimentos de alojamento turístico (0009873)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship c4f7a5d3-74b6-5275-ad3b-2cc5054f9838
+	fromColumn: 'Quartos em alojamento turístico (0009874)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship 616b1de6-1ea3-5f2f-abd3-99ff8673b8c3
+	fromColumn: 'Hóspedes por tipo de alojamento (0009876)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship cb7cba61-57d1-50a0-b7c0-673c7fa492ba
+	fromColumn: 'Dormidas por tipo de alojamento (0009877)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship f890f8f2-b1fa-54d6-88a2-0ddd9fcbf120
+	fromColumn: 'Estada média por tipo de alojamento (0009880)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship af3c434d-fa94-5ea8-ba2c-7f96975087d6
+	fromColumn: 'Rendimento médio por quarto (0009929)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship d8d59c02-d6a9-5b1d-8ce0-0e73569ec30b
+	fromColumn: 'Hóspedes por país de residência (0009930)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship 7ff64df2-e85a-57e7-b6e1-31ad345e902e
+	fromColumn: 'Estada média por país de residência (0011140)'.'ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship 88569ab7-657a-5829-bffb-6af9c0cb95c3
+	fromColumn: 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'.'Data'
+	toColumn: 'Calendário'.'Date'
+
+relationship a06d7993-b6dc-58da-b068-0ea730ba1929
+	fromColumn: 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'.'Data'
+	toColumn: 'Calendário'.'Date'
+
+relationship 74d11408-b1da-58c1-9b2b-012e9f68a27c
+	fromColumn: 'Dormidas mensais por segmento (0010735)'.'Data'
+	toColumn: 'Calendário'.'Date'
+
+relationship 264eeccd-5822-534c-9799-6a7b7057da02
+	fromColumn: 'Hóspedes mensais por segmento (0010736)'.'Data'
+	toColumn: 'Calendário'.'Date'
+
+relationship 861ed44b-53ea-5219-af38-af5e00319245
+	fromColumn: 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'.'Data'
+	toColumn: 'Calendário'.'Date'
+
+relationship a2183068-8b20-51ed-860d-6e9bcab7ff67
+	fromColumn: 'Calendário'.'Ano'
+	toColumn: 'Ano'.'Ano'
+
+relationship aa1aeea4-3c12-5bb6-ad57-09b388111bcb
+	fromColumn: 'Superfície das unidades territoriais (0008350)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship dcd75bd5-a71a-5a21-9a73-3264a58f2abf
+	fromColumn: 'Dormidas por país de residência (0009183)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship 57f61f90-f387-5be9-8a22-5dc49f1ce63a
+	fromColumn: 'Estabelecimentos de alojamento turístico (0009873)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship e5f65fdd-530f-5e44-b135-f24decd1090b
+	fromColumn: 'Quartos em alojamento turístico (0009874)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship a70ded5c-5934-5540-add6-174f04e9b481
+	fromColumn: 'Hóspedes por tipo de alojamento (0009876)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship 03199ac0-baf2-5751-8cf9-0db92ecc1378
+	fromColumn: 'Dormidas por tipo de alojamento (0009877)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship db51ef90-db78-5b1d-8724-eb9eebffb003
+	fromColumn: 'Estada média por tipo de alojamento (0009880)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship af06d06e-9519-5185-a656-af14182f5c12
+	fromColumn: 'Rendimento médio por quarto (0009929)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship a9c99aa1-42c6-54ad-8476-5dba70eaccc4
+	fromColumn: 'Hóspedes por país de residência (0009930)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship e81271e8-11a8-59c3-9191-0573b4ba85dc
+	fromColumn: 'Dormidas mensais por segmento (0010735)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship 0aa61f6c-1e05-5b82-8f95-94ff93411146
+	fromColumn: 'Hóspedes mensais por segmento (0010736)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship 749a2be4-45fd-52d3-86b0-753b13eed9fb
+	fromColumn: 'Estada média por país de residência (0011140)'.'GeoKey'
+	toColumn: 'Geografia'.'GeoKey'
+
+relationship 6d32d069-7f41-57cd-93a9-498e969df16d
+	fromColumn: 'Geografia'.'NutsIIKey'
+	toColumn: 'Região NUTS II'.'NutsIIKey'
+
+relationship 506b25cf-853c-5136-a866-7ab4905e00d3
+	fromColumn: 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'.'NutsIIKey'
+	toColumn: 'Região NUTS II'.'NutsIIKey'
+
+relationship 7fda4cb0-f6ae-5c46-bfea-ea88d5a41348
+	fromColumn: 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'.'NutsIIKey'
+	toColumn: 'Região NUTS II'.'NutsIIKey'
+
+relationship 0372592f-3c7b-55c8-847d-2f433144a448
+	fromColumn: 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'.'NutsIIKey'
+	toColumn: 'Região NUTS II'.'NutsIIKey'
+
+relationship 647d0b98-48ac-5dfc-96fc-55f41d91e771
+	fromColumn: 'Dormidas por país de residência (0009183)'.'local_residencia'
+	toColumn: 'Residência'.'Local de residência'
+
+relationship 42688d07-b4cd-527c-bfb8-0d60088cd34e
+	fromColumn: 'Hóspedes por país de residência (0009930)'.'local_residencia'
+	toColumn: 'Residência'.'Local de residência'
+
+relationship 61669b22-d00c-5602-b417-7c6fa19677de
+	fromColumn: 'Estada média por país de residência (0011140)'.'local_residencia'
+	toColumn: 'Residência'.'Local de residência'
+
+relationship 2c12558e-5d51-5c1a-a129-335f5dff0320
+	fromColumn: 'Dormidas mensais por segmento (0010735)'.'segmento_alojamento'
+	toColumn: 'Segmento de alojamento'.'Segmento'
+
+relationship b6e13c4b-c61c-5a78-8cce-a307f7f5ff6d
+	fromColumn: 'Hóspedes mensais por segmento (0010736)'.'segmento_alojamento'
+	toColumn: 'Segmento de alojamento'.'Segmento'

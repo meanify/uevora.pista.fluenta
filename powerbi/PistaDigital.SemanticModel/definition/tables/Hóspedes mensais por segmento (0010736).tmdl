@@ -1,0 +1,115 @@
+table 'Hóspedes mensais por segmento (0010736)'
+	lineageTag: c2dbe319-32ae-501c-bab6-54860950d5c5
+
+	measure 'Hóspedes mensais (segmento)' = SUM('Hóspedes mensais por segmento (0010736)'[hospedes])
+		formatString: #,0
+		lineageTag: bb8c4665-bf05-5bf4-b2eb-8e37f334c32b
+
+	column nuts_i
+		dataType: string
+		lineageTag: 70a9dc4f-4e72-5d7d-a0ba-63058f9ef7ed
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 290a98c7-396a-599c-9f50-44e802da1e50
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: 5775714a-e474-50de-acf9-d20b8d484da4
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: bfdaa84b-2330-57be-9583-4931a01a6b5e
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: d2244a76-2a4f-53f3-b0ef-e01fe23d195c
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column segmento_alojamento
+		dataType: string
+		lineageTag: 833beda2-5d25-545a-8909-107e27521449
+		summarizeBy: none
+		sourceColumn: segmento_alojamento
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e19b486-203c-5663-abd7-75afb17b2fbd
+		summarizeBy: none
+		sourceColumn: ano
+
+	column mes
+		dataType: string
+		lineageTag: 98af56d1-0b61-5c3b-a1c5-62f058778870
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column 'Data'
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 1d8f1884-04ed-5404-9d6f-e7a5d232ce65
+		summarizeBy: none
+		sourceColumn: Data
+
+	column hospedes
+		dataType: double
+		formatString: #,0
+		lineageTag: 1719810b-635b-5a26-915e-4c1af57eef0d
+		summarizeBy: sum
+		sourceColumn: hospedes
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: d320b6d8-c75d-5a75-8fa4-a986c76a2e80
+		summarizeBy: none
+		sourceColumn: create_date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 6422a557-0131-5295-a624-f1db315560f0
+		summarizeBy: none
+		sourceColumn: update_date
+
+	column 'GeoKey'
+		dataType: string
+		isHidden
+		lineageTag: 97b47ead-bea4-5b0b-b123-da44cf549d50
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column 'NutsIIKey'
+		dataType: string
+		isHidden
+		lineageTag: 6a4a7477-40c0-5081-938e-0da3e964af6f
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Hóspedes mensais por segmento (0010736)' = m
+		mode: import
+		source =
+				let
+				    Origem = Fonte{[Schema="public", Item="ine_0010736_ds"]}[Data],
+				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"nuts_iii", Text.Trim, type text}, {"distrito", Text.Trim, type text}, {"municipio", Text.Trim, type text}, {"segmento_alojamento", Text.Trim, type text}}),
+				    Mes = Table.TransformColumns(Texto, {{"mes", Text.Trim, type text}}),
+				    ComData = Table.AddColumn(Mes, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
