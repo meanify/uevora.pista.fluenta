@@ -1,8 +1,8 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "header",
   "position": {
-    "x": 0,
+    "x": 240.0010234759803,
     "y": 0,
     "z": 1,
     "height": 96,
@@ -21,14 +21,13 @@
                   {
                     "value": "Visão geral",
                     "textStyle": {
+                      "fontWeight": "bold",
                       "fontFamily": "Montserrat",
                       "fontSize": "28pt",
-                      "fontWeight": "bold",
-                      "color": "#FFFFFF"
+                      "color": "#ffffff"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               },
               {
                 "textRuns": [
@@ -37,12 +36,10 @@
                     "textStyle": {
                       "fontFamily": "Montserrat",
                       "fontSize": "12pt",
-                      "fontWeight": "normal",
-                      "color": "#CED4DA"
+                      "color": "#ced4da"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }

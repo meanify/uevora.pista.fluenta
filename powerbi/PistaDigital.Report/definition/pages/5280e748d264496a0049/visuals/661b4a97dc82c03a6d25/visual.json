@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
-  "name": "brand",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "661b4a97dc82c03a6d25",
   "position": {
-    "x": 1040,
+    "x": 240.0010234759803,
     "y": 0,
-    "z": 3001,
+    "z": 0,
     "height": 96,
-    "width": 240,
-    "tabOrder": 3001
+    "width": 1040,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "textbox",
@@ -19,30 +19,27 @@
               {
                 "textRuns": [
                   {
-                    "value": "PISTA DIGITAL",
+                    "value": "Visão geral",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
-                      "fontSize": "14pt",
                       "fontWeight": "bold",
-                      "color": "#FFFFFF"
+                      "fontFamily": "Montserrat",
+                      "fontSize": "28pt",
+                      "color": "#ffffff"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               },
               {
                 "textRuns": [
                   {
-                    "value": "Universidade de Évora",
+                    "value": "Indicadores-chave do turismo sustentável",
                     "textStyle": {
                       "fontFamily": "Montserrat",
-                      "fontSize": "10pt",
-                      "fontWeight": "normal",
-                      "color": "#CED4DA"
+                      "fontSize": "12pt",
+                      "color": "#ced4da"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }

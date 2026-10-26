@@ -1,9 +1,9 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "headerAccent",
   "position": {
-    "x": 0,
-    "y": 96,
+    "x": 240.0010234759803,
+    "y": 96.419625151922219,
     "z": 2,
     "height": 4,
     "width": 1040,

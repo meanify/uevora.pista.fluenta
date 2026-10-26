@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "brand",
   "position": {
-    "x": 1040,
+    "x": 0,
     "y": 0,
     "z": 3001,
-    "height": 96,
-    "width": 240,
+    "height": 96.419625151922219,
+    "width": 240.0010234759803,
     "tabOrder": 3001
   },
   "visual": {
@@ -19,16 +19,24 @@
               {
                 "textRuns": [
                   {
+                    "value": ""
+                  }
+                ],
+                "horizontalTextAlignment": "center"
+              },
+              {
+                "textRuns": [
+                  {
                     "value": "PISTA DIGITAL",
                     "textStyle": {
+                      "fontWeight": "bold",
                       "fontFamily": "Montserrat",
                       "fontSize": "14pt",
-                      "fontWeight": "bold",
-                      "color": "#FFFFFF"
+                      "color": "#ffffff"
                     }
                   }
                 ],
-                "horizontalTextAlignment": "left"
+                "horizontalTextAlignment": "center"
               },
               {
                 "textRuns": [
@@ -37,12 +45,11 @@
                     "textStyle": {
                       "fontFamily": "Montserrat",
                       "fontSize": "10pt",
-                      "fontWeight": "normal",
-                      "color": "#CED4DA"
+                      "color": "#ced4da"
                     }
                   }
                 ],
-                "horizontalTextAlignment": "left"
+                "horizontalTextAlignment": "center"
               }
             ]
           }

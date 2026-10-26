@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
-  "name": "brand",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "def32c7223b93301b3a8",
   "position": {
-    "x": 1040,
-    "y": 0,
-    "z": 3001,
-    "height": 96,
-    "width": 240,
-    "tabOrder": 3001
+    "x": 240.0010234759803,
+    "y": 96.419625151922219,
+    "z": 1000,
+    "height": 4,
+    "width": 1040,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "textbox",
@@ -19,26 +19,12 @@
               {
                 "textRuns": [
                   {
-                    "value": "PISTA DIGITAL",
+                    "value": " ",
                     "textStyle": {
                       "fontFamily": "Montserrat",
-                      "fontSize": "14pt",
-                      "fontWeight": "bold",
-                      "color": "#FFFFFF"
-                    }
-                  }
-                ],
-                "horizontalTextAlignment": "left"
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Universidade de Évora",
-                    "textStyle": {
-                      "fontFamily": "Montserrat",
-                      "fontSize": "10pt",
+                      "fontSize": "2pt",
                       "fontWeight": "normal",
-                      "color": "#CED4DA"
+                      "color": "#FFAD00"
                     }
                   }
                 ],
@@ -78,7 +64,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#001F44'"
+                      "Value": "'#FFAD00'"
                     }
                   }
                 }

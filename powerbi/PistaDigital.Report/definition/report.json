@@ -1,14 +1,22 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
   "themeCollection": {
     "baseTheme": {
       "name": "CY24SU10",
-      "reportVersionAtImport": "5.61",
+      "reportVersionAtImport": {
+        "visual": "2.14.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
       "type": "SharedResources"
     },
     "customTheme": {
       "name": "PistaDigitalTheme.json",
-      "reportVersionAtImport": "5.61",
+      "reportVersionAtImport": {
+        "visual": "2.14.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
       "type": "RegisteredResources"
     }
   },
@@ -27,6 +35,7 @@
   ],
   "settings": {
     "useStylableVisualContainerHeader": true,
-    "defaultDrillFilterOtherVisuals": true
+    "defaultDrillFilterOtherVisuals": true,
+    "useEnhancedTooltips": false
   }
 }

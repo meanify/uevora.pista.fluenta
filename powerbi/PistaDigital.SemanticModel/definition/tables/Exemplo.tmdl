@@ -21,3 +21,4 @@ table Exemplo
 				    Source = #table({"Categoria", "Valor"}, {{"A", 1}, {"B", 2}, {"C", 3}})
 				in
 				    Source
+

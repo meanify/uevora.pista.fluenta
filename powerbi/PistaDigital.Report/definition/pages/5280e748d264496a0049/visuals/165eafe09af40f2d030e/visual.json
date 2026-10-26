@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
-  "name": "header",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "165eafe09af40f2d030e",
   "position": {
-    "x": 0,
-    "y": 0,
-    "z": 1,
-    "height": 96,
-    "width": 1040,
-    "tabOrder": 1
+    "x": 248.38533870658222,
+    "y": 115.28433442077656,
+    "z": 2000,
+    "height": 593.19030256508665,
+    "width": 1022.8864581334357,
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "textbox",
@@ -19,30 +19,27 @@
               {
                 "textRuns": [
                   {
-                    "value": "Sustentabilidade",
+                    "value": "Área de conteúdo",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
-                      "fontSize": "28pt",
                       "fontWeight": "bold",
-                      "color": "#FFFFFF"
+                      "fontFamily": "Montserrat",
+                      "fontSize": "16pt",
+                      "color": "#001f44"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               },
               {
                 "textRuns": [
                   {
-                    "value": "Indicadores ambientais e de impacto",
+                    "value": "Adicione aqui os visuais do relatório (grelha de 28 px, sem cantos arredondados).",
                     "textStyle": {
                       "fontFamily": "Montserrat",
                       "fontSize": "12pt",
-                      "fontWeight": "normal",
-                      "color": "#CED4DA"
+                      "color": "#4e4f50"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }
@@ -78,7 +75,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#001F44'"
+                      "Value": "'#FFFFFF'"
                     }
                   }
                 }

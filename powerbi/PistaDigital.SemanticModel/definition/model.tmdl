@@ -3,4 +3,7 @@ model Model
 	defaultPowerBIDataSourceVersion: powerBI_V3
 	discourageImplicitMeasures
 
+annotation PBI_ProTooling = ["DevMode"]
+
 ref table Exemplo
+
