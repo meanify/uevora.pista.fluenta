@@ -20,9 +20,8 @@ limesurvey_conn = Connection.get("limesurvey")
 logger = logging.getLogger("airflow.task")
 
 dags = [
-    {'id_prefix': 'limesurvey_visitante', 'survey': '000000', 'start':'2025-01-01T00:05:00', 'schedule': '*/30 * * * *', 'display_name': 'Utilizado para Debugging'}, 
-    {'id_prefix': 'limesurvey_visitante', 'survey': '762625', 'start':'2025-01-01T00:10:00', 'schedule': '*/30 * * * *', 'display_name': 'Perfil do Visitante Individual'},
-    {'id_prefix': 'limesurvey_visitante', 'survey': '666914', 'start':'2025-01-01T00:15:00', 'schedule': '*/30 * * * *', 'display_name': 'Perfil do Visitante Grupo'},
+    {'id_prefix': 'limesurvey_visitante', 'survey': '762625', 'start':'2025-01-01T00:10:00', 'schedule': '*/30 * * * *', 'display_name': 'Perfil do Visitante Grupo'},
+    {'id_prefix': 'limesurvey_visitante', 'survey': '666914', 'start':'2025-01-01T00:15:00', 'schedule': '*/30 * * * *', 'display_name': 'Perfil do Visitante Individual'},
     {'id_prefix': 'limesurvey_visitante', 'survey': '237583', 'start':'2025-01-01T00:20:00', 'schedule': '*/30 * * * *', 'display_name': 'Perceção de Turismo dos Residentes do Alentejo e Ribatejo'},
     {'id_prefix': 'limesurvey_visitante', 'survey': '416252', 'start':'2025-01-01T00:25:00', 'schedule': '*/30 * * * *', 'display_name': 'Gestão de Energia'},
     {'id_prefix': 'limesurvey_visitante', 'survey': '321593', 'start':'2025-01-01T00:30:00', 'schedule': '*/30 * * * *', 'display_name': 'Gestão de Água'},

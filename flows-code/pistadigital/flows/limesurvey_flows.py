@@ -13,6 +13,7 @@ from pistadigital.utils.strip_html import strip_html
 from pistadigital.utils.database import get_engine
 
 from citric import Client
+from citric.exceptions import LimeSurveyStatusError
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -83,6 +84,41 @@ def get_last_answer_id(survey_id: int) -> int:
         ) from e
     finally:
         engine.dispose()
+
+
+PARTICIPANT_PAGE_SIZE = 1000
+
+
+def fetch_participants(client, survey_id) -> list:
+    """Retrieve every participant for a survey.
+
+    ``list_participants`` returns at most ``limit`` rows per call, so a single
+    request silently truncates surveys with more participants than the page
+    size. Page until a short page comes back.
+    """
+    records: list = []
+    start = 0
+    while True:
+        try:
+            batch = client.list_participants(
+                survey_id, start=start, limit=PARTICIPANT_PAGE_SIZE,
+                attributes=["id", "firstname", "lastname", "email"],
+            )
+        except LimeSurveyStatusError:
+            # LimeSurvey reports an exhausted range as a status error rather
+            # than an empty list. On the first page that still means the survey
+            # has no participants at all, which stays an error as before.
+            if start == 0:
+                raise
+            break
+        if not batch:
+            break
+        records.extend(batch)
+        if len(batch) < PARTICIPANT_PAGE_SIZE:
+            break
+        start += len(batch)
+    logger.info("Survey %s: retrieved %d participants.", survey_id, len(records))
+    return records
 
 
 def no_participants(
@@ -158,9 +194,11 @@ def participants(
                 parse_dates=survey_mappings[str(survey_id)]["date_fields"],
             )
             answers = answers[~answers['submitdate'].isnull()]
-        
+
+            answers = strip_html(answers)
+
             # Merge participant info
-            sv_parties = pd.DataFrame(client.list_participants(survey_id, start=0, limit=100, attributes=["id", "firstname", "lastname", "email"]))
+            sv_parties = pd.DataFrame(fetch_participants(client, survey_id))
             sv_parties.drop(columns = ["tid"], inplace=True)
             sv_parties = pd.json_normalize(sv_parties.to_dict(orient='records'))
             # Rename columns to remove "participant_info."" prefix
