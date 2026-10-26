@@ -1,11 +1,11 @@
 /// País ou local de residência dos hóspedes.
 table 'Residência'
-	lineageTag: 47b329a3-a20e-5532-9808-c8e73223b8c5
+	lineageTag: 7348e7bd-1af5-5666-85ae-1cb5380c2d52
 
 	column 'Local de residência'
 		dataType: string
 		isKey
-		lineageTag: 7348e7bd-1af5-5666-85ae-1cb5380c2d52
+		lineageTag: 34b595b8-d25b-514f-bb85-5cd14d00c048
 		summarizeBy: none
 		sourceColumn: [Local de residência]
 

@@ -1,0 +1,22 @@
+/// Tabela desligada com as métricas da página de pressão turística.
+table 'Métrica de pressão'
+	lineageTag: c4b948a1-2367-5218-b1df-98fe42d619ca
+
+	column 'Métrica'
+		dataType: string
+		isKey
+		lineageTag: 10b32e41-cc27-5727-b9fd-1a813fe4f650
+		summarizeBy: none
+		sourceColumn: [Métrica]
+
+	partition 'Métrica de pressão' = calculated
+		mode: import
+		source =
+				DATATABLE(
+				    "Métrica", STRING,
+				    {
+				        {"Dormidas por km²"},
+				        {"Hóspedes por km²"}
+				    }
+				)
+

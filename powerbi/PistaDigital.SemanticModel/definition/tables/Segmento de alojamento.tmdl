@@ -1,11 +1,11 @@
 /// Segmento de alojamento dos indicadores mensais municipais.
 table 'Segmento de alojamento'
-	lineageTag: 34b595b8-d25b-514f-bb85-5cd14d00c048
+	lineageTag: 505239d2-8406-5536-abd8-3ecb475d22d0
 
 	column 'Segmento'
 		dataType: string
 		isKey
-		lineageTag: 505239d2-8406-5536-abd8-3ecb475d22d0
+		lineageTag: 40c97a2c-dba6-5d5f-824c-75dcd526dab0
 		summarizeBy: none
 		sourceColumn: [Segmento]
 

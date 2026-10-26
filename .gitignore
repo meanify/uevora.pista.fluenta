@@ -34,4 +34,6 @@ dist/
 ._*
 
 # Coding agents
-.superpowers/ 
+.superpowers/
+powerbi/Dashboard Design/
+docs/superpowers/**

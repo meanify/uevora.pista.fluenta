@@ -30,6 +30,7 @@ table 'Geografia'
 
 	column 'Distrito'
 		dataType: string
+		dataCategory: StateOrProvince
 		lineageTag: 43f7f09c-4ad1-5cc0-91db-2476de4c4f43
 		summarizeBy: none
 		sourceColumn: [Distrito]
@@ -40,18 +41,26 @@ table 'Geografia'
 		summarizeBy: none
 		sourceColumn: [Município]
 
+	column 'Município (mapa)'
+		dataType: string
+		dataCategory: Place
+		lineageTag: ded17b3f-19d1-5fa3-8e0b-1854a366ac9c
+		summarizeBy: none
+		sourceColumn: [Município (mapa)]
+
 	column 'NutsIIKey'
 		dataType: string
 		isHidden
-		lineageTag: ded17b3f-19d1-5fa3-8e0b-1854a366ac9c
+		lineageTag: a5014890-9297-5430-b57d-7d77d07e4218
 		summarizeBy: none
 		sourceColumn: [NutsIIKey]
 
 	partition 'Geografia' = calculated
 		mode: import
 		source =
-				DISTINCT(
-				    UNION(
+				ADDCOLUMNS(
+				    DISTINCT(
+				        UNION(
 				            SELECTCOLUMNS('Superfície das unidades territoriais (0008350)', "GeoKey", 'Superfície das unidades territoriais (0008350)'[GeoKey], "NUTS I", 'Superfície das unidades territoriais (0008350)'[nuts_i], "NUTS II", 'Superfície das unidades territoriais (0008350)'[nuts_ii], "NUTS III", 'Superfície das unidades territoriais (0008350)'[nuts_iii], "Distrito", 'Superfície das unidades territoriais (0008350)'[distrito], "Município", 'Superfície das unidades territoriais (0008350)'[municipio], "NutsIIKey", 'Superfície das unidades territoriais (0008350)'[NutsIIKey]),
 				            SELECTCOLUMNS('Dormidas por país de residência (0009183)', "GeoKey", 'Dormidas por país de residência (0009183)'[GeoKey], "NUTS I", 'Dormidas por país de residência (0009183)'[nuts_i], "NUTS II", 'Dormidas por país de residência (0009183)'[nuts_ii], "NUTS III", 'Dormidas por país de residência (0009183)'[nuts_iii], "Distrito", 'Dormidas por país de residência (0009183)'[distrito], "Município", 'Dormidas por país de residência (0009183)'[municipio], "NutsIIKey", 'Dormidas por país de residência (0009183)'[NutsIIKey]),
 				            SELECTCOLUMNS('Estabelecimentos de alojamento turístico (0009873)', "GeoKey", 'Estabelecimentos de alojamento turístico (0009873)'[GeoKey], "NUTS I", 'Estabelecimentos de alojamento turístico (0009873)'[nuts_i], "NUTS II", 'Estabelecimentos de alojamento turístico (0009873)'[nuts_ii], "NUTS III", 'Estabelecimentos de alojamento turístico (0009873)'[nuts_iii], "Distrito", 'Estabelecimentos de alojamento turístico (0009873)'[distrito], "Município", 'Estabelecimentos de alojamento turístico (0009873)'[municipio], "NutsIIKey", 'Estabelecimentos de alojamento turístico (0009873)'[NutsIIKey]),
@@ -65,5 +74,7 @@ table 'Geografia'
 				            SELECTCOLUMNS('Hóspedes mensais por segmento (0010736)', "GeoKey", 'Hóspedes mensais por segmento (0010736)'[GeoKey], "NUTS I", 'Hóspedes mensais por segmento (0010736)'[nuts_i], "NUTS II", 'Hóspedes mensais por segmento (0010736)'[nuts_ii], "NUTS III", 'Hóspedes mensais por segmento (0010736)'[nuts_iii], "Distrito", 'Hóspedes mensais por segmento (0010736)'[distrito], "Município", 'Hóspedes mensais por segmento (0010736)'[municipio], "NutsIIKey", 'Hóspedes mensais por segmento (0010736)'[NutsIIKey]),
 				            SELECTCOLUMNS('Estada média por país de residência (0011140)', "GeoKey", 'Estada média por país de residência (0011140)'[GeoKey], "NUTS I", 'Estada média por país de residência (0011140)'[nuts_i], "NUTS II", 'Estada média por país de residência (0011140)'[nuts_ii], "NUTS III", 'Estada média por país de residência (0011140)'[nuts_iii], "Distrito", 'Estada média por país de residência (0011140)'[distrito], "Município", 'Estada média por país de residência (0011140)'[municipio], "NutsIIKey", 'Estada média por país de residência (0011140)'[NutsIIKey])
 				        )
+				    ),
+				    "Município (mapa)", [Município] & ", Portugal"
 				)
 

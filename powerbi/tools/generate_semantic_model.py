@@ -160,12 +160,15 @@ def calc_table(name, dax, cols, desc=None, data_category=None):
     if data_category:
         L += [f"\tdataCategory: {data_category}"]
     L += [""]
-    for cname, dtype, summarize, hidden, key in cols:
+    for cname, dtype, summarize, hidden, key, *rest in cols:
+        col_category = rest[0] if rest else None
         L += [f"\tcolumn '{cname}'", f"\t\tdataType: {dtype}"]
         if hidden:
             L += ["\t\tisHidden"]
         if key:
             L += ["\t\tisKey"]
+        if col_category:
+            L += [f"\t\tdataCategory: {col_category}"]
         L += [f"\t\tlineageTag: {tag()}", f"\t\tsummarizeBy: {summarize}",
               f"\t\tsourceColumn: [{cname}]", ""]
     L += [f"\tpartition '{name}' = calculated", "\t\tmode: import", "\t\tsource ="]
@@ -214,11 +217,18 @@ put(f"{DEF}/tables/Calendário.tmdl", calc_table(
 geo_cols = [("GeoKey", "GeoKey"), ("NUTS I", "nuts_i"), ("NUTS II", "nuts_ii"),
             ("NUTS III", "nuts_iii"), ("Distrito", "distrito"), ("Município", "municipio"),
             ("NutsIIKey", "NutsIIKey")]
+# The model carries no coordinates, so map visuals depend on Power BI geocoding the
+# names. A bare "Évora" is ambiguous worldwide; the country-qualified column below
+# resolves reliably and is the one to drop on a map.
+geo_dax = (f"ADDCOLUMNS(\n    DISTINCT(\n        {union(MUN_T, geo_cols)}\n    ),\n"
+           '    "Município (mapa)", [Município] & ", Portugal"\n)')
 put(f"{DEF}/tables/Geografia.tmdl", calc_table(
-    "Geografia", f"DISTINCT(\n    {union(MUN_T, geo_cols)}\n)",
+    "Geografia", geo_dax,
     [("GeoKey", "string", "none", True, True), ("NUTS I", "string", "none", False, False),
      ("NUTS II", "string", "none", False, False), ("NUTS III", "string", "none", False, False),
-     ("Distrito", "string", "none", False, False), ("Município", "string", "none", False, False),
+     ("Distrito", "string", "none", False, False, "StateOrProvince"),
+     ("Município", "string", "none", False, False),
+     ("Município (mapa)", "string", "none", False, False, "Place"),
      ("NutsIIKey", "string", "none", True, False)],
     "Geografia ao nível do município, construída a partir de todos os indicadores municipais."))
 
@@ -262,6 +272,26 @@ put(f"{DEF}/tables/Segmento de alojamento.tmdl", calc_table(
     [("Segmento", "string", "none", False, True)],
     "Segmento de alojamento dos indicadores mensais municipais."))
 
+# ------------------------------------------------------------------ disconnected tables
+# Deliberately unrelated to anything. The município choice must not filter the model:
+# the peer visuals, the peer average and the choropleth all have to keep showing every
+# território while one of them is singled out. Selection is read with SELECTEDVALUE and
+# applied as conditional formatting, never as filter context. Do not add a relationship
+# here, and do not put 'Geografia'[Município] on the pages that use these.
+put(f"{DEF}/tables/Município selecionado.tmdl", calc_table(
+    "Município selecionado",
+    'DISTINCT(SELECTCOLUMNS(\'Geografia\', "Município", \'Geografia\'[Município]))',
+    [("Município", "string", "none", False, True)],
+    "Tabela desligada que guarda o município em foco. Não filtra o modelo: "
+    "serve para realçar um território entre os pares."))
+
+put(f"{DEF}/tables/Métrica de pressão.tmdl", calc_table(
+    "Métrica de pressão",
+    'DATATABLE(\n    "Métrica", STRING,\n    {\n'
+    '        {"Dormidas por km²"},\n        {"Hóspedes por km²"}\n    }\n)',
+    [("Métrica", "string", "none", False, True)],
+    "Tabela desligada com as métricas da página de pressão turística."))
+
 # ------------------------------------------------------------------ measure table
 def m(name, expr, fmt, desc=None):
     L = []
@@ -272,7 +302,9 @@ def m(name, expr, fmt, desc=None):
         L += [f"\tmeasure '{name}' = {expr}"]
     else:
         L += [f"\tmeasure '{name}' ="]
-        L += ["\t\t\t" + ln.strip() for ln in lines]
+        # Keep space indentation so nested DAX stays readable; tab prefixes in the
+        # source literals are only there for alignment inside this file.
+        L += ["\t\t\t" + ln.rstrip().lstrip("\t") for ln in lines]
     L += [f"\t\tformatString: {fmt}", f"\t\tlineageTag: {tag()}", ""]
     return L
 
@@ -311,9 +343,172 @@ ML += m("Dormidas mensais MoM %",
         "VAR Atual = [Dormidas mensais (segmento)]\n"
         "\t\tVAR Anterior = [Dormidas mensais (mês anterior)]\n"
         "\t\tRETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%")
-ML += m("Dormidas por km²", f"DIVIDE([Dormidas (tipo)], [Superfície (km²)])", "#,0.00",
-        "Intensidade turística: dormidas anuais por quilómetro quadrado.")
-ML += m("Hóspedes por km²", f"DIVIDE([Hóspedes (tipo)], [Superfície (km²)])", "#,0.00")
+ML += m("Noites-quarto disponíveis",
+        "SUMX(\n"
+        "\t\tVALUES('Ano'[Ano]),\n"
+        "\t\tCALCULATE([Quartos])\n"
+        "\t\t\t* (DATEDIFF(DATE('Ano'[Ano], 1, 1), DATE('Ano'[Ano], 12, 31), DAY) + 1)\n"
+        "\t)", "#,0",
+        "Capacidade anual: quartos × dias do ano, somada ano a ano para suportar "
+        "várias seleções de ano.")
+ML += m("Ocupação estimada",
+        "DIVIDE([Dormidas (tipo)], [Noites-quarto disponíveis])", "0.0%",
+        "Aproximação à ocupação: dormidas ÷ noites-quarto disponíveis. As dormidas "
+        "do INE são noites de hóspede, não de quarto, pelo que um quarto partilhado "
+        "conta mais do que uma vez e o valor pode passar os 100%. Serve para "
+        "comparar municípios, não como taxa de ocupação oficial.")
+# --- per-km² measures.
+# 0008350 publishes 2004-2022 and its DAG is capped at 2022 (PUBLISHED_YEAR_CAPS),
+# so dividing by the surface of the *selected* year blanks out every ratio from
+# 2023 onwards — exactly the years these pages are about. The area is pinned to the
+# last published year instead: municipal areas barely change, and pinning one year
+# also stops the surface being summed once per year over a multi-year selection.
+# Show 'Ano da superfície' next to any of these so the área's vintage is disclosed.
+ML += m("Ano da superfície",
+        "MAXX(\n"
+        "    FILTER(\n"
+        "        CALCULATETABLE(VALUES('Ano'[Ano]), REMOVEFILTERS('Ano')),\n"
+        "        NOT ISBLANK([Superfície (km²)])\n"
+        "    ),\n"
+        "    'Ano'[Ano]\n"
+        ")", "#,0",
+        "Último ano com superfície publicada (2022 enquanto o INE não publicar "
+        "a série NUTS-2024). É o ano que todas as medidas «por km²» usam.")
+ML += m("Superfície (km², último ano)",
+        "VAR AnoArea = [Ano da superfície]\n"
+        "RETURN\n"
+        "    CALCULATE(\n"
+        "        [Superfície (km²)],\n"
+        "        REMOVEFILTERS('Ano'),\n"
+        "        'Ano'[Ano] = AnoArea\n"
+        "    )", "#,0.00",
+        "Superfície do último ano publicado, independente do ano selecionado. "
+        "Denominador de todas as medidas «por km²».")
+ML += m("Dormidas por km²",
+        "DIVIDE([Dormidas (tipo)], [Superfície (km², último ano)])", "#,0.00",
+        "Intensidade turística: dormidas anuais por quilómetro quadrado. "
+        "A área é a do último ano publicado, não a do ano selecionado.")
+ML += m("Hóspedes por km²",
+        "DIVIDE([Hóspedes (tipo)], [Superfície (km², último ano)])", "#,0.00")
+ML += m("Quartos por km²",
+        "DIVIDE([Quartos], [Superfície (km², último ano)])", "#,0.00",
+        "Capacidade licenciada por quilómetro quadrado. Ler ao lado de "
+        "[Dormidas por km²] para separar carga de capacidade.")
+ML += m("Estabelecimentos por km²",
+        "DIVIDE([Estabelecimentos], [Superfície (km², último ano)])", "#,0.00")
+# --- comparison measures for the three comparison pages.
+# All read the focus município from the disconnected 'Município selecionado' and
+# restrict the comparison set to municípios that actually report the metric: a
+# fixed denominator would rank a território against ones that never reported.
+PARES = (
+    "VAR Sel = SELECTEDVALUE('Município selecionado'[Município])\n"
+    "VAR NutsSel =\n"
+    "    CALCULATE(\n"
+    "        SELECTEDVALUE('Geografia'[NUTS III]),\n"
+    "        REMOVEFILTERS('Geografia'),\n"
+    "        'Geografia'[Município] = Sel\n"
+    "    )\n"
+    "VAR Pares =\n"
+    "    CALCULATETABLE(\n"
+    "        VALUES('Geografia'[Município]),\n"
+    "        REMOVEFILTERS('Geografia'),\n"
+    "        'Geografia'[NUTS III] = NutsSel\n"
+    "    )\n"
+    "VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Ocupação estimada])))\n")
+
+ML += m("Pares com dados",
+        PARES + "RETURN COUNTROWS(ComDados)", "#,0",
+        "Quantos municípios do grupo de pares reportam ocupação no contexto atual. "
+        "Mostrar sempre junto da posição: «5.º de 12», nunca «5.º» sozinho.")
+ML += m("Média de pares (ocupação)",
+        PARES + "RETURN AVERAGEX(ComDados, CALCULATE([Ocupação estimada]))", "0.0%",
+        "Média da ocupação estimada no grupo de pares (mesma NUTS III), contando "
+        "apenas os municípios que reportam.")
+ML += m("Posição no grupo de pares",
+        PARES +
+        "VAR ValorSel =\n"
+        "    CALCULATE(\n"
+        "        [Ocupação estimada],\n"
+        "        REMOVEFILTERS('Geografia'),\n"
+        "        'Geografia'[Município] = Sel\n"
+        "    )\n"
+        "RETURN\n"
+        "    IF(\n"
+        "        NOT ISBLANK(ValorSel),\n"
+        "        RANKX(ComDados, CALCULATE([Ocupação estimada]), ValorSel, DESC, DENSE)\n"
+        "    )", "#,0",
+        "Posição do município em foco dentro do grupo de pares, por ocupação estimada. "
+        "Em branco se o próprio município não reportar.")
+ML += m("Percentil de pressão",
+        "VAR Sel = SELECTEDVALUE('Município selecionado'[Município])\n"
+        "VAR Todos =\n"
+        "    CALCULATETABLE(VALUES('Geografia'[Município]), REMOVEFILTERS('Geografia'))\n"
+        "VAR ComDados = FILTER(Todos, NOT ISBLANK(CALCULATE([Dormidas por km²])))\n"
+        "VAR ValorSel =\n"
+        "    CALCULATE(\n"
+        "        [Dormidas por km²],\n"
+        "        REMOVEFILTERS('Geografia'),\n"
+        "        'Geografia'[Município] = Sel\n"
+        "    )\n"
+        "VAR Abaixo =\n"
+        "    COUNTROWS(FILTER(ComDados, CALCULATE([Dormidas por km²]) < ValorSel))\n"
+        "RETURN\n"
+        "    IF(NOT ISBLANK(ValorSel), DIVIDE(Abaixo, COUNTROWS(ComDados)))", "0.0%",
+        "Posição relativa do município em foco na distribuição de dormidas por km² "
+        "de todos os municípios que reportam.")
+ML += m("Índice de sazonalidade",
+        "VAR AnoCompleto =\n"
+        "    MAXX(\n"
+        "        FILTER(\n"
+        "            CALCULATETABLE(VALUES('Calendário'[Ano]), REMOVEFILTERS('Calendário')),\n"
+        "            CALCULATE(\n"
+        "                COUNTROWS(\n"
+        "                    FILTER(\n"
+        "                        VALUES('Calendário'[Mês]),\n"
+        "                        NOT ISBLANK([Dormidas mensais (segmento)])\n"
+        "                    )\n"
+        "                )\n"
+        "            ) = 12\n"
+        "        ),\n"
+        "        'Calendário'[Ano]\n"
+        "    )\n"
+        "RETURN\n"
+        "    CALCULATE(\n"
+        "        VAR PorMes =\n"
+        "            ADDCOLUMNS(\n"
+        "                VALUES('Calendário'[Mês]),\n"
+        "                \"V\", CALCULATE([Dormidas mensais (segmento)])\n"
+        "            )\n"
+        "        RETURN DIVIDE(MAXX(PorMes, [V]), AVERAGEX(PorMes, [V])),\n"
+        "        REMOVEFILTERS('Calendário'),\n"
+        "        'Calendário'[Ano] = AnoCompleto\n"
+        "    )", "#,0.00",
+        "Mês de pico a dividir pela média mensal, no último ano civil completo. "
+        "Usa o último ano completo de propósito: um ano cortado a meio é todo pico "
+        "e nenhum inverno, o que empolaria justamente o que a página mede.")
+ML += m("Ano completo mais recente",
+        "MAXX(\n"
+        "    FILTER(\n"
+        "        CALCULATETABLE(VALUES('Calendário'[Ano]), REMOVEFILTERS('Calendário')),\n"
+        "        CALCULATE(\n"
+        "            COUNTROWS(\n"
+        "                FILTER(\n"
+        "                    VALUES('Calendário'[Mês]),\n"
+        "                    NOT ISBLANK([Dormidas mensais (segmento)])\n"
+        "                )\n"
+        "            )\n"
+        "        ) = 12\n"
+        "    ),\n"
+        "    'Calendário'[Ano]\n"
+        ")", "#,0",
+        "O ano que o índice de sazonalidade usa. Mostrar no título do painel.")
+ML += m("Pressão (métrica selecionada)",
+        "SWITCH(\n"
+        "    SELECTEDVALUE('Métrica de pressão'[Métrica], \"Dormidas por km²\"),\n"
+        "    \"Hóspedes por km²\", [Hóspedes por km²],\n"
+        "    [Dormidas por km²]\n"
+        ")", "#,0.00",
+        "Métrica do mapa de pressão, escolhida na tabela desligada.")
 ML += ["\tcolumn '_'", "\t\tdataType: string", "\t\tisHidden",
        f"\t\tlineageTag: {tag()}", "\t\tsummarizeBy: none", "\t\tsourceColumn: [_]", ""]
 ML += [f"\tpartition '_Medidas' = calculated", "\t\tmode: import", "\t\tsource =",
@@ -391,6 +586,8 @@ ref table 'Região NUTS II'
 ref table 'Tipo de alojamento'
 ref table 'Residência'
 ref table 'Segmento de alojamento'
+ref table 'Município selecionado'
+ref table 'Métrica de pressão'
 ref table '_Medidas'
 
 ref cultureInfo pt-PT

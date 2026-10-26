@@ -1,24 +1,24 @@
 /// Tipo e subtipo de alojamento, conforme aos indicadores que os publicam. A classificação (estrelas) fica local a cada indicador.
 table 'Tipo de alojamento'
-	lineageTag: 381af8ad-713f-5c02-848a-93900c0bd601
+	lineageTag: 1b60c5a8-9358-5269-b6ef-747499b81d1b
 
 	column 'TipoKey'
 		dataType: string
 		isHidden
 		isKey
-		lineageTag: 1b60c5a8-9358-5269-b6ef-747499b81d1b
+		lineageTag: a6d6e025-5883-517b-b5da-75e01dc27a8a
 		summarizeBy: none
 		sourceColumn: [TipoKey]
 
 	column 'Tipo de alojamento'
 		dataType: string
-		lineageTag: a6d6e025-5883-517b-b5da-75e01dc27a8a
+		lineageTag: c955cf2e-0936-52ab-979d-3f0461a5aa52
 		summarizeBy: none
 		sourceColumn: [Tipo de alojamento]
 
 	column 'Subtipo de alojamento'
 		dataType: string
-		lineageTag: c955cf2e-0936-52ab-979d-3f0461a5aa52
+		lineageTag: 47b329a3-a20e-5532-9808-c8e73223b8c5
 		summarizeBy: none
 		sourceColumn: [Subtipo de alojamento]
 

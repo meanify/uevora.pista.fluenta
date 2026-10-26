@@ -1,24 +1,24 @@
 /// Dimensão NUTS II conforme aos indicadores municipais e aos indicadores só com NUTS I/II.
 table 'Região NUTS II'
-	lineageTag: a5014890-9297-5430-b57d-7d77d07e4218
+	lineageTag: 223e02e7-cf51-513f-ab73-f90608e22217
 
 	column 'NutsIIKey'
 		dataType: string
 		isHidden
 		isKey
-		lineageTag: 223e02e7-cf51-513f-ab73-f90608e22217
+		lineageTag: d23bcaeb-65f1-5e5f-969f-2a09ecb1fa2e
 		summarizeBy: none
 		sourceColumn: [NutsIIKey]
 
 	column 'NUTS I'
 		dataType: string
-		lineageTag: d23bcaeb-65f1-5e5f-969f-2a09ecb1fa2e
+		lineageTag: a0f053ef-f612-5b9e-b620-71700f0395af
 		summarizeBy: none
 		sourceColumn: [NUTS I]
 
 	column 'NUTS II'
 		dataType: string
-		lineageTag: a0f053ef-f612-5b9e-b620-71700f0395af
+		lineageTag: 381af8ad-713f-5c02-848a-93900c0bd601
 		summarizeBy: none
 		sourceColumn: [NUTS II]
 

@@ -1,6 +1,6 @@
 /// Servidor PostgreSQL, no formato anfitriao:porta (PISTA_DB_HOSTNAME:PISTA_DB_PORTNUMBER).
 expression Servidor = "localhost:5432" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
-	lineageTag: 0f0a15c5-5256-5ed4-85b3-83e58a3e88a3
+	lineageTag: 8e955bb5-1146-5685-bc1a-1de5885009fe
 	queryGroup: 'Parâmetros'
 
 	annotation PBI_NavigationStepName = Navigation
@@ -9,7 +9,7 @@ expression Servidor = "localhost:5432" meta [IsParameterQuery=true, Type="Text",
 
 /// Nome da base de dados (PISTA_DB_NAME).
 expression BaseDados = "pistadigital" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
-	lineageTag: b198af79-df3f-5bb5-98a8-ecfe7920d03a
+	lineageTag: c295f7f3-7809-5d91-82c7-6e2a80ad7c6f
 	queryGroup: 'Parâmetros'
 
 	annotation PBI_NavigationStepName = Navigation
@@ -18,7 +18,7 @@ expression BaseDados = "pistadigital" meta [IsParameterQuery=true, Type="Text", 
 
 /// Ligação partilhada. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
 expression Fonte = PostgreSQL.Database(Servidor, BaseDados)
-	lineageTag: 2e059891-04f5-5e6d-ad88-2b4b0dfa46e4
+	lineageTag: 69d29a49-7bdb-5157-b97b-5f9df7d724e3
 	queryGroup: 'Parâmetros'
 
 	annotation PBI_ResultType = Table

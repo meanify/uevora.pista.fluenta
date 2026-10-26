@@ -1,0 +1,16 @@
+/// Tabela desligada que guarda o município em foco. Não filtra o modelo: serve para realçar um território entre os pares.
+table 'Município selecionado'
+	lineageTag: cfe807e0-516b-596f-8845-0add2d0fa9f1
+
+	column 'Município'
+		dataType: string
+		isKey
+		lineageTag: 3a516c8f-da01-5347-8810-fa27535439a9
+		summarizeBy: none
+		sourceColumn: [Município]
+
+	partition 'Município selecionado' = calculated
+		mode: import
+		source =
+				DISTINCT(SELECTCOLUMNS('Geografia', "Município", 'Geografia'[Município]))
+
