@@ -609,5 +609,117 @@ class LimeExportEndTests(unittest.TestCase):
         ))
 
 
+class LimeParticipantPagingTests(unittest.TestCase):
+    """fetch_participants must not stop at the first page.
+
+    ``list_participants`` returns at most ``limit`` rows per call, so a single
+    request silently drops participants beyond the page size and the merge in
+    ``participants`` then leaves their answers without participant info.
+    """
+
+    @staticmethod
+    def page(start, count):
+        return [{"tid": index, "token": f"t{index}"}
+                for index in range(start, start + count)]
+
+    def test_participants_beyond_one_page_are_all_retrieved(self):
+        size = flows.PARTICIPANT_PAGE_SIZE
+        client = Mock()
+        client.list_participants.side_effect = [
+            self.page(0, size), self.page(size, 250),
+        ]
+
+        records = flows.fetch_participants(client, SURVEY)
+
+        self.assertEqual(len(records), size + 250)
+        self.assertEqual(
+            [entry.kwargs["start"]
+             for entry in client.list_participants.call_args_list],
+            [0, size],
+        )
+        self.assertEqual(
+            {entry.kwargs["limit"]
+             for entry in client.list_participants.call_args_list},
+            {size},
+        )
+        # every token survives, so the answer merge cannot lose participants
+        self.assertEqual(
+            [record["token"] for record in records],
+            [f"t{index}" for index in range(size + 250)],
+        )
+
+    def test_short_first_page_issues_no_further_request(self):
+        client = Mock()
+        client.list_participants.return_value = self.page(0, 1)
+
+        records = flows.fetch_participants(client, SURVEY)
+
+        self.assertEqual(len(records), 1)
+        client.list_participants.assert_called_once()
+
+    def test_exhausted_range_after_a_full_page_ends_paging(self):
+        """LimeSurvey reports a spent range as a status error, not an empty list."""
+        from citric.exceptions import LimeSurveyStatusError
+
+        size = flows.PARTICIPANT_PAGE_SIZE
+        client = Mock()
+        client.list_participants.side_effect = [
+            self.page(0, size),
+            LimeSurveyStatusError("No survey participants found."),
+        ]
+
+        records = flows.fetch_participants(client, SURVEY)
+
+        self.assertEqual(len(records), size)
+        self.assertEqual(client.list_participants.call_count, 2)
+
+    def test_survey_without_participants_still_fails_on_the_first_page(self):
+        """An empty survey stays an error; only later pages may be swallowed."""
+        from citric.exceptions import LimeSurveyStatusError
+
+        client = Mock()
+        client.list_participants.side_effect = LimeSurveyStatusError(
+            "No survey participants found."
+        )
+
+        with self.assertRaises(LimeSurveyStatusError):
+            flows.fetch_participants(client, SURVEY)
+
+    def test_participants_merges_every_page_of_participant_info(self):
+        """End-to-end: answers whose tokens fall on a later page keep their info."""
+        size = flows.PARTICIPANT_PAGE_SIZE
+        header = "id;submitdate;startdate;token"
+        rows = [f"{index};2024-01-01;2024-01-01;t{index}"
+                for index in (0, size + 10)]
+        content = ("\n".join([header, *rows]) + "\n").encode()
+
+        client = Mock()
+        client.export_responses.return_value = content
+        client.list_participants.side_effect = [
+            [{"tid": index, "token": f"t{index}",
+              "participant_info": {"firstname": f"P{index}", "lastname": "X",
+                                   "email": f"p{index}@example.com"}}
+             for index in range(size)],
+            [{"tid": size + 10, "token": f"t{size + 10}",
+              "participant_info": {"firstname": "Late", "lastname": "Page",
+                                   "email": "late@example.com"}}],
+        ]
+        context = Mock()
+        context.__enter__ = Mock(return_value=client)
+        context.__exit__ = Mock(return_value=False)
+        mapping = {"date_fields": ["submitdate", "startdate"],
+                   "drop_columns": ["startdate"]}
+
+        with patch.dict(flows.survey_mappings, {SURVEY: mapping}), \
+                patch.object(flows, "limesurvey_client", return_value=context):
+            answers = flows.participants(SURVEY, 1, None)
+
+        self.assertEqual(
+            answers.set_index("token")["firstname"].to_dict(),
+            {"t0": "P0", f"t{size + 10}": "Late"},
+        )
+
+
+
 if __name__ == "__main__":
     unittest.main()
