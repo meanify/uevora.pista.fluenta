@@ -43,6 +43,11 @@ spec:
         command: ["airflow", "api-server"]
         imagePullPolicy: IfNotPresent
         env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: postgres-password
           - name: AIRFLOW_CONFIG
             value: '/opt/airflow/config/airflow.cfg'
           - name: PYTHONPATH
@@ -50,11 +55,11 @@ spec:
           - name: AIRFLOW__CORE__EXECUTOR
             value: "CeleryExecutor"
           - name: AIRFLOW__CELERY__RESULT_BACKEND
-            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "db+postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__CELERY__BROKER_URL
             value: "redis://airflow-redis:6379"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
             value: "public"
           - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
@@ -68,7 +73,10 @@ spec:
           - name: AIRFLOW__WEBSERVER__RBAC
             value: "False"
           - name: AIRFLOW__CORE__FERNET_KEY
-            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: fernet-key
           - name: AIRFLOW__API__AUTH_BACKEND
             value: "airflow.api.auth.backend.deny_all"
           - name: AIRFLOW__CORE__SECURE_MODE
@@ -121,6 +129,11 @@ spec:
         command: ["airflow", "scheduler"]
         imagePullPolicy: IfNotPresent
         env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: postgres-password
           - name: AIRFLOW_CONFIG
             value: '/opt/airflow/config/airflow.cfg'
           - name: PYTHONPATH
@@ -128,11 +141,11 @@ spec:
           - name: AIRFLOW__CORE__EXECUTOR
             value: "CeleryExecutor"
           - name: AIRFLOW__CELERY__RESULT_BACKEND
-            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "db+postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__CELERY__BROKER_URL
             value: "redis://airflow-redis:6379"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
             value: "public"
           - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
@@ -146,7 +159,10 @@ spec:
           - name: AIRFLOW__WEBSERVER__RBAC
             value: "False"
           - name: AIRFLOW__CORE__FERNET_KEY
-            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: fernet-key
           - name: AIRFLOW__API__AUTH_BACKEND
             value: "airflow.api.auth.backend.deny_all"
           - name: AIRFLOW__CORE__SECURE_MODE
@@ -195,6 +211,11 @@ spec:
         command: ["airflow", "triggerer"]
         imagePullPolicy: IfNotPresent
         env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: postgres-password
           - name: AIRFLOW_CONFIG
             value: '/opt/airflow/config/airflow.cfg'
           - name: PYTHONPATH
@@ -202,11 +223,11 @@ spec:
           - name: AIRFLOW__CORE__EXECUTOR
             value: "CeleryExecutor"
           - name: AIRFLOW__CELERY__RESULT_BACKEND
-            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "db+postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__CELERY__BROKER_URL
             value: "redis://airflow-redis:6379"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
             value: "public"
           - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
@@ -220,7 +241,10 @@ spec:
           - name: AIRFLOW__WEBSERVER__RBAC
             value: "False"
           - name: AIRFLOW__CORE__FERNET_KEY
-            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: fernet-key
           - name: AIRFLOW__API__AUTH_BACKEND
             value: "airflow.api.auth.backend.deny_all"
           - name: AIRFLOW__CORE__SECURE_MODE
@@ -270,6 +294,11 @@ spec:
         command: ["airflow", "dag-processor"]
         imagePullPolicy: IfNotPresent
         env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: postgres-password
           - name: AIRFLOW_CONFIG
             value: '/opt/airflow/config/airflow.cfg'
           - name: PYTHONPATH
@@ -277,11 +306,11 @@ spec:
           - name: AIRFLOW__CORE__EXECUTOR
             value: "CeleryExecutor"
           - name: AIRFLOW__CELERY__RESULT_BACKEND
-            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "db+postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__CELERY__BROKER_URL
             value: "redis://airflow-redis:6379"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
             value: "public"
           - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
@@ -295,7 +324,10 @@ spec:
           - name: AIRFLOW__WEBSERVER__RBAC
             value: "False"
           - name: AIRFLOW__CORE__FERNET_KEY
-            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: fernet-key
           - name: AIRFLOW__API__AUTH_BACKEND
             value: "airflow.api.auth.backend.deny_all"
           - name: AIRFLOW__CORE__SECURE_MODE
@@ -343,6 +375,11 @@ spec:
         command: ["airflow", "celery", "worker"]
         imagePullPolicy: IfNotPresent
         env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: postgres-password
           - name: AIRFLOW_CONFIG
             value: '/opt/airflow/config/airflow.cfg'
           - name: PYTHONPATH
@@ -350,13 +387,13 @@ spec:
           - name: AIRFLOW__CORE__EXECUTOR
             value: "CeleryExecutor"
           - name: AIRFLOW__CELERY__RESULT_BACKEND
-            value: "db+postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "db+postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__CELERY__BROKER_URL
             value: "redis://airflow-redis:6379"
           - name: AIRFLOW__CORE__EXECUTION_API_SERVER_URL
             value: "http://airflow-web:8080/execution/"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@airflow-postgres/airflow"
+            value: "postgresql://airflow:$(POSTGRES_PASSWORD)@airflow-postgres/airflow"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
             value: "public"
           - name: AIRFLOW__CELERY__STALLED_TASK_TIMEOUT
@@ -370,7 +407,10 @@ spec:
           - name: AIRFLOW__WEBSERVER__RBAC
             value: "false"
           - name: AIRFLOW__CORE__FERNET_KEY
-            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: fernet-key
           - name: AIRFLOW__API__AUTH_BACKEND
             value: "airflow.api.auth.backend.deny_all"
           - name: AIRFLOW__CORE__SECURE_MODE

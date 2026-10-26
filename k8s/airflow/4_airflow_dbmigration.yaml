@@ -13,6 +13,11 @@ spec:
         command: ['airflow', 'db', 'migrate']
         imagePullPolicy: IfNotPresent
         env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: postgres-password
           - name: AIRFLOW__CORE__EXECUTOR
             value: "CeleryExecutor"
           - name: AIRFLOW__CELERY__BROKER_URL
@@ -22,7 +27,10 @@ spec:
           - name: AIRFLOW__CORE__LOAD_EXAMPLES
             value: "False"
           - name: AIRFLOW__CORE__FERNET_KEY
-            value: "AH_EvmauCBDRgWZAqmjwnLEiSTkCzPcJFrQY-m8t1V8="
+            valueFrom:
+              secretKeyRef:
+                name: airflow-secrets
+                key: fernet-key
           - name: AIRFLOW__API__AUTH_BACKEND
             value: "airflow.api.auth.backend.deny_all"
           - name: AIRFLOW__CORE__SECURE_MODE
@@ -30,7 +38,7 @@ spec:
           - name: GUNICORN_CMD_ARGS
             value: "--log-level WARNING"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: "postgresql://airflow:e76a2WzzPVEFba5s2KMO@postgres/airflow"
+            value: "postgresql://airflow:$(POSTGRES_PASSWORD)@postgres/airflow"
           - name: AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA
             value: "public"
       restartPolicy: Never

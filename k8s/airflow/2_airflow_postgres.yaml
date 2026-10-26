@@ -51,7 +51,10 @@ spec:
             - name: POSTGRES_USER
               value: "airflow"
             - name: POSTGRES_PASSWORD
-              value: "e76a2WzzPVEFba5s2KMO"
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-secrets
+                  key: postgres-password
           ports:
             - containerPort: 5432
           volumeMounts:

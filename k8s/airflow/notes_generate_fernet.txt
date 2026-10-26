@@ -3,4 +3,5 @@ from cryptography.fernet import Fernet
 fernet_key = Fernet.generate_key()
 print(fernet_key.decode())  # your fernet_key, keep it in secured place!
 
-NA_B-8EAx_QZjws2LVrGUg1AaafaHQBkps_YxRGkAsI=
+# (generated key removed - never commit a real Fernet key; store it in the
+#  airflow-secrets Secret, see REAMED.md)
