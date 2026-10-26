@@ -6,7 +6,7 @@ from pistadigital.utils.ine_transform import nuts_i_ii_accommodation_fields
 
 INDICATOR = "0009812"
 MONTHLY = True
-TABLE_NAME = "ine_{INDICATOR}_ds"
+TABLE_NAME = f"ine_{INDICATOR}_ds"
 VALUE_COLUMN = "hospedes"
 COLUMN_LENGTHS = {
     "nuts_i": 64, "nuts_ii": 64, "tipo_alojamento": 64, "subtipo_alojamento": 64,

@@ -225,7 +225,7 @@ class MonthlyDatabaseTests(unittest.TestCase):
             replace([row, row])
         with engine.connect() as connection:
             rows = connection.execute(text(
-                "SELECT ano, mes, dormidas FROM ine_0009808 ORDER BY ano, mes"
+                "SELECT ano, mes, dormidas FROM ine_0009808_ds ORDER BY ano, mes"
             )).all()
         self.assertEqual(rows, [(2025, "08", 5), (2026, "07", 7), (2026, "08", 8)])
         with self.assertRaisesRegex(ValueError, "mes=08"):

@@ -6,20 +6,20 @@ from pistadigital.utils.ine_transform import nuts_i_ii_accommodation_fields
 
 INDICATOR = "0009808"
 MONTHLY = True
-TABLE_NAME = "ine_{INDICATOR}_ds"
+TABLE_NAME = f"ine_{INDICATOR}_ds"
 VALUE_COLUMN = "dormidas"
 COLUMN_LENGTHS = {
     "nuts_i": 64, "nuts_ii": 64, "tipo_alojamento": 64, "subtipo_alojamento": 64,
 }
-CREATE_TABLE_SQL = """
-CREATE TABLE IF NOT EXISTS ine_0009808 (
+CREATE_TABLE_SQL = f"""
+CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
     nuts_i CHAR(64) NOT NULL,
     nuts_ii CHAR(64) NOT NULL,
     tipo_alojamento CHAR(64) NOT NULL,
     subtipo_alojamento CHAR(64) NOT NULL,
     ano INTEGER NOT NULL,
     mes CHAR(2) NOT NULL,
-    dormidas REAL,
+    {VALUE_COLUMN} REAL,
     create_date DATE,
     update_date DATE,
     PRIMARY KEY (nuts_i, nuts_ii, tipo_alojamento, subtipo_alojamento, ano, mes)

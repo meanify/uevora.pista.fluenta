@@ -148,10 +148,11 @@ class AnnualFlowTests(unittest.TestCase):
                 self.assertEqual(frame.iloc[0]["create_date"],
                                  frame.iloc[0]["update_date"])
                 self.assertFalse(module.MONTHLY)
-                expected_table = f"ine_{code}" + (
-                    "_ds" if code == "0008350" else ""
+                self.assertEqual(module.TABLE_NAME, f"ine_{code}_ds")
+                self.assertIn(
+                    f"CREATE TABLE IF NOT EXISTS {module.TABLE_NAME}",
+                    module.CREATE_TABLE_SQL,
                 )
-                self.assertEqual(module.TABLE_NAME, expected_table)
                 for column, length in dimensions.items():
                     self.assertIn(f"{column} bpchar({length}) NOT NULL",
                                   module.CREATE_TABLE_SQL)

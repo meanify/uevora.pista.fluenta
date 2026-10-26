@@ -77,7 +77,7 @@ class LegacyFlowTests(unittest.TestCase):
                     [code, year, True, False, None],
                 )
                 self.assertIs(module.process_annual_indicator, annual.process_annual_indicator)
-                self.assertEqual(module.TABLE_NAME, f"ine_{code}" + ("_ds" if code == "0009929" else ""))
+                self.assertEqual(module.TABLE_NAME, f"ine_{code}_ds")
                 self.assertEqual(module.VALUE_COLUMN, metric)
                 self.assertEqual(module.COLUMN_LENGTHS["subtipo_alojamento"], subtype_length)
                 for column, length in module.COLUMN_LENGTHS.items():

@@ -103,8 +103,11 @@ class MonthlyFlowTests(unittest.TestCase):
                     self.assertEqual(frame.iloc[0].municipio, "Maia")
                     self.assertEqual(frame.iloc[0].distrito, "Porto")
                 self.assertIn("mes CHAR(2) NOT NULL", module.CREATE_TABLE_SQL)
-                if code == "0009812":
-                    self.assertEqual(module.TABLE_NAME, "ine_0009812_monthly")
+                self.assertEqual(module.TABLE_NAME, f"ine_{code}_ds")
+                self.assertIn(
+                    f"CREATE TABLE IF NOT EXISTS {module.TABLE_NAME}",
+                    module.CREATE_TABLE_SQL,
+                )
                 self.assertIn(
                     ", ".join([*module.COLUMN_LENGTHS, "ano", "mes"]),
                     " ".join(module.CREATE_TABLE_SQL.split()),
