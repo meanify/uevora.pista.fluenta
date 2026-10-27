@@ -65,8 +65,10 @@ table 'Estada média por tipo de alojamento (0009880)'
 		dataType: double
 		formatString: #,0.00
 		lineageTag: 08e42d3d-7564-5e5b-a2be-c39ab2b3b505
-		summarizeBy: average
+		summarizeBy: sum
 		sourceColumn: estada_media
+
+		annotation SummarizationSetBy = Automatic
 
 	column create_date
 		dataType: dateTime
@@ -84,14 +86,14 @@ table 'Estada média por tipo de alojamento (0009880)'
 		summarizeBy: none
 		sourceColumn: update_date
 
-	column 'GeoKey'
+	column GeoKey
 		dataType: string
 		isHidden
 		lineageTag: b0754ed9-2fd4-572a-9a20-89bd7d1eb35d
 		summarizeBy: none
 		sourceColumn: GeoKey
 
-	column 'NutsIIKey'
+	column NutsIIKey
 		dataType: string
 		isHidden
 		lineageTag: 8e0feb59-b469-5920-be18-e745ea34ef12
@@ -102,9 +104,8 @@ table 'Estada média por tipo de alojamento (0009880)'
 		mode: import
 		source =
 				let
-				    Origem = Fonte{[Schema="public", Item="ine_0009880_ds"]}[Data],
-				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"nuts_iii", Text.Trim, type text}, {"distrito", Text.Trim, type text}, {"municipio", Text.Trim, type text}, {"tipo_alojamento", Text.Trim, type text}, {"subtipo_alojamento", Text.Trim, type text}, {"classificacao", Text.Trim, type text}}),
-				    GeoKey = Table.AddColumn(Texto, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Origem = Fonte{[Name = "ine_0009880_ds", Kind = "Table"]}[Data],
+				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

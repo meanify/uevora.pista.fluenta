@@ -104,17 +104,15 @@ def fact_tmdl(ind):
         L += col("NutsIIKey", "string", hidden=True)
 
     # Power Query
-    trims = ", ".join(f'{{"{c}", Text.Trim, type text}}' for c in text_cols)
+    # Text values arrive already trimmed: the flows strip INE labels before writing.
     m = ["let",
-         f'    Origem = Fonte{{[Schema="public", Item="{src}"]}}[Data],',
-         f"    Texto = Table.TransformColumns(Origem, {{{trims}}}),"]
+         f'    Origem = Fonte{{[Name = "{src}", Kind = "Table"]}}[Data],']
     if monthly:
-        m += ['    Mes = Table.TransformColumns(Texto, {{"mes", Text.Trim, type text}}),',
-              '    ComData = Table.AddColumn(Mes, "Data", each #date([ano], '
+        m += ['    ComData = Table.AddColumn(Origem, "Data", each #date([ano], '
               'Number.FromText([mes]), 1), type date),']
         base = "ComData"
     else:
-        base = "Texto"
+        base = "Origem"
     keyexpr = ' & "|" & '.join(f"[{c}]" for c in geo)
     m += [f'    GeoKey = Table.AddColumn({base}, "{"GeoKey" if geo is MUN else "NutsIIKey"}", '
           f"each {keyexpr}, type text)" + ("," if geo is MUN else "")]
@@ -194,8 +192,9 @@ cal_dax = f"""VAR Datas =
     DISTINCT(
         {union(MONTHLY_T, [("Data", "Data")])}
     )
-VAR Inicio = DATE(YEAR(MINX(Datas, [Data])), 1, 1)
-VAR Fim = EOMONTH(MAXX(Datas, [Data]), 0)
+// Sem dados mensais (tabelas vazias ou falha no refresh), usa o ano corrente.
+VAR Inicio = DATE(YEAR(COALESCE(MINX(Datas, [Data]), TODAY())), 1, 1)
+VAR Fim = EOMONTH(COALESCE(MAXX(Datas, [Data]), TODAY()), 0)
 RETURN
     ADDCOLUMNS(
         CALENDAR(Inicio, Fim),
@@ -543,7 +542,7 @@ put(f"{DEF}/relationships.tmdl", "\n".join(rels))
 # ------------------------------------------------------------------ expressions
 put(f"{DEF}/expressions.tmdl", f"""/// Nome do DSN ODBC (System DSN) que aponta para a base de dados PostgreSQL.
 /// Tem de existir com o mesmo nome no PC do Power BI Desktop e nas máquinas do gateway 'pistadigital'.
-expression DSN = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression DSN = "Pista Digital" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 \tlineageTag: {tag()}
 \tqueryGroup: 'Parâmetros'
 
@@ -560,18 +559,16 @@ expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParam
 
 \tannotation PBI_ResultType = Text
 
-/// Ligação partilhada via ODBC (gateway 'pistadigital'). Devolve as tabelas do esquema public
-/// com as colunas Schema/Item/Data. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
+/// Ligação partilhada via ODBC (gateway 'pistadigital'): navegação até ao esquema public.
+/// As tabelas leem Fonte{{[Name = "ine_<varcd>", Kind = "Table"]}}[Data].
+/// As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
 expression Fonte =
 \t\tlet
 \t\t    Origem = Odbc.DataSource("dsn=" & DSN, [HierarchicalNavigation = true]),
 \t\t    BaseDeDados = Origem{{[Name = BaseDados, Kind = "Database"]}}[Data],
-\t\t    Esquema = BaseDeDados{{[Name = "public", Kind = "Schema"]}}[Data],
-\t\t    Tabelas = Table.SelectRows(Esquema, each [Kind] = "Table" or [Kind] = "View"),
-\t\t    Item = Table.RenameColumns(Table.SelectColumns(Tabelas, {{"Name", "Data"}}), {{{{"Name", "Item"}}}}),
-\t\t    ComEsquema = Table.AddColumn(Item, "Schema", each "public", type text)
+\t\t    Esquema = BaseDeDados{{[Name = "public", Kind = "Schema"]}}[Data]
 \t\tin
-\t\t    ComEsquema
+\t\t    Esquema
 \tlineageTag: {tag()}
 \tqueryGroup: 'Parâmetros'
 
@@ -586,6 +583,8 @@ put(f"{DEF}/model.tmdl", f"""model Model
 \tsourceQueryCulture: pt-PT
 
 \tannotation PBI_QueryOrder = [{", ".join(f'"{tname(i)}"' for i in IND)}]
+
+\tannotation __PBI_TimeIntelligenceEnabled = 0
 
 queryGroup 'Parâmetros'
 

@@ -1,8 +1,8 @@
 /// Geografia ao nível do município, construída a partir de todos os indicadores municipais.
-table 'Geografia'
+table Geografia
 	lineageTag: 22e3060e-59a1-5408-95ce-73dd707a0728
 
-	column 'GeoKey'
+	column GeoKey
 		dataType: string
 		isHidden
 		isKey
@@ -28,14 +28,14 @@ table 'Geografia'
 		summarizeBy: none
 		sourceColumn: [NUTS III]
 
-	column 'Distrito'
+	column Distrito
 		dataType: string
-		dataCategory: StateOrProvince
 		lineageTag: 43f7f09c-4ad1-5cc0-91db-2476de4c4f43
+		dataCategory: StateOrProvince
 		summarizeBy: none
 		sourceColumn: [Distrito]
 
-	column 'Município'
+	column Município
 		dataType: string
 		lineageTag: 7240dbc1-867e-5346-8b6f-772a4a562688
 		summarizeBy: none
@@ -43,19 +43,19 @@ table 'Geografia'
 
 	column 'Município (mapa)'
 		dataType: string
-		dataCategory: Place
 		lineageTag: ded17b3f-19d1-5fa3-8e0b-1854a366ac9c
+		dataCategory: Place
 		summarizeBy: none
 		sourceColumn: [Município (mapa)]
 
-	column 'NutsIIKey'
+	column NutsIIKey
 		dataType: string
 		isHidden
 		lineageTag: a5014890-9297-5430-b57d-7d77d07e4218
 		summarizeBy: none
 		sourceColumn: [NutsIIKey]
 
-	partition 'Geografia' = calculated
+	partition Geografia = calculated
 		mode: import
 		source =
 				ADDCOLUMNS(

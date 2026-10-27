@@ -2,7 +2,7 @@
 table 'Região NUTS II'
 	lineageTag: 223e02e7-cf51-513f-ab73-f90608e22217
 
-	column 'NutsIIKey'
+	column NutsIIKey
 		dataType: string
 		isHidden
 		isKey

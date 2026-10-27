@@ -1,8 +1,8 @@
 /// Nome do DSN ODBC (System DSN) que aponta para a base de dados PostgreSQL.
 /// Tem de existir com o mesmo nome no PC do Power BI Desktop e nas máquinas do gateway 'pistadigital'.
-expression DSN = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression DSN = "Pista Digital" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 8e955bb5-1146-5685-bc1a-1de5885009fe
-	queryGroup: 'Parâmetros'
+	queryGroup: Parâmetros
 
 	annotation PBI_NavigationStepName = Navigation
 
@@ -11,26 +11,24 @@ expression DSN = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQu
 /// Nome da base de dados (PISTA_DB_NAME).
 expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: c295f7f3-7809-5d91-82c7-6e2a80ad7c6f
-	queryGroup: 'Parâmetros'
+	queryGroup: Parâmetros
 
 	annotation PBI_NavigationStepName = Navigation
 
 	annotation PBI_ResultType = Text
 
-/// Ligação partilhada via ODBC (gateway 'pistadigital'). Devolve as tabelas do esquema public
-/// com as colunas Schema/Item/Data. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
+/// Ligação partilhada via ODBC (gateway 'pistadigital'): navegação até ao esquema public.
+/// As tabelas leem Fonte{[Name = "ine_<varcd>", Kind = "Table"]}[Data].
+/// As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
 expression Fonte =
 		let
 		    Origem = Odbc.DataSource("dsn=" & DSN, [HierarchicalNavigation = true]),
 		    BaseDeDados = Origem{[Name = BaseDados, Kind = "Database"]}[Data],
-		    Esquema = BaseDeDados{[Name = "public", Kind = "Schema"]}[Data],
-		    Tabelas = Table.SelectRows(Esquema, each [Kind] = "Table" or [Kind] = "View"),
-		    Item = Table.RenameColumns(Table.SelectColumns(Tabelas, {"Name", "Data"}), {{"Name", "Item"}}),
-		    ComEsquema = Table.AddColumn(Item, "Schema", each "public", type text)
+		    Esquema = BaseDeDados{[Name = "public", Kind = "Schema"]}[Data]
 		in
-		    ComEsquema
+		    Esquema
 	lineageTag: 69d29a49-7bdb-5157-b97b-5f9df7d724e3
-	queryGroup: 'Parâmetros'
+	queryGroup: Parâmetros
 
 	annotation PBI_ResultType = Table
 

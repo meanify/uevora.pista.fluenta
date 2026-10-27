@@ -1,22 +1,22 @@
 /// Calendário diário cobrindo os indicadores mensais. Os factos mensais ligam ao dia 1 de cada mês.
-table 'Calendário'
+table Calendário
 	lineageTag: c48fc1a2-12f5-53e2-a34a-d1803450195f
 	dataCategory: Time
 
-	column 'Date'
+	column Date
 		dataType: dateTime
 		isKey
 		lineageTag: 1d37c00e-8a85-5497-9686-b3bf3704f45b
 		summarizeBy: none
 		sourceColumn: [Date]
 
-	column 'Ano'
+	column Ano
 		dataType: int64
 		lineageTag: f29352b0-7141-53a3-b323-aab3fdbb24be
 		summarizeBy: none
 		sourceColumn: [Ano]
 
-	column 'Mês'
+	column Mês
 		dataType: int64
 		lineageTag: 837e4d74-bf7b-5a40-9006-212d96313c12
 		summarizeBy: none
@@ -28,19 +28,19 @@ table 'Calendário'
 		summarizeBy: none
 		sourceColumn: [Nome do mês]
 
-	column 'Ano-Mês'
+	column Ano-Mês
 		dataType: string
 		lineageTag: 3f9b0ee0-083b-5c5b-a54c-4662c66b18d6
 		summarizeBy: none
 		sourceColumn: [Ano-Mês]
 
-	column 'Trimestre'
+	column Trimestre
 		dataType: string
 		lineageTag: 1d8e49d9-2d00-576f-a950-430f11b9235a
 		summarizeBy: none
 		sourceColumn: [Trimestre]
 
-	partition 'Calendário' = calculated
+	partition Calendário = calculated
 		mode: import
 		source =
 				VAR Datas =
@@ -53,8 +53,9 @@ table 'Calendário'
 				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)', "Data", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[Data])
 				        )
 				    )
-				VAR Inicio = DATE(YEAR(MINX(Datas, [Data])), 1, 1)
-				VAR Fim = EOMONTH(MAXX(Datas, [Data]), 0)
+				// Sem dados mensais (tabelas vazias ou falha no refresh), usa o ano corrente.
+				VAR Inicio = DATE(YEAR(COALESCE(MINX(Datas, [Data]), TODAY())), 1, 1)
+				VAR Fim = EOMONTH(COALESCE(MAXX(Datas, [Data]), TODAY()), 0)
 				RETURN
 				    ADDCOLUMNS(
 				        CALENDAR(Inicio, Fim),

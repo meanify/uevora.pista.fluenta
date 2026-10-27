@@ -83,14 +83,14 @@ table 'Dormidas por tipo de alojamento (0009877)'
 		summarizeBy: none
 		sourceColumn: update_date
 
-	column 'GeoKey'
+	column GeoKey
 		dataType: string
 		isHidden
 		lineageTag: c6b9feed-5e01-5f64-b3f7-05f79d83a668
 		summarizeBy: none
 		sourceColumn: GeoKey
 
-	column 'NutsIIKey'
+	column NutsIIKey
 		dataType: string
 		isHidden
 		lineageTag: d55938e0-ab69-5ddf-a0a4-1bfb5053d1f2
@@ -101,9 +101,8 @@ table 'Dormidas por tipo de alojamento (0009877)'
 		mode: import
 		source =
 				let
-				    Origem = Fonte{[Schema="public", Item="ine_0009877_ds"]}[Data],
-				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"nuts_iii", Text.Trim, type text}, {"distrito", Text.Trim, type text}, {"municipio", Text.Trim, type text}, {"tipo_alojamento", Text.Trim, type text}, {"subtipo_alojamento", Text.Trim, type text}, {"classificacao", Text.Trim, type text}}),
-				    GeoKey = Table.AddColumn(Texto, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Origem = Fonte{[Name = "ine_0009877_ds", Kind = "Table"]}[Data],
+				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

@@ -33,8 +33,10 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		dataType: int64
 		formatString: 0
 		lineageTag: fbb6d52f-dd44-541c-a6d2-880c0811bd89
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
 
 	column mes
 		dataType: string
@@ -43,7 +45,7 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		sourceColumn: mes
 
 	/// Primeiro dia do mês, usado para ligar ao Calendário.
-	column 'Data'
+	column Data
 		dataType: dateTime
 		isHidden
 		formatString: yyyy-mm-dd
@@ -74,7 +76,7 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		summarizeBy: none
 		sourceColumn: update_date
 
-	column 'NutsIIKey'
+	column NutsIIKey
 		dataType: string
 		isHidden
 		lineageTag: 0c95b4c4-d096-5652-8123-ebca0ab2b13e
@@ -85,10 +87,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		mode: import
 		source =
 				let
-				    Origem = Fonte{[Schema="public", Item="ine_0009812_ds"]}[Data],
-				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"tipo_alojamento", Text.Trim, type text}, {"subtipo_alojamento", Text.Trim, type text}}),
-				    Mes = Table.TransformColumns(Texto, {{"mes", Text.Trim, type text}}),
-				    ComData = Table.AddColumn(Mes, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    Origem = Fonte{[Name = "ine_0009812_ds", Kind = "Table"]}[Data],
+				    ComData = Table.AddColumn(Origem, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
 				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    GeoKey

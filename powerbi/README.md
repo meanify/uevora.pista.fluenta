@@ -9,7 +9,7 @@ over the INE indicators produced by [flows-code](../flows-code/README.md).
 1. Power BI Desktop → Options → Preview features → enable **Power BI Project (.pbip) save option**
    and **Store reports using enhanced metadata format (PBIR)**.
 2. Open `PistaDigital.pbip`.
-3. Make sure the `pista` ODBC DSN exists (see Connection), then sign in with the database user.
+3. Make sure the `Pista Digital` ODBC DSN exists (see Connection), then sign in with the database user.
 4. Install the Montserrat font (Google Fonts) on every machine that edits the report.
 
 ## Connection
@@ -21,16 +21,16 @@ credentials are supplied by Power BI itself — never stored in these files:
 
 | Parameter | Matches | Example |
 |---|---|---|
-| `DSN` | System DSN pointing at `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `pista` |
+| `DSN` | System DSN pointing at `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `Pista Digital` |
 | `BaseDados` | `PISTA_DB_NAME` | `pista` |
 
 All tables load through the shared `Fonte` query, so the connection is defined once.
 
-- **Power BI Desktop:** create a 64-bit System DSN named `pista` (PostgreSQL
+- **Power BI Desktop:** create a 64-bit System DSN named `Pista Digital` (PostgreSQL
   Unicode driver) on the authoring machine.
 - **Power BI Service:** every machine in the `pistadigital` gateway cluster needs
-  the same `pista` System DSN. In the gateway cluster, add an ODBC connection
-  with connection string `dsn=pista` and the database credentials. Then, in the
+  the same `Pista Digital` System DSN. In the gateway cluster, add an ODBC connection
+  with connection string `dsn=Pista Digital` and the database credentials. Then, in the
   semantic model settings → *Gateway and cloud connections*, map the data source
   to that connection.
 

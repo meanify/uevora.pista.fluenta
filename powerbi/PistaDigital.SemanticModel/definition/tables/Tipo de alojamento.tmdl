@@ -2,7 +2,7 @@
 table 'Tipo de alojamento'
 	lineageTag: 1b60c5a8-9358-5269-b6ef-747499b81d1b
 
-	column 'TipoKey'
+	column TipoKey
 		dataType: string
 		isHidden
 		isKey

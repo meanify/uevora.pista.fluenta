@@ -1,21 +1,21 @@
 /// Dimensão de ano, conforme a todos os indicadores (anuais e mensais).
-table 'Ano'
+table Ano
 	lineageTag: 86bd2577-c4bf-5879-8746-4b1350576a3f
 
-	column 'Ano'
+	column Ano
 		dataType: int64
 		isKey
 		lineageTag: 6b9138b4-e66e-5c1e-94ee-bac1ac005242
 		summarizeBy: none
 		sourceColumn: [Ano]
 
-	column 'Década'
+	column Década
 		dataType: int64
 		lineageTag: 43afcda9-35e0-57f7-aedb-ff6de0307546
 		summarizeBy: none
 		sourceColumn: [Década]
 
-	partition 'Ano' = calculated
+	partition Ano = calculated
 		mode: import
 		source =
 				VAR Anos =

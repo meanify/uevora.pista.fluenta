@@ -2,7 +2,7 @@
 table 'Métrica de pressão'
 	lineageTag: c4b948a1-2367-5218-b1df-98fe42d619ca
 
-	column 'Métrica'
+	column Métrica
 		dataType: string
 		isKey
 		lineageTag: 10b32e41-cc27-5727-b9fd-1a813fe4f650

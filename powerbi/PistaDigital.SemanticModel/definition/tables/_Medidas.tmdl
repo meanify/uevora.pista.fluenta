@@ -1,5 +1,5 @@
 /// Medidas derivadas e comparações entre indicadores.
-table '_Medidas'
+table _Medidas
 	lineageTag: e5605908-5b6a-562f-9e25-209ca406dee6
 
 	/// Dormidas / hóspedes do mesmo grão. Preferir a esta medida a média simples do INE.
@@ -255,15 +255,14 @@ table '_Medidas'
 		formatString: #,0.00
 		lineageTag: aa1aeea4-3c12-5bb6-ad57-09b388111bcb
 
-	column '_'
+	column _
 		dataType: string
 		isHidden
 		lineageTag: dcd75bd5-a71a-5a21-9a73-3264a58f2abf
 		summarizeBy: none
 		sourceColumn: [_]
 
-	partition '_Medidas' = calculated
+	partition _Medidas = calculated
 		mode: import
-		source =
-				ROW("_", BLANK())
+		source = ROW("_", BLANK())
 
