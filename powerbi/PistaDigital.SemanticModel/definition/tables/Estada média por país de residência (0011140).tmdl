@@ -66,6 +66,8 @@ table 'Estada média por país de residência (0011140)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -73,6 +75,8 @@ table 'Estada média por país de residência (0011140)'
 		lineageTag: 6d4e2d50-c950-5f82-a0cd-7eea92fc3214
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

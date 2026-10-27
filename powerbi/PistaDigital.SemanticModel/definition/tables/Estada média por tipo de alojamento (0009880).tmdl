@@ -78,6 +78,8 @@ table 'Estada média por tipo de alojamento (0009880)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -85,6 +87,8 @@ table 'Estada média por tipo de alojamento (0009880)'
 		lineageTag: 57879a7b-b207-54fb-bf69-ab0706d3cf5a
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

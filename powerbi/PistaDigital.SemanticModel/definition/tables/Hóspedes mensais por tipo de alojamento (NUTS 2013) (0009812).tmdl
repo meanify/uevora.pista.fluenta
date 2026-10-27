@@ -53,6 +53,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		summarizeBy: none
 		sourceColumn: Data
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column hospedes
 		dataType: double
 		formatString: #,0
@@ -68,6 +70,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -75,6 +79,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		lineageTag: 8564fae7-9d70-53eb-9af0-4ab1fca4c5b8
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column NutsIIKey
 		dataType: string

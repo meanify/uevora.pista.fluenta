@@ -75,6 +75,8 @@ table 'Dormidas por tipo de alojamento (0009877)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -82,6 +84,8 @@ table 'Dormidas por tipo de alojamento (0009877)'
 		lineageTag: 233ac2d2-6a02-5274-9a03-779b7fe94cae
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

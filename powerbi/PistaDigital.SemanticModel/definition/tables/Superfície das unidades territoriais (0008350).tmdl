@@ -57,6 +57,8 @@ table 'Superfície das unidades territoriais (0008350)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -64,6 +66,8 @@ table 'Superfície das unidades territoriais (0008350)'
 		lineageTag: c7f45299-deed-566d-95f9-8923afc2f396
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

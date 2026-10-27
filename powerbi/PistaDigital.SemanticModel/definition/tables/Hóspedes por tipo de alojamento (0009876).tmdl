@@ -75,6 +75,8 @@ table 'Hóspedes por tipo de alojamento (0009876)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -82,6 +84,8 @@ table 'Hóspedes por tipo de alojamento (0009876)'
 		lineageTag: 12170c78-eb31-5781-af6c-dfe82d622841
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

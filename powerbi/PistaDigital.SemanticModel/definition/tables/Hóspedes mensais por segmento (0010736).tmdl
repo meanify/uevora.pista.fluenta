@@ -65,6 +65,8 @@ table 'Hóspedes mensais por segmento (0010736)'
 		summarizeBy: none
 		sourceColumn: Data
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column hospedes
 		dataType: double
 		formatString: #,0
@@ -80,6 +82,8 @@ table 'Hóspedes mensais por segmento (0010736)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -87,6 +91,8 @@ table 'Hóspedes mensais por segmento (0010736)'
 		lineageTag: 6422a557-0131-5295-a624-f1db315560f0
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

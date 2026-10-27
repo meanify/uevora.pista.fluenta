@@ -53,6 +53,8 @@ table 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'
 		summarizeBy: none
 		sourceColumn: Data
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column dormidas
 		dataType: double
 		formatString: #,0
@@ -68,6 +70,8 @@ table 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -75,6 +79,8 @@ table 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'
 		lineageTag: 67390651-6148-5e1c-98ee-a6a479124278
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column NutsIIKey
 		dataType: string

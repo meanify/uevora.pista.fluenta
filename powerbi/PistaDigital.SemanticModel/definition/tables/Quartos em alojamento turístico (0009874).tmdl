@@ -75,6 +75,8 @@ table 'Quartos em alojamento turístico (0009874)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -82,6 +84,8 @@ table 'Quartos em alojamento turístico (0009874)'
 		lineageTag: 67f26d9d-307c-5bd7-8091-976ad018b592
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

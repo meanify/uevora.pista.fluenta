@@ -65,6 +65,8 @@ table 'Dormidas mensais por segmento (0010735)'
 		summarizeBy: none
 		sourceColumn: Data
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column dormidas
 		dataType: double
 		formatString: #,0
@@ -80,6 +82,8 @@ table 'Dormidas mensais por segmento (0010735)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -87,6 +91,8 @@ table 'Dormidas mensais por segmento (0010735)'
 		lineageTag: 6d3f3bab-56c6-58b4-a900-86df84cde322
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

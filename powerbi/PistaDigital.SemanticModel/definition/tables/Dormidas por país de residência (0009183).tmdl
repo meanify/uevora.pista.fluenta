@@ -63,6 +63,8 @@ table 'Dormidas por país de residência (0009183)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -70,6 +72,8 @@ table 'Dormidas por país de residência (0009183)'
 		lineageTag: fcecf525-3197-5c08-b5c8-12f90f6e42e2
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

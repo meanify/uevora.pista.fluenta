@@ -53,6 +53,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'
 		summarizeBy: none
 		sourceColumn: Data
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column hospedes
 		dataType: double
 		formatString: #,0
@@ -68,6 +70,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -75,6 +79,8 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'
 		lineageTag: d7f14e87-c0c9-5b4c-855c-30d2f8f44eeb
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column NutsIIKey
 		dataType: string
