@@ -40,7 +40,7 @@ IND = [
      ["tipo_alojamento", "subtipo_alojamento", "classificacao"],
      "Estabelecimentos de alojamento turístico", "Estabelecimentos", "#,0", "SUM"),
     ("0009874", False, "quartos", MUN, ["tipo_alojamento", "subtipo_alojamento", "classificacao"],
-     "Quartos em alojamento turístico", "Quartos", "#,0", "SUM"),
+     "Quartos em alojamento turístico", "Quartos (tipo)", "#,0", "SUM"),
     ("0009876", False, "hospedes", MUN, ["tipo_alojamento", "subtipo_alojamento", "classificacao"],
      "Hóspedes por tipo de alojamento", "Hóspedes (tipo)", "#,0", "SUM"),
     ("0009877", False, "dormidas", MUN, ["tipo_alojamento", "subtipo_alojamento", "classificacao"],
@@ -117,7 +117,7 @@ def fact_tmdl(ind):
         base = "Texto"
     keyexpr = ' & "|" & '.join(f"[{c}]" for c in geo)
     m += [f'    GeoKey = Table.AddColumn({base}, "{"GeoKey" if geo is MUN else "NutsIIKey"}", '
-          f"each {keyexpr}, type text),"]
+          f"each {keyexpr}, type text)" + ("," if geo is MUN else "")]
     if geo is MUN:
         m += ['    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)']
         m += ["in", "    NutsII"]
@@ -323,7 +323,7 @@ ML += m("Estada média ponderada (residência)",
         "Dormidas / hóspedes por país de residência.")
 ML += m("Estada média mensal ponderada (segmento)",
         f"DIVIDE([Dormidas mensais (segmento)], [Hóspedes mensais (segmento)])", "#,0.00")
-ML += m("Quartos por estabelecimento", "DIVIDE([Quartos], [Estabelecimentos])", "#,0.00")
+ML += m("Quartos por estabelecimento", "DIVIDE([Quartos (tipo)], [Estabelecimentos])", "#,0.00")
 ML += m("Dormidas (ano anterior)",
         "VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])\n"
         "RETURN\n"
@@ -346,7 +346,7 @@ ML += m("Dormidas mensais MoM %",
 ML += m("Noites-quarto disponíveis",
         "SUMX(\n"
         "\t\tVALUES('Ano'[Ano]),\n"
-        "\t\tCALCULATE([Quartos])\n"
+        "\t\tCALCULATE([Quartos (tipo)])\n"
         "\t\t\t* (DATEDIFF(DATE('Ano'[Ano], 1, 1), DATE('Ano'[Ano], 12, 31), DAY) + 1)\n"
         "\t)", "#,0",
         "Capacidade anual: quartos × dias do ano, somada ano a ano para suportar "
@@ -391,7 +391,7 @@ ML += m("Dormidas por km²",
 ML += m("Hóspedes por km²",
         "DIVIDE([Hóspedes (tipo)], [Superfície (km², último ano)])", "#,0.00")
 ML += m("Quartos por km²",
-        "DIVIDE([Quartos], [Superfície (km², último ano)])", "#,0.00",
+        "DIVIDE([Quartos (tipo)], [Superfície (km², último ano)])", "#,0.00",
         "Capacidade licenciada por quilómetro quadrado. Ler ao lado de "
         "[Dormidas por km²] para separar carga de capacidade.")
 ML += m("Estabelecimentos por km²",
@@ -542,7 +542,7 @@ put(f"{DEF}/relationships.tmdl", "\n".join(rels))
 
 # ------------------------------------------------------------------ expressions
 put(f"{DEF}/expressions.tmdl", f"""/// Servidor PostgreSQL, no formato anfitriao:porta (PISTA_DB_HOSTNAME:PISTA_DB_PORTNUMBER).
-expression Servidor = "localhost:5432" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression Servidor = "pistadb.pistadigital.uevora.pt:30392" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 \tlineageTag: {tag()}
 \tqueryGroup: 'Parâmetros'
 
@@ -551,7 +551,7 @@ expression Servidor = "localhost:5432" meta [IsParameterQuery=true, Type="Text",
 \tannotation PBI_ResultType = Text
 
 /// Nome da base de dados (PISTA_DB_NAME).
-expression BaseDados = "pistadigital" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 \tlineageTag: {tag()}
 \tqueryGroup: 'Parâmetros'
 

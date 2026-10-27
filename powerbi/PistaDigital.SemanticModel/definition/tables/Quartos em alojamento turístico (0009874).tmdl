@@ -1,7 +1,7 @@
 table 'Quartos em alojamento turístico (0009874)'
 	lineageTag: d3b82074-0a55-51aa-aaeb-dc894b34dae3
 
-	measure 'Quartos' = SUM('Quartos em alojamento turístico (0009874)'[quartos])
+	measure 'Quartos (tipo)' = SUM('Quartos em alojamento turístico (0009874)'[quartos])
 		formatString: #,0
 		lineageTag: 3f891145-37cc-5377-8b64-7367c36567d4
 

@@ -1,5 +1,5 @@
 /// Servidor PostgreSQL, no formato anfitriao:porta (PISTA_DB_HOSTNAME:PISTA_DB_PORTNUMBER).
-expression Servidor = "localhost:5432" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression Servidor = "pistadb.pistadigital.uevora.pt:30392" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 8e955bb5-1146-5685-bc1a-1de5885009fe
 	queryGroup: 'Parâmetros'
 
@@ -8,7 +8,7 @@ expression Servidor = "localhost:5432" meta [IsParameterQuery=true, Type="Text",
 	annotation PBI_ResultType = Text
 
 /// Nome da base de dados (PISTA_DB_NAME).
-expression BaseDados = "pistadigital" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: c295f7f3-7809-5d91-82c7-6e2a80ad7c6f
 	queryGroup: 'Parâmetros'
 

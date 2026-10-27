@@ -16,7 +16,7 @@ table '_Medidas'
 		formatString: #,0.00
 		lineageTag: 78b54416-8d19-5562-b74d-62f058b8104a
 
-	measure 'Quartos por estabelecimento' = DIVIDE([Quartos], [Estabelecimentos])
+	measure 'Quartos por estabelecimento' = DIVIDE([Quartos (tipo)], [Estabelecimentos])
 		formatString: #,0.00
 		lineageTag: a0ce9310-df2b-5ccc-915b-e1311766ae43
 
@@ -53,7 +53,7 @@ table '_Medidas'
 	measure 'Noites-quarto disponíveis' =
 			SUMX(
 			VALUES('Ano'[Ano]),
-			CALCULATE([Quartos])
+			CALCULATE([Quartos (tipo)])
 			* (DATEDIFF(DATE('Ano'[Ano], 1, 1), DATE('Ano'[Ano], 12, 31), DAY) + 1)
 			)
 		formatString: #,0
@@ -98,7 +98,7 @@ table '_Medidas'
 		lineageTag: af3c434d-fa94-5ea8-ba2c-7f96975087d6
 
 	/// Capacidade licenciada por quilómetro quadrado. Ler ao lado de [Dormidas por km²] para separar carga de capacidade.
-	measure 'Quartos por km²' = DIVIDE([Quartos], [Superfície (km², último ano)])
+	measure 'Quartos por km²' = DIVIDE([Quartos (tipo)], [Superfície (km², último ano)])
 		formatString: #,0.00
 		lineageTag: d8d59c02-d6a9-5b1d-8ce0-0e73569ec30b
 

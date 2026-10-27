@@ -20,8 +20,8 @@ never stored in these files:
 
 | Parameter | Matches | Example |
 |---|---|---|
-| `Servidor` | `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `localhost:5432` |
-| `BaseDados` | `PISTA_DB_NAME` | `pistadigital` |
+| `Servidor` | `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `pistadb.pistadigital.uevora.pt:30392` |
+| `BaseDados` | `PISTA_DB_NAME` | `pista` |
 
 All tables load through the shared `Fonte` query, so the connection is defined once.
 
@@ -37,7 +37,7 @@ One fact table per INE indicator, named `<descrição> (<varcd>)`, reading
 | Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808) | NUTS II / mês / tipo | Dormidas mensais (tipo) |
 | Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812) | NUTS II / mês / tipo | Hóspedes mensais (tipo) |
 | Estabelecimentos de alojamento turístico (0009873) | Município / ano / tipo | Estabelecimentos |
-| Quartos em alojamento turístico (0009874) | Município / ano / tipo | Quartos |
+| Quartos em alojamento turístico (0009874) | Município / ano / tipo | Quartos (tipo) |
 | Hóspedes por tipo de alojamento (0009876) | Município / ano / tipo | Hóspedes (tipo) |
 | Dormidas por tipo de alojamento (0009877) | Município / ano / tipo | Dormidas (tipo) |
 | Estada média por tipo de alojamento (0009880) | Município / ano / tipo | Estada média INE (tipo) |

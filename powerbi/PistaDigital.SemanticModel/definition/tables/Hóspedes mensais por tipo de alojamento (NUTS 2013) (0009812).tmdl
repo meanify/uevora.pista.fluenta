@@ -89,7 +89,7 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 				    Texto = Table.TransformColumns(Origem, {{"nuts_i", Text.Trim, type text}, {"nuts_ii", Text.Trim, type text}, {"tipo_alojamento", Text.Trim, type text}, {"subtipo_alojamento", Text.Trim, type text}}),
 				    Mes = Table.TransformColumns(Texto, {{"mes", Text.Trim, type text}}),
 				    ComData = Table.AddColumn(Mes, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
-				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text),
+				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    GeoKey
 
