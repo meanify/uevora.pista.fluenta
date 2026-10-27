@@ -1,5 +1,6 @@
-/// Servidor PostgreSQL, no formato anfitriao:porta (PISTA_DB_HOSTNAME:PISTA_DB_PORTNUMBER).
-expression Servidor = "pistadb.pistadigital.uevora.pt:30392" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+/// Nome do DSN ODBC (System DSN) que aponta para a base de dados PostgreSQL.
+/// Tem de existir com o mesmo nome no PC do Power BI Desktop e nas máquinas do gateway 'pistadigital'.
+expression DSN = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 8e955bb5-1146-5685-bc1a-1de5885009fe
 	queryGroup: 'Parâmetros'
 
@@ -16,9 +17,20 @@ expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParam
 
 	annotation PBI_ResultType = Text
 
-/// Ligação partilhada. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
-expression Fonte = PostgreSQL.Database(Servidor, BaseDados)
+/// Ligação partilhada via ODBC (gateway 'pistadigital'). Devolve as tabelas do esquema public
+/// com as colunas Schema/Item/Data. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
+expression Fonte =
+		let
+		    Origem = Odbc.DataSource("dsn=" & DSN, [HierarchicalNavigation = true]),
+		    BaseDeDados = Origem{[Name = BaseDados, Kind = "Database"]}[Data],
+		    Esquema = BaseDeDados{[Name = "public", Kind = "Schema"]}[Data],
+		    Tabelas = Table.SelectRows(Esquema, each [Kind] = "Table" or [Kind] = "View"),
+		    Item = Table.RenameColumns(Table.SelectColumns(Tabelas, {"Name", "Data"}), {{"Name", "Item"}}),
+		    ComEsquema = Table.AddColumn(Item, "Schema", each "public", type text)
+		in
+		    ComEsquema
 	lineageTag: 69d29a49-7bdb-5157-b97b-5f9df7d724e3
 	queryGroup: 'Parâmetros'
 
 	annotation PBI_ResultType = Table
+

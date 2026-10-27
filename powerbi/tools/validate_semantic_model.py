@@ -158,7 +158,7 @@ expr_txt = open(f"{DEF}/expressions.tmdl", encoding="utf-8").read()
 exprs = set(re.findall(r"^expression (\w+)", expr_txt, re.M))
 for t, kind, src in partitions:
     if kind == "m":
-        for tok in re.findall(r"\b(Fonte|Servidor|BaseDados)\b", src):
+        for tok in re.findall(r"\b(Fonte|DSN|BaseDados)\b", src):
             if tok not in exprs:
                 errs.append(f"partition {t!r} uses undefined expression {tok}")
 

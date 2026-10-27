@@ -541,8 +541,9 @@ for t in SEG_T:
 put(f"{DEF}/relationships.tmdl", "\n".join(rels))
 
 # ------------------------------------------------------------------ expressions
-put(f"{DEF}/expressions.tmdl", f"""/// Servidor PostgreSQL, no formato anfitriao:porta (PISTA_DB_HOSTNAME:PISTA_DB_PORTNUMBER).
-expression Servidor = "pistadb.pistadigital.uevora.pt:30392" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+put(f"{DEF}/expressions.tmdl", f"""/// Nome do DSN ODBC (System DSN) que aponta para a base de dados PostgreSQL.
+/// Tem de existir com o mesmo nome no PC do Power BI Desktop e nas máquinas do gateway 'pistadigital'.
+expression DSN = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 \tlineageTag: {tag()}
 \tqueryGroup: 'Parâmetros'
 
@@ -559,8 +560,18 @@ expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParam
 
 \tannotation PBI_ResultType = Text
 
-/// Ligação partilhada. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
-expression Fonte = PostgreSQL.Database(Servidor, BaseDados)
+/// Ligação partilhada via ODBC (gateway 'pistadigital'). Devolve as tabelas do esquema public
+/// com as colunas Schema/Item/Data. As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
+expression Fonte =
+\t\tlet
+\t\t    Origem = Odbc.DataSource("dsn=" & DSN, [HierarchicalNavigation = true]),
+\t\t    BaseDeDados = Origem{{[Name = BaseDados, Kind = "Database"]}}[Data],
+\t\t    Esquema = BaseDeDados{{[Name = "public", Kind = "Schema"]}}[Data],
+\t\t    Tabelas = Table.SelectRows(Esquema, each [Kind] = "Table" or [Kind] = "View"),
+\t\t    Item = Table.RenameColumns(Table.SelectColumns(Tabelas, {{"Name", "Data"}}), {{{{"Name", "Item"}}}}),
+\t\t    ComEsquema = Table.AddColumn(Item, "Schema", each "public", type text)
+\t\tin
+\t\t    ComEsquema
 \tlineageTag: {tag()}
 \tqueryGroup: 'Parâmetros'
 
