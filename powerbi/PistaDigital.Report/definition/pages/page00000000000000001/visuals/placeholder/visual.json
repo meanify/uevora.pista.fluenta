@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "placeholder",
   "position": {
-    "x": 248.38533870658222,
-    "y": 115.28433442077656,
+    "x": 247.83316620493909,
+    "y": 633.50612709689483,
     "z": 10,
-    "height": 593.19030256508665,
-    "width": 1022.8864581334357,
+    "height": 75.185342556554545,
+    "width": 231.1253123034825,
     "tabOrder": 10
   },
   "visual": {
@@ -19,10 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "Área de conteúdo",
+                    "value": "Área de conteúd",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "16pt",
                       "color": "#001f44"
                     }
@@ -34,7 +34,7 @@
                   {
                     "value": "Adicione aqui os visuais do relatório (grelha de 28 px, sem cantos arredondados).",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "12pt",
                       "color": "#4e4f50"
                     }

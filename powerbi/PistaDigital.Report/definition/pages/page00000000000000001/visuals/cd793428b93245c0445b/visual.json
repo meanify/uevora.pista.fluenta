@@ -1,0 +1,78 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "cd793428b93245c0445b",
+  "position": {
+    "x": 478.95847850842159,
+    "y": 417.772605215392,
+    "z": 3005,
+    "height": 302.227394784608,
+    "width": 291.54124923607225
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Estada média por tipo de alojamento (0009880)"
+                    }
+                  },
+                  "Property": "estada_media"
+                }
+              },
+              "queryRef": "Estada média por tipo de alojamento (0009880).estada_media",
+              "nativeQueryRef": "estada_media",
+              "active": true
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Estada média por tipo de alojamento (0009880)"
+                    }
+                  },
+                  "Property": "nuts_iii"
+                }
+              },
+              "queryRef": "Estada média por tipo de alojamento (0009880).nuts_iii",
+              "nativeQueryRef": "nuts_iii",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Estada média por tipo de alojamento (0009880)"
+                    }
+                  },
+                  "Property": "ano"
+                }
+              },
+              "queryRef": "Estada média por tipo de alojamento (0009880).ano",
+              "nativeQueryRef": "ano"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
   "themeCollection": {
     "baseTheme": {
-      "name": "CY24SU10",
+      "name": "Fluent2-CY26SU10",
       "reportVersionAtImport": {
         "visual": "2.14.0",
         "report": "3.4.0",
@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "PistaDigitalTheme.json",
+      "name": "Pista_Digital30302269594962783.json",
       "reportVersionAtImport": {
         "visual": "2.14.0",
         "report": "3.4.0",
@@ -20,14 +20,34 @@
       "type": "RegisteredResources"
     }
   },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
   "resourcePackages": [
     {
       "name": "RegisteredResources",
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "PistaDigitalTheme.json",
-          "path": "PistaDigitalTheme.json",
+          "name": "pista_digital_logo37702284257599494.png",
+          "path": "pista_digital_logo37702284257599494.png",
+          "type": "Image"
+        },
+        {
+          "name": "Pista_Digital30302269594962783.json",
+          "path": "Pista_Digital30302269594962783.json",
           "type": "CustomTheme"
         }
       ]
