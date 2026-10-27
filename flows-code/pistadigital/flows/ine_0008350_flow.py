@@ -17,11 +17,11 @@ SCHEMA_COLUMNS = [
 ]
 CREATE_TABLE_SQL = f"""
 CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-    nuts_i bpchar(64) NOT NULL,
-    nuts_ii bpchar(64) NOT NULL,
-    nuts_iii bpchar(64) NOT NULL,
-    distrito bpchar(128) NOT NULL,
-    municipio bpchar(128) NOT NULL,
+    nuts_i varchar(64) NOT NULL,
+    nuts_ii varchar(64) NOT NULL,
+    nuts_iii varchar(64) NOT NULL,
+    distrito varchar(128) NOT NULL,
+    municipio varchar(128) NOT NULL,
     ano int4 NOT NULL,
     {VALUE_COLUMN} float4 NULL,
     create_date date NULL,

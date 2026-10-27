@@ -17,12 +17,12 @@ SCHEMA_COLUMNS = [
 ]
 CREATE_TABLE_SQL = f"""
 CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-    nuts_i CHAR(64) NOT NULL,
-    nuts_ii CHAR(64) NOT NULL,
-    nuts_iii CHAR(64) NOT NULL,
-    distrito CHAR(64) NOT NULL,
-    municipio CHAR(64) NOT NULL,
-    segmento_alojamento CHAR(64) NOT NULL,
+    nuts_i varchar(64) NOT NULL,
+    nuts_ii varchar(64) NOT NULL,
+    nuts_iii varchar(64) NOT NULL,
+    distrito varchar(64) NOT NULL,
+    municipio varchar(64) NOT NULL,
+    segmento_alojamento varchar(64) NOT NULL,
     ano INTEGER NOT NULL,
     mes CHAR(2) NOT NULL,
     {VALUE_COLUMN} REAL,

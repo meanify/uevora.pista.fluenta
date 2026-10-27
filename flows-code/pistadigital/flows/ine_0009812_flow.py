@@ -16,10 +16,10 @@ SCHEMA_COLUMNS = [
 ]
 CREATE_TABLE_SQL = f"""
 CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-    nuts_i CHAR(64) NOT NULL,
-    nuts_ii CHAR(64) NOT NULL,
-    tipo_alojamento CHAR(64) NOT NULL,
-    subtipo_alojamento CHAR(64) NOT NULL,
+    nuts_i varchar(64) NOT NULL,
+    nuts_ii varchar(64) NOT NULL,
+    tipo_alojamento varchar(64) NOT NULL,
+    subtipo_alojamento varchar(64) NOT NULL,
     ano INTEGER NOT NULL,
     mes CHAR(2) NOT NULL,
     {VALUE_COLUMN} REAL,

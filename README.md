@@ -83,6 +83,19 @@ All listed indicators are registered in the CLI. Monthly indicators accept
 `--year` with either `--month` or `--all-months`, or `--all-years-months` for
 all published periods. `--all-years` remains annual-only.
 
+All registered flows now define label columns as `VARCHAR(n)`, preserving
+their existing length limits without PostgreSQL's fixed-width space padding.
+Monthly `mes` codes remain `CHAR(2)`. The schema descriptions below describe
+the originally supplied tables; their `CHAR`/`bpchar` label types are superseded
+by `VARCHAR` in the flow definitions.
+For existing `public.ine_<code>_ds` tables, run
+[the label migration](scripts/migrate_ine_labels_to_varchar.sql) in one
+transaction. It removes trailing spaces, preserves lengths, row counts and
+primary keys, skips missing/already-migrated tables, and leaves legacy tables
+without the `_ds` suffix untouched. Dependent views or lock contention cause
+the migration to fail rather than being dropped or bypassed. Refresh Power BI
+after migration to replace cached padded labels.
+
 Indicator 12093 uses an approved new schema modeled on 9808, with metric
 `hospedes REAL`, four `CHAR(64)` label dimensions, `ano INTEGER`, `mes CHAR(2)`,
 and nullable date audit columns. Its primary key includes every dimension,

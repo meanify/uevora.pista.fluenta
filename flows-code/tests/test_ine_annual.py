@@ -154,7 +154,7 @@ class AnnualFlowTests(unittest.TestCase):
                     module.CREATE_TABLE_SQL,
                 )
                 for column, length in dimensions.items():
-                    self.assertIn(f"{column} bpchar({length}) NOT NULL",
+                    self.assertIn(f"{column} varchar({length}) NOT NULL",
                                   module.CREATE_TABLE_SQL)
                 self.assertIn(f"{metric} float4 NULL", module.CREATE_TABLE_SQL)
                 self.assertIn("create_date date NULL", module.CREATE_TABLE_SQL)

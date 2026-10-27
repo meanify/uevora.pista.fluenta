@@ -18,8 +18,8 @@ from pistadigital.utils import ine_api, ine_output
 
 
 LEGACY = {
-    "0009873": ("establecimento_de_alojamento_turistico", 2024, 64, "bpchar", "date"),
-    "0009874": ("quartos", 2025, 64, "bpchar", "date"),
+    "0009873": ("establecimento_de_alojamento_turistico", 2024, 64, "varchar", "date"),
+    "0009874": ("quartos", 2025, 64, "varchar", "date"),
     "0009929": ("rendimento_medio_por_quarto", 2024, 128, "varchar", "timestamp"),
 }
 
@@ -52,6 +52,13 @@ def record(value="12,5", **fields):
 
 
 class LegacyFlowTests(unittest.TestCase):
+    def test_registered_indicator_labels_are_not_fixed_width(self):
+        for code, module_path in cli.INDICATORS.items():
+            with self.subTest(code=code):
+                module = importlib.import_module(module_path)
+                self.assertNotRegex(module.CREATE_TABLE_SQL.lower(), r"\bbpchar\(")
+                self.assertNotRegex(module.CREATE_TABLE_SQL.lower(), r"\bchar\((64|128)\)")
+
     def module(self, code):
         return importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
 
