@@ -5,6 +5,19 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'
 		formatString: #,0
 		lineageTag: 560b6248-3a76-56f1-afcd-a3ff6eae92b1
 
+	/// Hóspedes mensais por tipo de alojamento (NUTS 2024) do ano anterior.
+	measure 'Hóspedes mensais (tipo, NUTS 2024, ano anterior)' = CALCULATE([Hóspedes mensais (tipo, NUTS 2024)], DATEADD('Calendário'[Date], -1, YEAR))
+		formatString: #,0
+		lineageTag: f6706ae3-12da-583c-a0f5-085c6364cee9
+
+	/// Variação homóloga de [Hóspedes mensais (tipo, NUTS 2024)]. Em branco sem ano anterior publicado.
+	measure 'Hóspedes mensais (tipo, NUTS 2024) YoY %' =
+			VAR Atual = [Hóspedes mensais (tipo, NUTS 2024)]
+			VAR Anterior = [Hóspedes mensais (tipo, NUTS 2024, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 3592c366-1faf-594e-a498-64e281768a45
+
 	column nuts_i
 		dataType: string
 		lineageTag: eb262fb7-9e0b-5247-be7c-f4d6bf6a07ed

@@ -10,7 +10,6 @@ over the INE indicators produced by [flows-code](../flows-code/README.md).
    and **Store reports using enhanced metadata format (PBIR)**.
 2. Open `PistaDigital.pbip`.
 3. Make sure the `Pista Digital` ODBC DSN exists (see Connection), then sign in with the database user.
-4. Install the Montserrat font (Google Fonts) on every machine that edits the report.
 
 ## Connection
 
@@ -141,7 +140,8 @@ month-on-month variation, and tourism intensity per km².
 
 Every one of the 15 indicators has a pair — a prior-year value and a variance —
 generated from its base measure, so the names follow from it: `Hóspedes (tipo)`
-gives `Hóspedes (tipo, ano anterior)` and `Hóspedes (tipo) YoY %`.
+gives `Hóspedes (tipo, ano anterior)` and `Hóspedes (tipo) YoY %`. The pair sits
+on the indicator's own table, next to its base measure, rather than on `_Medidas`.
 
 Two patterns, because the families hang off different dimensions:
 
@@ -274,7 +274,7 @@ default; only an ad-hoc drag of those columns onto a visual would hit it.
 
 `PistaDigital.Report/StaticResources/RegisteredResources/PistaDigitalTheme.json`:
 navy `#001F44`, gold `#FFAD00`, link `#2066BC`, ink `#1D2127`, hairline `#4E4F50`,
-Montserrat, 0 px corner radius, no shadows, navy table headers.
+Arial (the site uses Montserrat; the report uses Arial so it renders the same on any machine and in the Service), 0 px corner radius, no shadows, navy table headers.
 
 ## `PistaDigital.pbit`
 

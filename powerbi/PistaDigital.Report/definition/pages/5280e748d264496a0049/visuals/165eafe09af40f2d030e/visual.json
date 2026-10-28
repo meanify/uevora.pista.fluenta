@@ -22,7 +22,7 @@
                     "value": "Área de conteúdo",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "16pt",
                       "color": "#001f44"
                     }
@@ -34,7 +34,7 @@
                   {
                     "value": "Adicione aqui os visuais do relatório (grelha de 28 px, sem cantos arredondados).",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "12pt",
                       "color": "#4e4f50"
                     }

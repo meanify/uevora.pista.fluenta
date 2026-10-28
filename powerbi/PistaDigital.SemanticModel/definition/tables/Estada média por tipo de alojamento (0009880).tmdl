@@ -6,6 +6,25 @@ table 'Estada média por tipo de alojamento (0009880)'
 		formatString: #,0.00
 		lineageTag: c33973fd-cb73-5b8e-8212-aa5eecd907b9
 
+	/// Estada média por tipo de alojamento do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Estada média INE (tipo, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Estada média INE (tipo)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: 8d1529bd-5d23-5f67-aac9-55cefdf8dab9
+
+	/// Variação homóloga de [Estada média INE (tipo)]. Em branco sem ano anterior publicado.
+	measure 'Estada média INE (tipo) YoY %' =
+			VAR Atual = [Estada média INE (tipo)]
+			VAR Anterior = [Estada média INE (tipo, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: cfa93f04-21da-583b-8081-2c2f2f9e8721
+
 	column nuts_i
 		dataType: string
 		lineageTag: a955565a-177e-528c-9537-b661135b4e78

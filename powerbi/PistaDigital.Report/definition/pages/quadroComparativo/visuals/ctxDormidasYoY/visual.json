@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "Dormidas por tipo de alojamento (0009877)"
                     }
                   },
                   "Property": "Dormidas YoY %"
                 }
               },
-              "queryRef": "_Medidas.Dormidas YoY %",
+              "queryRef": "Dormidas por tipo de alojamento (0009877).Dormidas YoY %",
               "nativeQueryRef": "Dormidas YoY %"
             }
           ]
@@ -40,7 +40,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -113,7 +113,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

@@ -22,7 +22,7 @@
                     "value": "Visão geral",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "28pt",
                       "color": "#ffffff"
                     }
@@ -34,7 +34,7 @@
                   {
                     "value": "Indicadores-chave do turismo sustentável",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "12pt",
                       "color": "#ced4da"
                     }

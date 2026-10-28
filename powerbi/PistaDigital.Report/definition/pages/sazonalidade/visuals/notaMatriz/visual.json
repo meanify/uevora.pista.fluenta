@@ -21,7 +21,7 @@
                   {
                     "value": "Células vazias são meses que o INE ainda não publicou, não meses sem dormidas. Os meses estão numerados de 1 a 12 para garantir a ordem cronológica.",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#4E4F50",
                       "fontWeight": "normal"

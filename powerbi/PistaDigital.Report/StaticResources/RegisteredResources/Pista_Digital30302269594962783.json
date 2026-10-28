@@ -503,7 +503,7 @@
       "*": {
         "*": [
           {
-            "fontFamily": "Montserrat",
+            "fontFamily": "Arial",
             "wordWrap": true
           }
         ],
@@ -527,7 +527,7 @@
         "title": [
           {
             "show": true,
-            "fontFamily": "Montserrat",
+            "fontFamily": "Arial",
             "fontSize": 12,
             "bold": true,
             "fontColor": {
@@ -584,7 +584,7 @@
               }
             },
             "fontSize": 28,
-            "fontFamily": "Montserrat"
+            "fontFamily": "Arial"
           }
         ],
         "categoryLabels": [

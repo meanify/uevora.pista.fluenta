@@ -21,7 +21,7 @@
                   {
                     "value": "Para o planeador. A ocupação estimada é dormidas ÷ noites-quarto disponíveis, não a taxa de ocupação oficial do INE. A posição vem sempre com o número de pares que reportam.",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#4E4F50",
                       "fontWeight": "normal"

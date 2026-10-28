@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "Rendimento médio por quarto (0009929)"
                     }
                   },
                   "Property": "RevPAR YoY %"
                 }
               },
-              "queryRef": "_Medidas.RevPAR YoY %",
+              "queryRef": "Rendimento médio por quarto (0009929).RevPAR YoY %",
               "nativeQueryRef": "RevPAR YoY %"
             }
           ]
@@ -40,7 +40,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -113,7 +113,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

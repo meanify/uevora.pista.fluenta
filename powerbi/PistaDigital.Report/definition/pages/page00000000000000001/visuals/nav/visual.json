@@ -31,7 +31,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

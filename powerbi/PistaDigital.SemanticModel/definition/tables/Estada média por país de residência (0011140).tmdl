@@ -6,6 +6,25 @@ table 'Estada média por país de residência (0011140)'
 		formatString: #,0.00
 		lineageTag: 650f9b8f-106b-579f-88b6-4e601084fbc6
 
+	/// Estada média por país de residência do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Estada média INE (residência, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Estada média INE (residência)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: e921c615-1965-5380-a7a0-ca3737ddfdf6
+
+	/// Variação homóloga de [Estada média INE (residência)]. Em branco sem ano anterior publicado.
+	measure 'Estada média INE (residência) YoY %' =
+			VAR Atual = [Estada média INE (residência)]
+			VAR Anterior = [Estada média INE (residência, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: ec81fe1c-140b-50b2-9619-8c217d2c623f
+
 	column nuts_i
 		dataType: string
 		lineageTag: 92be124f-a794-5964-bb3a-1eb08ba98802

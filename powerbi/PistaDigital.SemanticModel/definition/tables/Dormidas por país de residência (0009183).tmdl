@@ -5,6 +5,25 @@ table 'Dormidas por país de residência (0009183)'
 		formatString: #,0
 		lineageTag: c4005a35-3408-5f11-b166-1ef125748a1e
 
+	/// Dormidas por país de residência do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Dormidas (residência, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Dormidas (residência)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0
+		lineageTag: 43c2a091-5469-511c-9206-7c37718e0d46
+
+	/// Variação homóloga de [Dormidas (residência)]. Em branco sem ano anterior publicado.
+	measure 'Dormidas (residência) YoY %' =
+			VAR Atual = [Dormidas (residência)]
+			VAR Anterior = [Dormidas (residência, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: bc7061e7-7b91-5bd3-897c-67c9e50c9906
+
 	column nuts_i
 		dataType: string
 		lineageTag: b9860f53-b2e8-5605-ab74-6db166009c46

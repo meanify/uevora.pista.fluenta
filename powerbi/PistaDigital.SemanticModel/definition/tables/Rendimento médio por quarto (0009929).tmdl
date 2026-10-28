@@ -6,6 +6,24 @@ table 'Rendimento médio por quarto (0009929)'
 		formatString: #,0.00 "€"
 		lineageTag: 357e2400-316f-5b1a-90e5-5363a73d604a
 
+	/// RevPAR médio do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'RevPAR médio (ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([RevPAR médio INE], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: 2fd064d8-82f3-55e9-91d4-825ea17f378d
+
+	measure 'RevPAR YoY %' =
+			VAR Atual = [RevPAR médio INE]
+			VAR Anterior = [RevPAR médio (ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: b8f1cb37-ac73-573c-850a-2654a9ba30fe
+
 	column nuts_i
 		dataType: string
 		lineageTag: ade19fb2-f2cb-53aa-964b-a396ad7c9281
@@ -78,6 +96,8 @@ table 'Rendimento médio por quarto (0009929)'
 		summarizeBy: none
 		sourceColumn: create_date
 
+		annotation UnderlyingDateTimeDataType = Date
+
 	column update_date
 		dataType: dateTime
 		isHidden
@@ -85,6 +105,8 @@ table 'Rendimento médio por quarto (0009929)'
 		lineageTag: f8d7bf81-0a81-59f0-acf8-cee70da1c7f0
 		summarizeBy: none
 		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column GeoKey
 		dataType: string

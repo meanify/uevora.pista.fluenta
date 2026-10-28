@@ -203,8 +203,9 @@ def fact_tmdl(ind):
     return "\n".join(L) + "\n"
 
 
-for ind in IND:
-    put(f"{DEF}/tables/{tname(ind).replace('/', '-')}.tmdl", fact_tmdl(ind))
+# Built now so their positional lineageTags keep their place in the sequence;
+# written after the measure section, once each one's YoY pair is known.
+FACT_TEXT = {tname(ind): fact_tmdl(ind) for ind in IND}
 
 MUN_T = [tname(i) for i in IND if i[3] is MUN]
 REG_T = [tname(i) for i in IND if i[3] is REG]
@@ -421,18 +422,21 @@ ML += m("Estada média ponderada (residência)",
 ML += m("Estada média mensal ponderada (segmento)",
         f"DIVIDE([Dormidas mensais (segmento)], [Hóspedes mensais (segmento)])", "#,0.00")
 ML += m("Quartos por estabelecimento", "DIVIDE([Quartos (tipo)], [Estabelecimentos])", "#,0.00")
-ML += m("Dormidas (ano anterior)",
+# Year-on-year pairs live on their indicator's table (HOME), not on _Medidas.
+# Still created here, in this order, so their positional lineageTags do not move.
+HOME = {}
+HOME.setdefault(T9877, []).extend(m("Dormidas (ano anterior)",
         "VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])\n"
         "RETURN\n"
         "    IF(\n"
         "        NOT ISBLANK(AnoAtual),\n"
         "        CALCULATE([Dormidas (tipo)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)\n"
         "    )", "#,0",
-        "Dormidas do ano anterior. Requer um único ano no contexto de filtro.")
-ML += m("Dormidas YoY %",
+        "Dormidas do ano anterior. Requer um único ano no contexto de filtro."))
+HOME[T9877].extend(m("Dormidas YoY %",
         "VAR Atual = [Dormidas (tipo)]\n"
         "\t\tVAR Anterior = [Dormidas (ano anterior)]\n"
-        "\t\tRETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%")
+        "\t\tRETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%"))
 ML += m("Dormidas mensais (mês anterior)",
         "CALCULATE([Dormidas mensais (segmento)], "
         "DATEADD('Calendário'[Date], -1, MONTH))", "#,0")
@@ -619,7 +623,7 @@ ML += m("Pressão (métrica selecionada)",
         "Métrica do mapa de pressão, escolhida na tabela desligada.")
 # RevPAR year-on-year. Mirrors [Dormidas (ano anterior)]: the previous year is read
 # with REMOVEFILTERS so a single-year selection still finds it.
-ML += m("RevPAR médio (ano anterior)",
+HOME.setdefault(tname(IND[9]), []).extend(m("RevPAR médio (ano anterior)",
         "VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])\n"
         "RETURN\n"
         "    IF(\n"
@@ -627,12 +631,12 @@ ML += m("RevPAR médio (ano anterior)",
         "        CALCULATE([RevPAR médio INE], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)\n"
         "    )", "#,0.00",
         "RevPAR médio do ano anterior. Requer um único ano no contexto de filtro.",
-        pinned=True)
-ML += m("RevPAR YoY %",
+        pinned=True))
+HOME[tname(IND[9])].extend(m("RevPAR YoY %",
         "VAR Atual = [RevPAR médio INE]\n"
         "VAR Anterior = [RevPAR médio (ano anterior)]\n"
         "RETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%",
-        pinned=True)
+        pinned=True))
 # Peer rank and denominator for the other two KPI tiles. Each metric needs its own
 # pair: a município that reports ocupação may not report RevPAR, so reusing
 # [Pares com dados] as the denominator would print «3.º de 14» against 11 peers.
@@ -763,11 +767,12 @@ for _ind in IND:
                  "        NOT ISBLANK(AnoAtual),\n"
                  f"        CALCULATE([{_meas}], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)\n"
                  "    )")
-    ML += m(_prior, _expr, _fmt,
+    _home = HOME.setdefault(tname(_ind), [])
+    _home += m(_prior, _expr, _fmt,
             f"{_disp} do ano anterior."
             + ("" if _monthly else " Requer um único ano no contexto de filtro."),
             pinned=True)
-    ML += m(_pct,
+    _home += m(_pct,
             f"VAR Atual = [{_meas}]\n"
             f"VAR Anterior = [{_prior}]\n"
             "RETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%",
@@ -783,6 +788,13 @@ ML += ["\tcolumn _", "\t\tdataType: string", "\t\tisHidden",
 ML += ["\tpartition _Medidas = calculated", "\t\tmode: import",
        '\t\tsource = ROW("_", BLANK())', ""]
 put(f"{DEF}/tables/_Medidas.tmdl", "\n".join(ML) + "\n")
+
+# Each indicator table: its base measure, then its YoY pair, then the columns.
+for _name, _text in FACT_TEXT.items():
+    _at = _text.index("\n\tcolumn ") + 1
+    _extra = "\n".join(HOME.get(_name, []))
+    _text = _text[:_at] + (_extra + "\n" if _extra else "") + _text[_at:]
+    put(f"{DEF}/tables/{_name.replace('/', '-')}.tmdl", _text)
 
 # ------------------------------------------------------------------ relationships
 rels = []

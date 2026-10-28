@@ -5,6 +5,25 @@ table 'Estabelecimentos de alojamento turístico (0009873)'
 		formatString: #,0
 		lineageTag: dc172d73-e587-5dee-982c-7f9d6d2c34f1
 
+	/// Estabelecimentos de alojamento turístico do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Estabelecimentos (ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Estabelecimentos], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0
+		lineageTag: 419048f5-2313-58fc-8bed-6d0ee96e5da8
+
+	/// Variação homóloga de [Estabelecimentos]. Em branco sem ano anterior publicado.
+	measure 'Estabelecimentos YoY %' =
+			VAR Atual = [Estabelecimentos]
+			VAR Anterior = [Estabelecimentos (ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 527bbe52-7cfe-56d9-9260-606f7a1bc0b7
+
 	column nuts_i
 		dataType: string
 		lineageTag: 655d9c36-c2ea-5c57-8713-d1f877cfacd9

@@ -5,6 +5,25 @@ table 'Superfície das unidades territoriais (0008350)'
 		formatString: #,0.00
 		lineageTag: 9ad9132b-06b3-535f-9148-eb3343877832
 
+	/// Superfície das unidades territoriais do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Superfície (km², ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Superfície (km²)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: 377d34d7-bab7-5ce4-b411-c3ae1078da76
+
+	/// Variação homóloga de [Superfície (km²)]. Em branco sem ano anterior publicado.
+	measure 'Superfície (km²) YoY %' =
+			VAR Atual = [Superfície (km²)]
+			VAR Anterior = [Superfície (km², ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 7164d7c8-d14d-5df8-9671-b125ad93185a
+
 	column nuts_i
 		dataType: string
 		lineageTag: 94e92886-326d-507d-8bb5-d41f3fb57fba

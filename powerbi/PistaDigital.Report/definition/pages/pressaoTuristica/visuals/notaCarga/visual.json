@@ -21,7 +21,7 @@
                   {
                     "value": "Ler as três barras em conjunto separa a carga (dormidas) da capacidade licenciada (quartos e estabelecimentos). A área é a do último ano publicado, não a do ano selecionado.",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#4E4F50",
                       "fontWeight": "normal"

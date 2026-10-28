@@ -87,7 +87,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -174,7 +174,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
