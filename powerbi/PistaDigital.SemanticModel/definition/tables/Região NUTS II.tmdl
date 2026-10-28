@@ -1,4 +1,4 @@
-/// Dimensão NUTS II conforme aos indicadores municipais e aos indicadores só com NUTS I/II.
+/// Dimensão NUTS II conforme aos indicadores municipais e aos indicadores só com NUTS I/II. Só contém a região do parâmetro RegiaoNUTSII.
 table 'Região NUTS II'
 	lineageTag: 223e02e7-cf51-513f-ab73-f90608e22217
 

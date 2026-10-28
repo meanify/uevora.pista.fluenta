@@ -1,0 +1,101 @@
+table 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'
+	lineageTag: dacc25b2-ca32-559c-aac0-548070b07e49
+
+	measure 'Dormidas mensais (tipo)' = SUM('Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[dormidas])
+		formatString: #,0
+		lineageTag: d0057902-5608-50b1-94e0-481d88842526
+
+	column nuts_i
+		dataType: string
+		lineageTag: 8c1d09e2-a6c3-5f1c-a368-bde822b67010
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: eda31db7-ce58-5578-a9a9-a246ff683279
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: 8cd09966-66c7-57a1-972b-ec9a002e6aaa
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 9a76ed05-2c83-5064-bea3-99b42d81e1c4
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 585b5de1-30a0-53d1-923c-c7bbd231b628
+		summarizeBy: sum
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: string
+		lineageTag: 65236def-7735-595e-94c4-150f97dd214d
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 8d6857d3-85d6-52f1-8923-3d43fed0b925
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column dormidas
+		dataType: double
+		formatString: #,0
+		lineageTag: 8dc7e224-fd80-5625-afca-3a5cb6990e35
+		summarizeBy: sum
+		sourceColumn: dormidas
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 771a28a0-478d-5ed8-8d5e-658c14af5885
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 67390651-6148-5e1c-98ee-a6a479124278
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 0fa8a62a-e891-5ed7-9644-246aed95a35a
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)' = m
+		mode: import
+		source =
+				let
+				    Origem = Fonte{[Name = "ine_0009808_ds", Kind = "Table"]}[Data],
+				    ComData = Table.AddColumn(Origem, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    GeoKey
+

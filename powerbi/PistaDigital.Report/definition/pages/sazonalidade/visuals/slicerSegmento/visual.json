@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "Segmento de alojamento.Segmento",
-              "nativeQueryRef": "Segmento"
+              "nativeQueryRef": "Segmento",
+              "active": true
             }
           ]
         }
@@ -87,13 +88,6 @@
               "expr": {
                 "Literal": {
                   "Value": "'Montserrat'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10D"
                 }
               }
             },

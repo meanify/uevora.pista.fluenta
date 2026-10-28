@@ -1,0 +1,106 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "312ca31c05399bf49880",
+  "position": {
+    "x": 576.42167210388277,
+    "y": 118.42845263225229,
+    "z": 3003,
+    "height": 298.69123009019381,
+    "width": 449.6089042410286
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ano"
+                    }
+                  },
+                  "Property": "Ano"
+                }
+              },
+              "queryRef": "Ano.Ano",
+              "nativeQueryRef": "Ano",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Hóspedes por km²"
+                }
+              },
+              "queryRef": "_Medidas.Hóspedes por km²",
+              "nativeQueryRef": "Hóspedes por km²"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Medidas"
+                  }
+                },
+                "Property": "Hóspedes por km²"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7a8020ab45534c0e8640",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Ano"
+              }
+            },
+            "Property": "Ano"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "250600a39956c25ac2b0",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas"
+              }
+            },
+            "Property": "Hóspedes por km²"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

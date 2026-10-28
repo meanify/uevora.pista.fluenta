@@ -1,0 +1,101 @@
+table 'Dormidas por país de residência (0009183)'
+	lineageTag: 6da3215c-ad39-5d8d-8fb9-28725914478a
+
+	measure 'Dormidas (residência)' = SUM('Dormidas por país de residência (0009183)'[dormidas])
+		formatString: #,0
+		lineageTag: c4005a35-3408-5f11-b166-1ef125748a1e
+
+	column nuts_i
+		dataType: string
+		lineageTag: b9860f53-b2e8-5605-ab74-6db166009c46
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: a7591dbc-acf1-5cfb-a674-546cd5a3a22c
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: fe7b2aa1-2f2e-5e3f-b31a-7c1a7a0c2430
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: 29b1339b-a67a-58e2-90b9-84285885d988
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: cf2bff35-2bcb-5122-ab5b-bdfcef360540
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column local_residencia
+		dataType: string
+		lineageTag: f32072d4-917a-543b-9455-3a8bb1a2f1d4
+		summarizeBy: none
+		sourceColumn: local_residencia
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 8fb4712c-bd7d-5539-bee2-2546bd8db1ac
+		summarizeBy: none
+		sourceColumn: ano
+
+	column dormidas
+		dataType: double
+		formatString: #,0
+		lineageTag: 6ea4397f-b14a-55e6-8c1f-874c4591e36d
+		summarizeBy: sum
+		sourceColumn: dormidas
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 0f60a209-7c4f-5745-99a3-93de095146b8
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: fcecf525-3197-5c08-b5c8-12f90f6e42e2
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: f1c418fc-cd6f-5db1-9618-bef7f5ecbab6
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 54037ac9-119c-599c-8b3b-0e2a8b3565e8
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Dormidas por país de residência (0009183)' = m
+		mode: import
+		source =
+				let
+				    Origem = Fonte{[Name = "ine_0009183_ds", Kind = "Table"]}[Data],
+				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+

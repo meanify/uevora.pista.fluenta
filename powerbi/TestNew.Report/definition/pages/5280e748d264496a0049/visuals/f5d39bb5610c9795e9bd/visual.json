@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
-  "name": "7380f91fb5d37c3f939f",
+  "name": "f5d39bb5610c9795e9bd",
   "position": {
-    "x": 803.986109014042,
-    "y": 0,
-    "z": 3008,
-    "height": 150,
-    "width": 465,
-    "tabOrder": 3003
+    "x": 946.37958165419309,
+    "y": 115.28433442077656,
+    "z": 4001,
+    "height": 199.12748672679589,
+    "width": 298.69123009019381,
+    "tabOrder": 4001
   },
   "visual": {
     "visualType": "image",
@@ -20,7 +20,7 @@
                 "name": {
                   "expr": {
                     "Literal": {
-                      "Value": "'pista_digital_logo.png'"
+                      "Value": "'robert-ruggiero-X2bcQMMhaow-unsplash(1).jpg'"
                     }
                   }
                 },
@@ -29,7 +29,7 @@
                     "ResourcePackageItem": {
                       "PackageName": "RegisteredResources",
                       "PackageType": 1,
-                      "ItemName": "pista_digital_logo37702284257599494.png"
+                      "ItemName": "robert-ruggiero-X2bcQMMhaow-un9632271738108077.jpg"
                     }
                   }
                 },
@@ -42,29 +42,28 @@
                 }
               }
             },
-            "transparency": {
+            "sourceType": {
               "expr": {
                 "Literal": {
-                  "Value": "0D"
+                  "Value": "'image'"
                 }
               }
             },
             "fit": {
               "expr": {
                 "Literal": {
-                  "Value": "'Normal'"
+                  "Value": "'Fit'"
                 }
               }
-            }
-          }
-        }
-      ]
-    },
-    "visualContainerObjects": {
-      "visualLink": [
-        {
-          "properties": {
-            "show": {
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "30D"
+                }
+              }
+            },
+            "effects": {
               "expr": {
                 "Literal": {
                   "Value": "false"

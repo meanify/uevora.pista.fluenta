@@ -412,41 +412,34 @@ table _Medidas
 		formatString: #,0.00
 		lineageTag: 0641cab5-64d2-5d93-9f62-e8f20e45a5d0
 
-	/// Dourado na região em foco, azul nas outras. Ligar ao «Field value» da cor das barras; exige 'Região NUTS II'[NUTS II] no eixo.
-	measure 'Cor da região em foco' =
-			IF(
-			    SELECTEDVALUE('Região NUTS II'[NUTS II])
-			        = SELECTEDVALUE('Região em foco'[NUTS II]),
-			    "#FFAD00",
-			    "#2066BC"
-			)
-		lineageTag: ef665d08-eb46-510b-aba2-3aebf8df7c79
-
-	/// Município em foco · grupo de pares · ano, para o cabeçalho da página A.
+	/// Região · município em foco · grupo de pares · ano, para o cabeçalho da página A.
 	measure 'Subtítulo · quadro comparativo' =
+			VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões"), ALL('Região NUTS II'))
 			VAR Mun = SELECTEDVALUE('Município selecionado'[Município], "município por escolher")
 			VAR Pares = SELECTEDVALUE('Geografia'[NUTS III], "todos os pares")
 			VAR AnoSel = SELECTEDVALUE('Ano'[Ano])
 			RETURN
-			    Mun & " · " & Pares & " · "
+			    Regiao & " · " & Mun & " · " & Pares & " · "
 			        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))
 		lineageTag: 037b2978-5352-5ab8-82f1-ac67720732e0
 
-	/// Métrica escolhida · ano, para o cabeçalho da página B.
+	/// Região · métrica escolhida · ano, para o cabeçalho da página B.
 	measure 'Subtítulo · pressão turística' =
+			VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões"), ALL('Região NUTS II'))
 			VAR Metrica = SELECTEDVALUE('Métrica de pressão'[Métrica], "Dormidas por km²")
 			VAR AnoSel = SELECTEDVALUE('Ano'[Ano])
 			RETURN
-			    Metrica & " · "
+			    Regiao & " · " & Metrica & " · "
 			        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))
 		lineageTag: b21ef53f-b556-557a-bad4-0767968d5a3a
 
-	/// Intervalo de anos publicado, para o cabeçalho da página C.
+	/// Região · intervalo de anos publicado, para o cabeçalho da página C.
 	measure 'Subtítulo · sazonalidade' =
+			VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões"), ALL('Região NUTS II'))
 			VAR AnoMin = MIN('Calendário'[Ano])
 			VAR AnoMax = MAX('Calendário'[Ano])
 			RETURN
-			    "Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")
+			    Regiao & " · Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")
 		lineageTag: ca876803-343c-5064-8e25-814676913fef
 
 	/// Superfície das unidades territoriais do ano anterior. Requer um único ano no contexto de filtro.
@@ -665,6 +658,19 @@ table _Medidas
 			RETURN DIVIDE(Atual - Anterior, Anterior)
 		formatString: 0.0%
 		lineageTag: 3592c366-1faf-594e-a498-64e281768a45
+
+	measure Transparente = "rgba(0,0,0,0)"
+		lineageTag: 169bceb7-9232-46bc-b225-007ca755a4df
+
+	/// Dourado na sub-região em foco, azul nas outras. Ligar ao «Field value» da cor das barras; exige 'Geografia'[NUTS III] no eixo.
+	measure 'Cor da sub-região em foco' =
+			IF(
+			    SELECTEDVALUE('Geografia'[NUTS III])
+			        = SELECTEDVALUE('Sub-região em foco'[NUTS III]),
+			    "#FFAD00",
+			    "#2066BC"
+			)
+		lineageTag: 2f7c56fc-904d-5d97-9c37-3460734c399d
 
 	column _
 		dataType: string

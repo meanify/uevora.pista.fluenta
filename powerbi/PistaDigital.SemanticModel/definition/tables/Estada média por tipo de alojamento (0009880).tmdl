@@ -109,7 +109,12 @@ table 'Estada média por tipo de alojamento (0009880)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0009880_ds", Kind = "Table"]}[Data],
-				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento", "classificacao"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento])) and ([classificacao] <> "Total" or [subtipo_alojamento] = "Total" or not List.Contains(SubtiposComClasse, [subtipo_alojamento]))),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

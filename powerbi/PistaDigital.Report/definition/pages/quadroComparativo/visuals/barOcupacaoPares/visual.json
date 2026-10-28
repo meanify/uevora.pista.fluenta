@@ -13,6 +13,25 @@
     "visualType": "barChart",
     "query": {
       "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Geografia"
+                    }
+                  },
+                  "Property": "Município"
+                }
+              },
+              "queryRef": "Geografia.Município",
+              "nativeQueryRef": "Município",
+              "active": true
+            }
+          ]
+        },
         "Y": {
           "projections": [
             {
@@ -28,24 +47,6 @@
               },
               "queryRef": "_Medidas.Ocupação estimada",
               "nativeQueryRef": "Ocupação estimada"
-            }
-          ]
-        },
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Geografia"
-                    }
-                  },
-                  "Property": "Município"
-                }
-              },
-              "queryRef": "Geografia.Município",
-              "nativeQueryRef": "Município"
             }
           ]
         }

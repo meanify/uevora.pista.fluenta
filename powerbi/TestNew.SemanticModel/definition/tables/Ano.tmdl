@@ -1,0 +1,43 @@
+/// Dimensão de ano, conforme a todos os indicadores (anuais e mensais).
+table Ano
+	lineageTag: 86bd2577-c4bf-5879-8746-4b1350576a3f
+
+	column Ano
+		dataType: int64
+		isKey
+		lineageTag: 6b9138b4-e66e-5c1e-94ee-bac1ac005242
+		summarizeBy: none
+		sourceColumn: [Ano]
+
+	column Década
+		dataType: int64
+		lineageTag: 43afcda9-35e0-57f7-aedb-ff6de0307546
+		summarizeBy: none
+		sourceColumn: [Década]
+
+	partition Ano = calculated
+		mode: import
+		source =
+				VAR Anos =
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Superfície das unidades territoriais (0008350)', "Ano", 'Superfície das unidades territoriais (0008350)'[ano]),
+				            SELECTCOLUMNS('Dormidas por país de residência (0009183)', "Ano", 'Dormidas por país de residência (0009183)'[ano]),
+				            SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)', "Ano", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[ano]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)', "Ano", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[ano]),
+				            SELECTCOLUMNS('Estabelecimentos de alojamento turístico (0009873)', "Ano", 'Estabelecimentos de alojamento turístico (0009873)'[ano]),
+				            SELECTCOLUMNS('Quartos em alojamento turístico (0009874)', "Ano", 'Quartos em alojamento turístico (0009874)'[ano]),
+				            SELECTCOLUMNS('Hóspedes por tipo de alojamento (0009876)', "Ano", 'Hóspedes por tipo de alojamento (0009876)'[ano]),
+				            SELECTCOLUMNS('Dormidas por tipo de alojamento (0009877)', "Ano", 'Dormidas por tipo de alojamento (0009877)'[ano]),
+				            SELECTCOLUMNS('Estada média por tipo de alojamento (0009880)', "Ano", 'Estada média por tipo de alojamento (0009880)'[ano]),
+				            SELECTCOLUMNS('Rendimento médio por quarto (0009929)', "Ano", 'Rendimento médio por quarto (0009929)'[ano]),
+				            SELECTCOLUMNS('Hóspedes por país de residência (0009930)', "Ano", 'Hóspedes por país de residência (0009930)'[ano]),
+				            SELECTCOLUMNS('Dormidas mensais por segmento (0010735)', "Ano", 'Dormidas mensais por segmento (0010735)'[ano]),
+				            SELECTCOLUMNS('Hóspedes mensais por segmento (0010736)', "Ano", 'Hóspedes mensais por segmento (0010736)'[ano]),
+				            SELECTCOLUMNS('Estada média por país de residência (0011140)', "Ano", 'Estada média por país de residência (0011140)'[ano]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)', "Ano", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[ano])
+				        )
+				    )
+				RETURN
+				    ADDCOLUMNS(Anos, "Década", INT([Ano] / 10) * 10)
+

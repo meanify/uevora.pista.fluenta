@@ -1,0 +1,15 @@
+/// Tabela desligada que guarda a sub-região em foco. Não filtra o modelo: serve para realçar uma NUTS III entre as outras, como 'Município selecionado' faz para os municípios.
+table 'Sub-região em foco'
+	lineageTag: cecd3675-49ff-5578-8f15-757bfcd3b71c
+
+	column 'NUTS III'
+		dataType: string
+		isKey
+		lineageTag: 9523942e-750d-5cd7-8be4-4e9f6030cc12
+		summarizeBy: none
+		sourceColumn: [NUTS III]
+
+	partition 'Sub-região em foco' = calculated
+		mode: import
+		source = DISTINCT(SELECTCOLUMNS('Geografia', "NUTS III", 'Geografia'[NUTS III]))
+

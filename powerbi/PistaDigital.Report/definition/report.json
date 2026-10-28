@@ -41,11 +41,6 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "pista_digital_logo37702284257599494.png",
-          "path": "pista_digital_logo37702284257599494.png",
-          "type": "Image"
-        },
-        {
           "name": "Pista_Digital30302269594962783.json",
           "path": "Pista_Digital30302269594962783.json",
           "type": "CustomTheme"

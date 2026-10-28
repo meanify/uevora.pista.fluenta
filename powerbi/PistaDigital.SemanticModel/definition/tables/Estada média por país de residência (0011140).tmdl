@@ -97,7 +97,10 @@ table 'Estada média por país de residência (0011140)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0011140_ds", Kind = "Table"]}[Data],
-				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    ComPaises = not Table.IsEmpty(Table.SelectRows(Regiao, each not List.Contains({"Total", "Portugal", "Estrangeiro"}, [local_residencia]))),
+				    Folhas = Table.SelectRows(Regiao, each [local_residencia] <> "Total" and ([local_residencia] <> "Estrangeiro" or not ComPaises)),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

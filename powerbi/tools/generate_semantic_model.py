@@ -85,6 +85,40 @@ def tname(i):
     return f"{i[5]} ({i[0]})"
 
 # ------------------------------------------------------------------ fact tables
+def leaf_steps(extra):
+    """Power Query steps that keep only the most detailed row of each branch.
+
+    The flows store every level of INE's breakdowns, with "Total" for the levels
+    a row does not reach, and the base measures SUM. A parent row is dropped only
+    when this table actually has children under it, so a branch INE does not break
+    down further (Alojamento local, Pousadas) keeps its own row. Ends in `Folhas`.
+    """
+    steps, conds = [], []
+    if "tipo_alojamento" in extra:
+        sel = ['"tipo_alojamento"', '"subtipo_alojamento"']
+        if "classificacao" in extra:
+            sel.append('"classificacao"')
+        steps += [f"    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {{{', '.join(sel)}}}))),",
+                  '    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),']
+        conds += ['[tipo_alojamento] <> "Total"',
+                  '([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento]))']
+        if "classificacao" in extra:
+            steps += ['    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),']
+            conds += ['([classificacao] <> "Total" or [subtipo_alojamento] = "Total"'
+                      ' or not List.Contains(SubtiposComClasse, [subtipo_alojamento]))']
+    if "local_residencia" in extra:
+        # Total > Portugal | Estrangeiro > países. The labels carry no codes, so
+        # "Estrangeiro" is dropped only when country rows exist to replace it.
+        steps += ['    ComPaises = not Table.IsEmpty(Table.SelectRows(Regiao, each not List.Contains({"Total", "Portugal", "Estrangeiro"}, [local_residencia]))),']
+        conds += ['[local_residencia] <> "Total"',
+                  '([local_residencia] <> "Estrangeiro" or not ComPaises)']
+    if "segmento_alojamento" in extra:
+        conds += ['[segmento_alojamento] <> "Total"']
+    if not conds:
+        return ["    Folhas = Regiao,"]
+    return steps + ["    Folhas = Table.SelectRows(Regiao, each " + " and ".join(conds) + "),"]
+
+
 def fact_tmdl(ind):
     code, monthly, value, geo, extra, disp, meas, fmt, agg = ind
     name, src = tname(ind), f"ine_{code}_ds"
@@ -138,14 +172,23 @@ def fact_tmdl(ind):
 
     # Power Query
     # Text values arrive already trimmed: the flows strip INE labels before writing.
+    # Region filter comes first so it folds into the ODBC query: only that
+    # NUTS II is imported, and every dimension built from the facts follows.
+    # Municipal facts also carry the NUTS II / NUTS III aggregates as rows with
+    # municipio = "Total"; the measures SUM, so those would count twice.
+    keep = "[nuts_ii] = RegiaoNUTSII"
+    if geo is MUN:
+        keep += ' and [municipio] <> "Total"'
     m = ["let",
-         f'    Origem = Fonte{{[Name = "{src}", Kind = "Table"]}}[Data],']
+         f'    Origem = Fonte{{[Name = "{src}", Kind = "Table"]}}[Data],',
+         f"    Regiao = Table.SelectRows(Origem, each {keep}),"]
+    m += leaf_steps(extra)
     if monthly:
-        m += ['    ComData = Table.AddColumn(Origem, "Data", each #date([ano], '
+        m += ['    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], '
               'Number.FromText([mes]), 1), type date),']
         base = "ComData"
     else:
-        base = "Origem"
+        base = "Folhas"
     keyexpr = ' & "|" & '.join(f"[{c}]" for c in geo)
     m += [f'    GeoKey = Table.AddColumn({base}, "{"GeoKey" if geo is MUN else "NutsIIKey"}", '
           f"each {keyexpr}, type text)" + ("," if geo is MUN else "")]
@@ -282,7 +325,8 @@ put(f"{DEF}/tables/Região NUTS II.tmdl", calc_table(
     "Região NUTS II", reg_dax,
     [("NutsIIKey", "string", "none", True, True), ("NUTS I", "string", "none", False, False),
      ("NUTS II", "string", "none", False, False)],
-    "Dimensão NUTS II conforme aos indicadores municipais e aos indicadores só com NUTS I/II."))
+    "Dimensão NUTS II conforme aos indicadores municipais e aos indicadores só com NUTS I/II. "
+    "Só contém a região do parâmetro RegiaoNUTSII."))
 
 # TipoAlojamento
 # TipoKey is not a source column on the facts, so build it inline
@@ -329,14 +373,19 @@ put(f"{DEF}/tables/Métrica de pressão.tmdl", calc_table(
     [("Métrica", "string", "none", False, True)],
     "Tabela desligada com as métricas da página de pressão turística."))
 
-put(f"{DEF}/tables/Região em foco.tmdl", calc_table(
-    "Região em foco",
-    'DISTINCT(SELECTCOLUMNS(\'Região NUTS II\', "NUTS II", \'Região NUTS II\'[NUTS II]))',
-    [("NUTS II", "string", "none", False, True)],
-    "Tabela desligada que guarda a região em foco. Não filtra o modelo: serve "
-    "para realçar uma região entre as outras, como 'Município selecionado' faz "
+# The model imports a single NUTS II (RegiaoNUTSII), so the focus sits one level
+# down: one NUTS III picked out among the region's other sub-regions.
+put(f"{DEF}/tables/Sub-região em foco.tmdl", calc_table(
+    "Sub-região em foco",
+    'DISTINCT(SELECTCOLUMNS(\'Geografia\', "NUTS III", \'Geografia\'[NUTS III]))',
+    [("NUTS III", "string", "none", False, True)],
+    "Tabela desligada que guarda a sub-região em foco. Não filtra o modelo: serve "
+    "para realçar uma NUTS III entre as outras, como 'Município selecionado' faz "
     "para os municípios.",
     pinned=True))
+_stale = f"{DEF}/tables/Região em foco.tmdl"
+if os.path.exists(_stale):
+    os.remove(_stale)
 
 # ------------------------------------------------------------------ measure table
 def m(name, expr, fmt, desc=None, pinned=False):
@@ -638,42 +687,47 @@ ML += m("Média de pares (estada média)",
         "Média da estada média ponderada no grupo de pares (mesma NUTS III), "
         "contando apenas os municípios que reportam.",
         pinned=True)
-ML += m("Cor da região em foco",
+ML += m("Cor da sub-região em foco",
         "IF(\n"
-        "    SELECTEDVALUE('Região NUTS II'[NUTS II])\n"
-        "        = SELECTEDVALUE('Região em foco'[NUTS II]),\n"
+        "    SELECTEDVALUE('Geografia'[NUTS III])\n"
+        "        = SELECTEDVALUE('Sub-região em foco'[NUTS III]),\n"
         '    "#FFAD00",\n'
         '    "#2066BC"\n'
         ")", None,
-        "Dourado na região em foco, azul nas outras. Ligar ao «Field value» da cor "
-        "das barras; exige 'Região NUTS II'[NUTS II] no eixo.",
+        "Dourado na sub-região em foco, azul nas outras. Ligar ao «Field value» da cor "
+        "das barras; exige 'Geografia'[NUTS III] no eixo.",
         pinned=True)
 # --- page subtitles ----------------------------------------------------------
 # The header band echoes the current selection back to the reader, so each page
-# carries one string measure instead of a hardcoded sentence.
+# carries one string measure instead of a hardcoded sentence. The region comes
+# from the data, so the label follows RegiaoNUTSII without a second edit here.
+REGIAO = "VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], \"várias regiões\"), ALL('Região NUTS II'))\n"
 ML += m("Subtítulo · quadro comparativo",
+        REGIAO +
         'VAR Mun = SELECTEDVALUE(\'Município selecionado\'[Município], "município por escolher")\n'
         'VAR Pares = SELECTEDVALUE(\'Geografia\'[NUTS III], "todos os pares")\n'
         "VAR AnoSel = SELECTEDVALUE('Ano'[Ano])\n"
         "RETURN\n"
-        '    Mun & " · " & Pares & " · "\n'
+        '    Regiao & " · " & Mun & " · " & Pares & " · "\n'
         '        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))', None,
-        "Município em foco · grupo de pares · ano, para o cabeçalho da página A.",
+        "Região · município em foco · grupo de pares · ano, para o cabeçalho da página A.",
         pinned=True)
 ML += m("Subtítulo · pressão turística",
+        REGIAO +
         'VAR Metrica = SELECTEDVALUE(\'Métrica de pressão\'[Métrica], "Dormidas por km²")\n'
         "VAR AnoSel = SELECTEDVALUE('Ano'[Ano])\n"
         "RETURN\n"
-        '    Metrica & " · "\n'
+        '    Regiao & " · " & Metrica & " · "\n'
         '        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))', None,
-        "Métrica escolhida · ano, para o cabeçalho da página B.",
+        "Região · métrica escolhida · ano, para o cabeçalho da página B.",
         pinned=True)
 ML += m("Subtítulo · sazonalidade",
+        REGIAO +
         "VAR AnoMin = MIN('Calendário'[Ano])\n"
         "VAR AnoMax = MAX('Calendário'[Ano])\n"
         "RETURN\n"
-        '    "Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")', None,
-        "Intervalo de anos publicado, para o cabeçalho da página C.",
+        '    Regiao & " · Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")', None,
+        "Região · intervalo de anos publicado, para o cabeçalho da página C.",
         pinned=True)
 
 # --- year-on-year, one pair per indicator -------------------------------------
@@ -719,6 +773,10 @@ for _ind in IND:
             "RETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%",
             f"Variação homóloga de [{_meas}]. Em branco sem ano anterior publicado.",
             pinned=True)
+
+# Added in Power BI Desktop for transparent fills; its lineageTag is Desktop's own.
+ML += ['\tmeasure Transparente = "rgba(0,0,0,0)"',
+       "\t\tlineageTag: 169bceb7-9232-46bc-b225-007ca755a4df", ""]
 
 ML += ["\tcolumn _", "\t\tdataType: string", "\t\tisHidden",
        f"\t\tlineageTag: {tag()}", "\t\tsummarizeBy: none", "\t\tsourceColumn: [_]", ""]
@@ -772,6 +830,16 @@ expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParam
 
 \tannotation PBI_ResultType = Text
 
+/// Região NUTS II importada. Todas as tabelas filtram nuts_ii por este valor antes de carregar.
+/// Os indicadores municipais usam a NUTS 2013 (o Alentejo inclui a Lezíria do Tejo); o 0012093 usa a NUTS 2024.
+expression RegiaoNUTSII = "Alentejo" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+\tlineageTag: {tag("parametro-RegiaoNUTSII")}
+\tqueryGroup: Parâmetros
+
+\tannotation PBI_NavigationStepName = Navigation
+
+\tannotation PBI_ResultType = Text
+
 /// Ligação partilhada via ODBC (gateway 'pistadigital'): navegação até ao esquema public.
 /// As tabelas leem Fonte{{[Name = "ine_<varcd>", Kind = "Table"]}}[Data].
 /// As credenciais são pedidas pelo Power BI e nunca ficam no ficheiro.
@@ -794,11 +862,11 @@ refs = "\n".join(f"ref table {q(tname(i))}" for i in IND)
 # PBI_QueryOrder carries the parameter queries after the indicator tables, and
 # Desktop writes it without spaces after the commas.
 query_order = ",".join(f'"{n}"' for n in
-                       [tname(i) for i in IND] + ["DSN", "BaseDados", "Fonte"])
+                       [tname(i) for i in IND] + ["DSN", "BaseDados", "RegiaoNUTSII", "Fonte"])
 dim_refs = "\n".join(f"ref table {q(n)}" for n in [
     "Ano", "Calendário", "Geografia", "Região NUTS II", "Tipo de alojamento",
     "Residência", "Segmento de alojamento", "Município selecionado",
-    "Região em foco", "Métrica de pressão", "_Medidas"])
+    "Métrica de pressão", "_Medidas", "Sub-região em foco"])
 put(f"{DEF}/model.tmdl", f"""model Model
 \tculture: pt-PT
 \tdefaultPowerBIDataSourceVersion: powerBI_V3

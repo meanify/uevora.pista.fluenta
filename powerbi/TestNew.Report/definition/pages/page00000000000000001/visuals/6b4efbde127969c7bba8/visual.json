@@ -1,0 +1,140 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "6b4efbde127969c7bba8",
+  "position": {
+    "x": 576.42167210388277,
+    "y": 428.64811616452374,
+    "z": 3009,
+    "height": 230.56866884155312,
+    "width": 449.6089042410286,
+    "tabOrder": 3004
+  },
+  "visual": {
+    "visualType": "kpi",
+    "query": {
+      "queryState": {
+        "Goal": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Estada média por tipo de alojamento (0009880)"
+                        }
+                      },
+                      "Property": "classificacao"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(Estada média por tipo de alojamento (0009880).classificacao)",
+              "nativeQueryRef": "Contagem de classificacao"
+            }
+          ]
+        },
+        "Indicator": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Estada média por tipo de alojamento (0009880)"
+                        }
+                      },
+                      "Property": "estada_media"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Estada média por tipo de alojamento (0009880).estada_media)",
+              "nativeQueryRef": "estada_media"
+            }
+          ]
+        },
+        "TrendLine": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Estada média por tipo de alojamento (0009880)"
+                    }
+                  },
+                  "Property": "distrito"
+                }
+              },
+              "queryRef": "Estada média por tipo de alojamento (0009880).distrito",
+              "nativeQueryRef": "distrito"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "523d4d21330377b2e7b2",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Estada média por tipo de alojamento (0009880)"
+                  }
+                },
+                "Property": "estada_media"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "8e387fc9510e0c445269",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Estada média por tipo de alojamento (0009880)"
+              }
+            },
+            "Property": "distrito"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "15b7874d726e26c89e79",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Estada média por tipo de alojamento (0009880)"
+                  }
+                },
+                "Property": "classificacao"
+              }
+            },
+            "Function": 5
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

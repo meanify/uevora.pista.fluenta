@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "Métrica de pressão.Métrica",
-              "nativeQueryRef": "Métrica"
+              "nativeQueryRef": "Métrica",
+              "active": true
             }
           ]
         }
@@ -87,13 +88,6 @@
               "expr": {
                 "Literal": {
                   "Value": "'Montserrat'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10D"
                 }
               }
             },

@@ -88,7 +88,9 @@ table 'Superfície das unidades territoriais (0008350)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0008350_ds", Kind = "Table"]}[Data],
-				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    Folhas = Regiao,
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

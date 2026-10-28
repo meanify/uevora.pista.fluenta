@@ -13,6 +13,25 @@
     "visualType": "barChart",
     "query": {
       "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Geografia"
+                    }
+                  },
+                  "Property": "NUTS III"
+                }
+              },
+              "queryRef": "Geografia.NUTS III",
+              "nativeQueryRef": "NUTS III",
+              "active": true
+            }
+          ]
+        },
         "Y": {
           "projections": [
             {
@@ -28,24 +47,6 @@
               },
               "queryRef": "_Medidas.Índice de sazonalidade",
               "nativeQueryRef": "Índice de sazonalidade"
-            }
-          ]
-        },
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Região NUTS II"
-                    }
-                  },
-                  "Property": "NUTS II"
-                }
-              },
-              "queryRef": "Região NUTS II.NUTS II",
-              "nativeQueryRef": "NUTS II"
             }
           ]
         }
@@ -213,7 +214,7 @@
                           "Entity": "_Medidas"
                         }
                       },
-                      "Property": "Cor da região em foco"
+                      "Property": "Cor da sub-região em foco"
                     }
                   }
                 }
@@ -237,7 +238,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dependência do pico de verão'"
+                  "Value": "'Dependência do pico de verão por sub-região'"
                 }
               }
             },
