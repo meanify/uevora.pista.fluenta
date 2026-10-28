@@ -11,6 +11,8 @@ mexpr = []       # (table, measure, expression text)
 partitions = []  # (table, kind, source text)
 
 name_re = re.compile(r"^(?:table|column|measure|partition)\s+(?:'([^']+)'|(\S+))")
+# One identifier, bare or quoted. Two capture groups; exactly one of them matches.
+IDENT = r"(?:'([^']+)'|([^\s.']+))"
 
 
 def obj_name(line):
@@ -134,7 +136,8 @@ for rid, body in rels:
     if rid in seen:
         errs.append(f"duplicate relationship id {rid}")
     seen.add(rid)
-    ends = re.findall(r"(fromColumn|toColumn):\s*'([^']+)'\.'([^']+)'", body)
+    raw = re.findall(rf"(fromColumn|toColumn):\s*{IDENT}\.{IDENT}", body)
+    ends = [(side, tq or tb, cq or cb) for side, tq, tb, cq, cb in raw]
     if len(ends) != 2:
         errs.append(f"relationship {rid}: expected fromColumn and toColumn, got {len(ends)}")
         continue
@@ -146,7 +149,7 @@ for rid, body in rels:
 
 # ---- model refs
 model = open(f"{DEF}/model.tmdl", encoding="utf-8").read()
-refs = set(re.findall(r"^ref table '([^']+)'", model, re.M))
+refs = {q or b for q, b in re.findall(rf"^ref table {IDENT}", model, re.M)}
 for t in tables:
     if t not in refs:
         errs.append(f"table {t!r} is not referenced in model.tmdl")

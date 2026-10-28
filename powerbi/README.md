@@ -34,6 +34,40 @@ All tables load through the shared `Fonte` query, so the connection is defined o
   semantic model settings → *Gateway and cloud connections*, map the data source
   to that connection.
 
+## Publish to web
+
+*Publish to web* makes the report **anonymously readable by anyone with the
+link**, and search engines index it. The embed exposes the whole semantic model,
+not just the visuals on the page, so prefer *Embed for your organization* unless
+public access is the actual goal.
+
+Nothing in this project blocks it. Checked against the documented blockers:
+
+| Blocker | This project |
+|---|---|
+| Row-level security | None — no roles in the semantic model |
+| Live connection (AS, AAS) | No — all tables are `mode: import` |
+| Shared semantic model | No — `definition.pbir` references the model `byPath`, so the report owns it in the same workspace |
+| R, Python, ArcGIS, Q&A visuals | None — only `textbox`, `pageNavigator`, `slicer`, `card`, `barChart`, `scatterChart`, `map`, `pivotTable` |
+| Custom (AppSource) visuals | None — `PistaDigitalTheme.json` is a theme, not a visual |
+
+The ODBC/gateway connection above is not a blocker: the model is import mode, so
+the `pistadigital` gateway serves only scheduled refresh. Only DirectQuery with
+single sign-on is unsupported.
+
+If the option is still greyed out, it is one of these, and neither lives in these
+files:
+
+1. **Tenant setting** — Fabric admin portal → *Tenant settings* → *Export and
+   sharing* → *Publish to web*. Disabled, set to *Allow existing codes only*, or
+   restricted to a security group you are not in. Requires an admin.
+2. **Sensitivity label** — a label on the report or semantic model blocks
+   publishing. Labels are Service-side metadata and never appear in the PBIP
+   files; check the label in the report header in the Service.
+
+You also need to be **admin or member** of the workspace — contributor and viewer
+cannot create embed codes.
+
 ## Semantic model
 
 One fact table per INE indicator, named `<descrição> (<varcd>)`, reading
@@ -82,7 +116,69 @@ indicator, so a shared dimension would be wrong.
 
 Derived measures that span indicators: weighted average stay (dormidas ÷
 hóspedes, preferable to the INE simple average), rooms per establishment,
-year-on-year and month-on-month variation, and tourism intensity per km².
+month-on-month variation, and tourism intensity per km².
+
+#### Year-on-year
+
+Every one of the 15 indicators has a pair — a prior-year value and a variance —
+generated from its base measure, so the names follow from it: `Hóspedes (tipo)`
+gives `Hóspedes (tipo, ano anterior)` and `Hóspedes (tipo) YoY %`.
+
+Two patterns, because the families hang off different dimensions:
+
+| Family | Previous year read by | Why |
+|---|---|---|
+| Annual (10 indicators, joined to `Ano`) | swapping the year filter (`REMOVEFILTERS('Ano')`) | no month to preserve; needs a single year in context |
+| Monthly (5 indicators, joined to `Calendário`) | `DATEADD('Calendário'[Date], -1, YEAR)` | composes at both grains — the same measure answers "this month vs the same month last year" and "this year vs last year", which the `Ano` pattern cannot once a month is selected |
+
+Two exceptions to the naming, both predating the rest: `Dormidas (tipo)` keeps
+`Dormidas (ano anterior)` / `Dormidas YoY %`, and `RevPAR médio INE` keeps
+`RevPAR médio (ano anterior)` / `RevPAR YoY %`. Renaming them would break the
+report bindings that already point at them.
+
+`Superfície (km²) YoY %` exists for completeness and is almost always blank or
+zero — municipality boundaries rarely move, and everything that divides by area
+uses `Superfície (km², último ano)` rather than the selected year's value.
+
+The comparison pages add a peer-group family. Each is built from the focus
+município in the disconnected `Município selecionado`, over the peers in the same
+NUTS III, counting only those that actually report the metric:
+
+| Metric | Rank | Denominator |
+|---|---|---|
+| `Ocupação estimada` | `Posição no grupo de pares` | `Pares com dados` |
+| `Dormidas por km²` | `Posição no grupo de pares (pressão)` | `Pares com dados (pressão)` |
+| `RevPAR médio INE` | `Posição no grupo de pares (RevPAR)` | `Pares com dados (RevPAR)` |
+
+Each metric needs its own denominator: a município that reports ocupação may not
+report RevPAR, so a shared count would print «3.º de 14» against 11 peers. Always
+show a rank next to its denominator — never the rank alone.
+
+`Média de pares (ocupação)` and `Média de pares (estada média)` are the peer
+comparators the KPI tiles read against. Both average each peer's own value rather
+than pooling the group's numerators and denominators: a pooled ratio is dominated
+by the largest município, which is not what "face aos pares" means.
+
+`Percentil de pressão` ranks nationally instead, and `Municípios com dados de
+pressão` is its denominator («78, entre 308 municípios»).
+
+`Cor do município em foco` returns a hex string (`#FFAD00` for the focus
+município, `#2066BC` for the peers) rather than a 0/1 flag, because *Field value*
+conditional formatting reads the measure straight into the fill. It needs
+`Geografia[Município]` on the axis to resolve. `Cor da região em foco` is the
+same idea one level up, over the disconnected `Região em foco`, and needs
+`Região NUTS II[NUTS II]` on the axis.
+
+Each page's header sub-title is a card over a string measure (`Subtítulo · …`),
+so the band echoes the current selection instead of repeating a fixed sentence.
+
+### Disconnected tables
+
+`Município selecionado`, `Região em foco` and `Métrica de pressão` have no
+relationships on purpose. The first two carry *which* territory is highlighted
+without filtering it — a slicer that filtered would remove the very peers the
+comparison is against — and the third drives `Pressão (métrica selecionada)`.
+Anything reading them resolves to blank until a selection is made.
 
 ### Text handling
 
@@ -103,16 +199,56 @@ The validator checks that every relationship, column and measure reference
 resolves, and that DAX and M expressions are balanced. It does not replace
 opening the model in Power BI Desktop.
 
+Running it against the committed model is a **byte-for-byte no-op**, so the
+generator is safe to run at any time and a non-empty `git diff` afterwards is a
+real change, not formatting noise. Keeping it that way means matching how Power
+BI Desktop re-saves TMDL:
+
+- **Identifiers** are written bare when they can be (`table Ano`, `column Ano-Mês`)
+  and quoted only when they cannot (`table 'Região NUTS II'`). `q()` applies the
+  rule: bare when the name matches `[^\W\d][\w-]*`.
+- **`compatibilityLevel: 1606`**, `dataAccessOptions` (`legacyRedirects`,
+  `returnErrorValuesAsNull`), and the `PBI_QueryGroupOrder` / `PBI_ProTooling`
+  annotations are Desktop's and must be emitted.
+- **`annotation SummarizationSetBy = Automatic`** marks a column whose
+  summarization Desktop chose: the monthly indicators' `ano`, and the value
+  column of each averaged indicator. Both read `summarizeBy: sum` as a result —
+  see the caveat below.
+- **`annotation UnderlyingDateTimeDataType = Date`** goes on every imported
+  `dateTime` column, but not on `Calendário[Date]`, which is calculated.
+
+> **`tag()` is a positional counter.** Inserting an entity shifts the
+> `lineageTag` of everything generated after it, including the relationships at
+> the end. Anything added after the model was first generated passes an explicit
+> `tag_key=` so the sequence stays put — follow that for new measures rather than
+> relying on where they sit in the list.
+
+Two summarization defaults are Desktop's, not deliberate: `ano` on the five
+monthly indicators, and `estada_media` / `rendimento_medio_por_quarto`, all read
+`summarizeBy: sum`. Summing a year or an average is meaningless, so the base
+measures aggregate explicitly (`AVERAGE(...)`) and never rely on the column
+default; only an ad-hoc drag of those columns onto a visual would hit it.
+
 ## Layout (1280 × 720)
 
-- Content area: x 0–1040. Header band (navy, 96 px) with a 4 px gold rule.
-- **Navigation bar on the right**: x 1040–1280 (240 px), navy, brand block on top and a
+- **Navigation bar on the left**: x 0–240 (240 px), navy, brand block on top and a
   vertical page navigator below. Selected page is gold, hover is `#154373`.
+- Content area: x 240–1280. Header band (navy, 96 px) with a 4 px gold rule, then
+  visuals from y 112 and a footnote strip at y 686.
 - Every page repeats the same header/brand/navigator. To add a page, duplicate an
   existing one so the navigation bar stays identical; the navigator lists new pages itself.
 
-The four pages carry a placeholder in the content area; the visuals themselves
-are still to be built on the model above.
+### Pages
+
+| Page | Content |
+|---|---|
+| Visão Geral | Placeholder — still to be built |
+| Quadro comparativo | Município/pares/ano slicers, 4 KPI cards each with YoY / rank / peer-count sub-cards, peer occupancy bars with the focus município in gold and a peer-average constant line, RevPAR × rooms-per-establishment scatter |
+| Pressão turística | Metric/year/município slicers, bubble map of the selected pressure metric with the focus município in gold, pressure-percentile card over its national denominator, load-vs-capacity bars (gold = load, blue = licensed capacity) |
+| Sazonalidade | Region/segment/focus-region slicers, month × year matrix heat map of monthly dormidas, summer-peak dependency bars with the focus region in gold, most-recent-complete-year card |
+| Info | Placeholder — still to be built |
+
+`Visão Geral` and `Info` still carry the original placeholder in the content area.
 
 ## Theme
 

@@ -1,0 +1,15 @@
+/// Tabela desligada que guarda a região em foco. Não filtra o modelo: serve para realçar uma região entre as outras, como 'Município selecionado' faz para os municípios.
+table 'Região em foco'
+	lineageTag: 29c484d8-6062-5e8f-b7b0-ba278c5ae260
+
+	column 'NUTS II'
+		dataType: string
+		isKey
+		lineageTag: c111e266-e599-5529-aeab-3887eb6e4cce
+		summarizeBy: none
+		sourceColumn: [NUTS II]
+
+	partition 'Região em foco' = calculated
+		mode: import
+		source = DISTINCT(SELECTCOLUMNS('Região NUTS II', "NUTS II", 'Região NUTS II'[NUTS II]))
+

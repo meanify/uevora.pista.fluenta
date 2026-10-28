@@ -39,6 +39,7 @@ ref table 'Tipo de alojamento'
 ref table Residência
 ref table 'Segmento de alojamento'
 ref table 'Município selecionado'
+ref table 'Região em foco'
 ref table 'Métrica de pressão'
 ref table _Medidas
 

@@ -6,16 +6,35 @@ When an indicator is added or its schema changes, update INDICATORS and run:
     python3 powerbi/tools/generate_semantic_model.py
     python3 powerbi/tools/validate_semantic_model.py
 """
-import os, shutil, uuid
+import os, re, shutil, uuid
+
+# TMDL writes an identifier bare when it is a plain name, and quotes it otherwise.
+# Power BI Desktop re-saves the model this way, so matching it keeps a regenerate
+# a no-op against the committed .tmdl files.
+_BARE = re.compile(r"[^\W\d][\w-]*", re.UNICODE)
+
+
+def q(name):
+    """Identifier as TMDL writes it: bare when it can be, quoted when it cannot."""
+    return name if _BARE.fullmatch(name) else f"'{name}'"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL = os.path.join(ROOT, "PistaDigital.SemanticModel")
 DEF = os.path.join(MODEL, "definition")
 
 _n = [0]
-def tag():
-    _n[0] += 1
-    return str(uuid.uuid5(uuid.NAMESPACE_DNS, f"pistadigital-{_n[0]}"))
+def tag(key=None):
+    """Stable lineageTag. Positional by default; pass `key` to pin one by name.
+
+    The positional counter means inserting an entity shifts every tag after it,
+    which rewrites the lineageTags of unrelated entities. Anything added after the
+    model was first generated should pass an explicit key so the sequence — and
+    therefore the relationships at the end of it — stays put.
+    """
+    if key is None:
+        _n[0] += 1
+        key = _n[0]
+    return str(uuid.uuid5(uuid.NAMESPACE_DNS, f"pistadigital-{key}"))
 
 def put(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -70,15 +89,16 @@ def fact_tmdl(ind):
     code, monthly, value, geo, extra, disp, meas, fmt, agg = ind
     name, src = tname(ind), f"ine_{code}_ds"
     text_cols = geo + extra
-    L = [f"table '{name}'", f"\tlineageTag: {tag()}", ""]
+    L = [f"table {q(name)}", f"\tlineageTag: {tag()}", ""]
     if agg == "AVERAGE":
         L += ["\t/// Média simples publicada pelo INE. Para um valor ponderado "
               "use as medidas equivalentes de '_Medidas'."]
-    L += [f"\tmeasure '{meas}' = {agg}('{name}'[{value}])",
+    L += [f"\tmeasure {q(meas)} = {agg}('{name}'[{value}])",
           f"\t\tformatString: {fmt}", f"\t\tlineageTag: {tag()}", ""]
 
-    def col(cname, dtype, summarize="none", fs=None, hidden=False, desc=None):
-        o = [f"\tcolumn {cname}" if cname.islower() and " " not in cname else f"\tcolumn '{cname}'"]
+    def col(cname, dtype, summarize="none", fs=None, hidden=False, desc=None,
+            auto_summarize=False):
+        o = [f"\tcolumn {q(cname)}"]
         if desc:
             o.insert(0, f"\t/// {desc}")
         o += [f"\t\tdataType: {dtype}"]
@@ -86,17 +106,30 @@ def fact_tmdl(ind):
             o += ["\t\tisHidden"]
         if fs:
             o += [f"\t\tformatString: {fs}"]
-        o += [f"\t\tlineageTag: {tag()}", f"\t\tsummarizeBy: {summarize}", f"\t\tsourceColumn: {cname}", ""]
+        if auto_summarize:
+            summarize = "sum"
+        o += [f"\t\tlineageTag: {tag()}", f"\t\tsummarizeBy: {summarize}",
+              f"\t\tsourceColumn: {cname}", ""]
+        if auto_summarize:
+            # Desktop picked the summarization rather than the author.
+            o += ["\t\tannotation SummarizationSetBy = Automatic", ""]
+        if dtype == "dateTime":
+            # Desktop tags every imported date column with its source type.
+            o += ["\t\tannotation UnderlyingDateTimeDataType = Date", ""]
         return o
 
     for c in text_cols:
         L += col(c, "string")
-    L += col("ano", "int64", "none", "0")
+    # In the monthly indicators `ano` sits beside `mes` as a plain column, and
+    # Desktop summarises it; in the annual ones it is the relationship key.
+    L += col("ano", "int64", "none", "0", auto_summarize=monthly)
     if monthly:
         L += col("mes", "string")
         L += col("Data", "dateTime", "none", "yyyy-mm-dd", hidden=True,
                  desc="Primeiro dia do mês, usado para ligar ao Calendário.")
-    L += col(value, "double", "sum" if agg == "SUM" else "average", fmt)
+    # An averaged indicator keeps AVERAGE in its base measure; the column default
+    # is Desktop's own, which is why it reads `sum` rather than `average`.
+    L += col(value, "double", "sum", fmt, auto_summarize=(agg == "AVERAGE"))
     L += col("create_date", "dateTime", "none", "yyyy-mm-dd", hidden=True)
     L += col("update_date", "dateTime", "none", "yyyy-mm-dd", hidden=True)
     L += col("GeoKey" if geo is MUN else "NutsIIKey", "string", hidden=True)
@@ -121,7 +154,7 @@ def fact_tmdl(ind):
         m += ["in", "    NutsII"]
     else:
         m += ["in", "    GeoKey"]
-    L += [f"\tpartition '{name}' = m", "\t\tmode: import", "\t\tsource ="]
+    L += [f"\tpartition {q(name)} = m", "\t\tmode: import", "\t\tsource ="]
     L += ["\t\t\t\t" + line for line in m]
     L += [""]
     return "\n".join(L) + "\n"
@@ -150,27 +183,32 @@ def union(tables, cols):
     return "UNION(\n" + ",\n".join(parts) + "\n        )"
 
 
-def calc_table(name, dax, cols, desc=None, data_category=None):
+def calc_table(name, dax, cols, desc=None, data_category=None, pinned=False):
     L = []
     if desc:
         L += [f"/// {desc}"]
-    L += [f"table '{name}'", f"\tlineageTag: {tag()}"]
+    L += [f"table {q(name)}",
+          f"\tlineageTag: {tag(f'tabela-{name}' if pinned else None)}"]
     if data_category:
         L += [f"\tdataCategory: {data_category}"]
     L += [""]
     for cname, dtype, summarize, hidden, key, *rest in cols:
         col_category = rest[0] if rest else None
-        L += [f"\tcolumn '{cname}'", f"\t\tdataType: {dtype}"]
+        L += [f"\tcolumn {q(cname)}", f"\t\tdataType: {dtype}"]
         if hidden:
             L += ["\t\tisHidden"]
         if key:
             L += ["\t\tisKey"]
+        L += [f"\t\tlineageTag: {tag(f'coluna-{name}-{cname}' if pinned else None)}"]
         if col_category:
             L += [f"\t\tdataCategory: {col_category}"]
-        L += [f"\t\tlineageTag: {tag()}", f"\t\tsummarizeBy: {summarize}",
+        L += [f"\t\tsummarizeBy: {summarize}",
               f"\t\tsourceColumn: [{cname}]", ""]
-    L += [f"\tpartition '{name}' = calculated", "\t\tmode: import", "\t\tsource ="]
-    L += ["\t\t\t\t" + line for line in dax.split("\n")]
+    L += [f"\tpartition {q(name)} = calculated", "\t\tmode: import"]
+    if "\n" in dax:
+        L += ["\t\tsource ="] + ["\t\t\t\t" + line for line in dax.split("\n")]
+    else:
+        L += [f"\t\tsource = {dax}"]
     L += [""]
     return "\n".join(L) + "\n"
 
@@ -291,20 +329,31 @@ put(f"{DEF}/tables/Métrica de pressão.tmdl", calc_table(
     [("Métrica", "string", "none", False, True)],
     "Tabela desligada com as métricas da página de pressão turística."))
 
+put(f"{DEF}/tables/Região em foco.tmdl", calc_table(
+    "Região em foco",
+    'DISTINCT(SELECTCOLUMNS(\'Região NUTS II\', "NUTS II", \'Região NUTS II\'[NUTS II]))',
+    [("NUTS II", "string", "none", False, True)],
+    "Tabela desligada que guarda a região em foco. Não filtra o modelo: serve "
+    "para realçar uma região entre as outras, como 'Município selecionado' faz "
+    "para os municípios.",
+    pinned=True))
+
 # ------------------------------------------------------------------ measure table
-def m(name, expr, fmt, desc=None):
+def m(name, expr, fmt, desc=None, pinned=False):
     L = []
     if desc:
         L += [f"\t/// {desc}"]
     lines = expr.split("\n")
     if len(lines) == 1:
-        L += [f"\tmeasure '{name}' = {expr}"]
+        L += [f"\tmeasure {q(name)} = {expr}"]
     else:
-        L += [f"\tmeasure '{name}' ="]
+        L += [f"\tmeasure {q(name)} ="]
         # Keep space indentation so nested DAX stays readable; tab prefixes in the
         # source literals are only there for alignment inside this file.
         L += ["\t\t\t" + ln.rstrip().lstrip("\t") for ln in lines]
-    L += [f"\t\tformatString: {fmt}", f"\t\tlineageTag: {tag()}", ""]
+    if fmt:
+        L += [f"\t\tformatString: {fmt}"]
+    L += [f"\t\tlineageTag: {tag(f'medida-{name}' if pinned else None)}", ""]
     return L
 
 T9877, T9876 = tname(IND[7]), tname(IND[6])
@@ -312,7 +361,7 @@ T9183, T9930 = tname(IND[1]), tname(IND[10])
 T10735, T10736 = tname(IND[11]), tname(IND[12])
 T9874, T9873 = tname(IND[5]), tname(IND[4])
 
-ML = ["/// Medidas derivadas e comparações entre indicadores.", "table '_Medidas'",
+ML = ["/// Medidas derivadas e comparações entre indicadores.", f"table {q('_Medidas')}",
       f"\tlineageTag: {tag()}", ""]
 ML += m("Estada média ponderada (tipo)",
         f"DIVIDE([Dormidas (tipo)], [Hóspedes (tipo)])", "#,0.00",
@@ -399,21 +448,43 @@ ML += m("Estabelecimentos por km²",
 # All read the focus município from the disconnected 'Município selecionado' and
 # restrict the comparison set to municípios that actually report the metric: a
 # fixed denominator would rank a território against ones that never reported.
-PARES = (
-    "VAR Sel = SELECTEDVALUE('Município selecionado'[Município])\n"
-    "VAR NutsSel =\n"
-    "    CALCULATE(\n"
-    "        SELECTEDVALUE('Geografia'[NUTS III]),\n"
-    "        REMOVEFILTERS('Geografia'),\n"
-    "        'Geografia'[Município] = Sel\n"
-    "    )\n"
-    "VAR Pares =\n"
-    "    CALCULATETABLE(\n"
-    "        VALUES('Geografia'[Município]),\n"
-    "        REMOVEFILTERS('Geografia'),\n"
-    "        'Geografia'[NUTS III] = NutsSel\n"
-    "    )\n"
-    "VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Ocupação estimada])))\n")
+def pares(metric):
+    """VAR block: focus município, its NUTS III peers, and those reporting `metric`."""
+    return (
+        "VAR Sel = SELECTEDVALUE('Município selecionado'[Município])\n"
+        "VAR NutsSel =\n"
+        "    CALCULATE(\n"
+        "        SELECTEDVALUE('Geografia'[NUTS III]),\n"
+        "        REMOVEFILTERS('Geografia'),\n"
+        "        'Geografia'[Município] = Sel\n"
+        "    )\n"
+        "VAR Pares =\n"
+        "    CALCULATETABLE(\n"
+        "        VALUES('Geografia'[Município]),\n"
+        "        REMOVEFILTERS('Geografia'),\n"
+        "        'Geografia'[NUTS III] = NutsSel\n"
+        "    )\n"
+        f"VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([{metric}])))\n")
+
+
+def posicao(metric):
+    """Dense descending rank of the focus município among the peers that report."""
+    return (
+        pares(metric) +
+        "VAR ValorSel =\n"
+        "    CALCULATE(\n"
+        f"        [{metric}],\n"
+        "        REMOVEFILTERS('Geografia'),\n"
+        "        'Geografia'[Município] = Sel\n"
+        "    )\n"
+        "RETURN\n"
+        "    IF(\n"
+        "        NOT ISBLANK(ValorSel),\n"
+        f"        RANKX(ComDados, CALCULATE([{metric}]), ValorSel, DESC, DENSE)\n"
+        "    )")
+
+
+PARES = pares("Ocupação estimada")
 
 ML += m("Pares com dados",
         PARES + "RETURN COUNTROWS(ComDados)", "#,0",
@@ -424,18 +495,7 @@ ML += m("Média de pares (ocupação)",
         "Média da ocupação estimada no grupo de pares (mesma NUTS III), contando "
         "apenas os municípios que reportam.")
 ML += m("Posição no grupo de pares",
-        PARES +
-        "VAR ValorSel =\n"
-        "    CALCULATE(\n"
-        "        [Ocupação estimada],\n"
-        "        REMOVEFILTERS('Geografia'),\n"
-        "        'Geografia'[Município] = Sel\n"
-        "    )\n"
-        "RETURN\n"
-        "    IF(\n"
-        "        NOT ISBLANK(ValorSel),\n"
-        "        RANKX(ComDados, CALCULATE([Ocupação estimada]), ValorSel, DESC, DENSE)\n"
-        "    )", "#,0",
+        posicao("Ocupação estimada"), "#,0",
         "Posição do município em foco dentro do grupo de pares, por ocupação estimada. "
         "Em branco se o próprio município não reportar.")
 ML += m("Percentil de pressão",
@@ -508,10 +568,162 @@ ML += m("Pressão (métrica selecionada)",
         "    [Dormidas por km²]\n"
         ")", "#,0.00",
         "Métrica do mapa de pressão, escolhida na tabela desligada.")
-ML += ["\tcolumn '_'", "\t\tdataType: string", "\t\tisHidden",
+# RevPAR year-on-year. Mirrors [Dormidas (ano anterior)]: the previous year is read
+# with REMOVEFILTERS so a single-year selection still finds it.
+ML += m("RevPAR médio (ano anterior)",
+        "VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])\n"
+        "RETURN\n"
+        "    IF(\n"
+        "        NOT ISBLANK(AnoAtual),\n"
+        "        CALCULATE([RevPAR médio INE], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)\n"
+        "    )", "#,0.00",
+        "RevPAR médio do ano anterior. Requer um único ano no contexto de filtro.",
+        pinned=True)
+ML += m("RevPAR YoY %",
+        "VAR Atual = [RevPAR médio INE]\n"
+        "VAR Anterior = [RevPAR médio (ano anterior)]\n"
+        "RETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%",
+        pinned=True)
+# Peer rank and denominator for the other two KPI tiles. Each metric needs its own
+# pair: a município that reports ocupação may not report RevPAR, so reusing
+# [Pares com dados] as the denominator would print «3.º de 14» against 11 peers.
+ML += m("Pares com dados (pressão)",
+        pares("Dormidas por km²") + "RETURN COUNTROWS(ComDados)", "#,0",
+        "Quantos municípios do grupo de pares reportam dormidas por km². "
+        "Denominador de [Posição no grupo de pares (pressão)].",
+        pinned=True)
+ML += m("Posição no grupo de pares (pressão)",
+        posicao("Dormidas por km²"), "#,0",
+        "Posição do município em foco dentro do grupo de pares, por dormidas por km². "
+        "Mostrar sempre com [Pares com dados (pressão)].",
+        pinned=True)
+ML += m("Pares com dados (RevPAR)",
+        pares("RevPAR médio INE") + "RETURN COUNTROWS(ComDados)", "#,0",
+        "Quantos municípios do grupo de pares reportam RevPAR. "
+        "Denominador de [Posição no grupo de pares (RevPAR)].",
+        pinned=True)
+ML += m("Posição no grupo de pares (RevPAR)",
+        posicao("RevPAR médio INE"), "#,0",
+        "Posição do município em foco dentro do grupo de pares, por RevPAR médio. "
+        "Mostrar sempre com [Pares com dados (RevPAR)].",
+        pinned=True)
+# Denominator behind [Percentil de pressão] — «78, entre 308 municípios».
+ML += m("Municípios com dados de pressão",
+        "VAR Todos =\n"
+        "    CALCULATETABLE(VALUES('Geografia'[Município]), REMOVEFILTERS('Geografia'))\n"
+        "RETURN\n"
+        "    COUNTROWS(FILTER(Todos, NOT ISBLANK(CALCULATE([Dormidas por km²]))))", "#,0",
+        "Quantos municípios reportam dormidas por km² no contexto atual. É o "
+        "denominador de [Percentil de pressão]: mostrar os dois juntos.",
+        pinned=True)
+# Highlight for the município em foco. Returns a colour, not a 0/1 flag, because
+# «Field value» conditional formatting reads the measure as the fill directly.
+ML += m("Cor do município em foco",
+        "IF(\n"
+        "    SELECTEDVALUE('Geografia'[Município])\n"
+        "        = SELECTEDVALUE('Município selecionado'[Município]),\n"
+        '    "#FFAD00",\n'
+        '    "#2066BC"\n'
+        ")", None,
+        "Dourado no município em foco, azul nos pares. Ligar ao «Field value» da cor "
+        "das barras; exige 'Geografia'[Município] no eixo.",
+        pinned=True)
+# Peer comparator for the estada média tile. Averages each peer's weighted stay
+# rather than pooling dormidas and hóspedes across the group: a pooled ratio is
+# dominated by the largest município, which is not what «face aos pares» means.
+# Same convention as [Média de pares (ocupação)].
+ML += m("Média de pares (estada média)",
+        pares("Estada média ponderada (tipo)")
+        + "RETURN AVERAGEX(ComDados, CALCULATE([Estada média ponderada (tipo)]))", "#,0.00",
+        "Média da estada média ponderada no grupo de pares (mesma NUTS III), "
+        "contando apenas os municípios que reportam.",
+        pinned=True)
+ML += m("Cor da região em foco",
+        "IF(\n"
+        "    SELECTEDVALUE('Região NUTS II'[NUTS II])\n"
+        "        = SELECTEDVALUE('Região em foco'[NUTS II]),\n"
+        '    "#FFAD00",\n'
+        '    "#2066BC"\n'
+        ")", None,
+        "Dourado na região em foco, azul nas outras. Ligar ao «Field value» da cor "
+        "das barras; exige 'Região NUTS II'[NUTS II] no eixo.",
+        pinned=True)
+# --- page subtitles ----------------------------------------------------------
+# The header band echoes the current selection back to the reader, so each page
+# carries one string measure instead of a hardcoded sentence.
+ML += m("Subtítulo · quadro comparativo",
+        'VAR Mun = SELECTEDVALUE(\'Município selecionado\'[Município], "município por escolher")\n'
+        'VAR Pares = SELECTEDVALUE(\'Geografia\'[NUTS III], "todos os pares")\n'
+        "VAR AnoSel = SELECTEDVALUE('Ano'[Ano])\n"
+        "RETURN\n"
+        '    Mun & " · " & Pares & " · "\n'
+        '        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))', None,
+        "Município em foco · grupo de pares · ano, para o cabeçalho da página A.",
+        pinned=True)
+ML += m("Subtítulo · pressão turística",
+        'VAR Metrica = SELECTEDVALUE(\'Métrica de pressão\'[Métrica], "Dormidas por km²")\n'
+        "VAR AnoSel = SELECTEDVALUE('Ano'[Ano])\n"
+        "RETURN\n"
+        '    Metrica & " · "\n'
+        '        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))', None,
+        "Métrica escolhida · ano, para o cabeçalho da página B.",
+        pinned=True)
+ML += m("Subtítulo · sazonalidade",
+        "VAR AnoMin = MIN('Calendário'[Ano])\n"
+        "VAR AnoMax = MAX('Calendário'[Ano])\n"
+        "RETURN\n"
+        '    "Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")', None,
+        "Intervalo de anos publicado, para o cabeçalho da página C.",
+        pinned=True)
+
+# --- year-on-year, one pair per indicator -------------------------------------
+# Two patterns, because the two families hang off different dimensions:
+#   * annual indicators join 'Ano', so the previous year is read by swapping the
+#     year filter, exactly as [Dormidas (ano anterior)] does;
+#   * monthly indicators join 'Calendário' (marked as the date table), so DATEADD
+#     over the date column is used instead. It composes at both grains: the same
+#     measure answers «this month vs the same month last year» and «this year vs
+#     last year», which the 'Ano' pattern cannot do once a month is selected.
+# `Dormidas (tipo)` and `RevPAR médio INE` already have their pair above, under
+# the shorter names they were first published with.
+ALREADY_YOY = {"Dormidas (tipo)", "RevPAR médio INE"}
+
+
+def yoy_names(meas):
+    """Derive the pair's names, keeping the model's parenthetical style."""
+    prior = f"{meas[:-1]}, ano anterior)" if meas.endswith(")") else f"{meas} (ano anterior)"
+    return prior, f"{meas} YoY %"
+
+
+for _ind in IND:
+    _monthly, _disp, _meas, _fmt = _ind[1], _ind[5], _ind[6], _ind[7]
+    if _meas in ALREADY_YOY:
+        continue
+    _prior, _pct = yoy_names(_meas)
+    if _monthly:
+        _expr = f"CALCULATE([{_meas}], DATEADD('Calendário'[Date], -1, YEAR))"
+    else:
+        _expr = ("VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])\n"
+                 "RETURN\n"
+                 "    IF(\n"
+                 "        NOT ISBLANK(AnoAtual),\n"
+                 f"        CALCULATE([{_meas}], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)\n"
+                 "    )")
+    ML += m(_prior, _expr, _fmt,
+            f"{_disp} do ano anterior."
+            + ("" if _monthly else " Requer um único ano no contexto de filtro."),
+            pinned=True)
+    ML += m(_pct,
+            f"VAR Atual = [{_meas}]\n"
+            f"VAR Anterior = [{_prior}]\n"
+            "RETURN DIVIDE(Atual - Anterior, Anterior)", "0.0%",
+            f"Variação homóloga de [{_meas}]. Em branco sem ano anterior publicado.",
+            pinned=True)
+
+ML += ["\tcolumn _", "\t\tdataType: string", "\t\tisHidden",
        f"\t\tlineageTag: {tag()}", "\t\tsummarizeBy: none", "\t\tsourceColumn: [_]", ""]
-ML += [f"\tpartition '_Medidas' = calculated", "\t\tmode: import", "\t\tsource =",
-       '\t\t\t\tROW("_", BLANK())', ""]
+ML += ["\tpartition _Medidas = calculated", "\t\tmode: import",
+       '\t\tsource = ROW("_", BLANK())', ""]
 put(f"{DEF}/tables/_Medidas.tmdl", "\n".join(ML) + "\n")
 
 # ------------------------------------------------------------------ relationships
@@ -520,7 +732,7 @@ def rel(ft, fc, tt, tc, active=True):
     r = [f"relationship {tag()}"]
     if not active:
         r.append("\tisActive: false")
-    r += [f"\tfromColumn: '{ft}'.'{fc}'", f"\ttoColumn: '{tt}'.'{tc}'", ""]
+    r += [f"\tfromColumn: {q(ft)}.{q(fc)}", f"\ttoColumn: {q(tt)}.{q(tc)}", ""]
     rels.append("\n".join(r))
 
 for t in ANNUAL_T:
@@ -537,14 +749,15 @@ for t in RESID_T:
     rel(t, "local_residencia", "Residência", "Local de residência")
 for t in SEG_T:
     rel(t, "segmento_alojamento", "Segmento de alojamento", "Segmento")
-put(f"{DEF}/relationships.tmdl", "\n".join(rels))
+# Each entry already ends in "\n"; the extra one is the blank line Desktop leaves.
+put(f"{DEF}/relationships.tmdl", "\n".join(rels) + "\n")
 
 # ------------------------------------------------------------------ expressions
 put(f"{DEF}/expressions.tmdl", f"""/// Nome do DSN ODBC (System DSN) que aponta para a base de dados PostgreSQL.
 /// Tem de existir com o mesmo nome no PC do Power BI Desktop e nas máquinas do gateway 'pistadigital'.
 expression DSN = "Pista Digital" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 \tlineageTag: {tag()}
-\tqueryGroup: 'Parâmetros'
+\tqueryGroup: Parâmetros
 
 \tannotation PBI_NavigationStepName = Navigation
 
@@ -553,7 +766,7 @@ expression DSN = "Pista Digital" meta [IsParameterQuery=true, Type="Text", IsPar
 /// Nome da base de dados (PISTA_DB_NAME).
 expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 \tlineageTag: {tag()}
-\tqueryGroup: 'Parâmetros'
+\tqueryGroup: Parâmetros
 
 \tannotation PBI_NavigationStepName = Navigation
 
@@ -570,40 +783,57 @@ expression Fonte =
 \t\tin
 \t\t    Esquema
 \tlineageTag: {tag()}
-\tqueryGroup: 'Parâmetros'
+\tqueryGroup: Parâmetros
 
 \tannotation PBI_ResultType = Table
+
 """)
 
 # ------------------------------------------------------------------ model + culture
-refs = "\n".join(f"ref table '{tname(i)}'" for i in IND)
+refs = "\n".join(f"ref table {q(tname(i))}" for i in IND)
+# PBI_QueryOrder carries the parameter queries after the indicator tables, and
+# Desktop writes it without spaces after the commas.
+query_order = ",".join(f'"{n}"' for n in
+                       [tname(i) for i in IND] + ["DSN", "BaseDados", "Fonte"])
+dim_refs = "\n".join(f"ref table {q(n)}" for n in [
+    "Ano", "Calendário", "Geografia", "Região NUTS II", "Tipo de alojamento",
+    "Residência", "Segmento de alojamento", "Município selecionado",
+    "Região em foco", "Métrica de pressão", "_Medidas"])
 put(f"{DEF}/model.tmdl", f"""model Model
 \tculture: pt-PT
 \tdefaultPowerBIDataSourceVersion: powerBI_V3
 \tsourceQueryCulture: pt-PT
+\tdataAccessOptions
+\t\tlegacyRedirects
+\t\treturnErrorValuesAsNull
 
-\tannotation PBI_QueryOrder = [{", ".join(f'"{tname(i)}"' for i in IND)}]
+queryGroup Parâmetros
 
-\tannotation __PBI_TimeIntelligenceEnabled = 0
+\tannotation PBI_QueryGroupOrder = 0
 
-queryGroup 'Parâmetros'
+annotation PBI_QueryOrder = [{query_order}]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode"]
 
 {refs}
-ref table 'Ano'
-ref table 'Calendário'
-ref table 'Geografia'
-ref table 'Região NUTS II'
-ref table 'Tipo de alojamento'
-ref table 'Residência'
-ref table 'Segmento de alojamento'
-ref table 'Município selecionado'
-ref table 'Métrica de pressão'
-ref table '_Medidas'
+{dim_refs}
 
 ref cultureInfo pt-PT
+
 """)
-put(f"{DEF}/cultures/pt-PT.tmdl", "cultureInfo pt-PT\n\n\tlinguisticMetadata = {\"Version\": \"1.0.0\", \"Language\": \"pt-PT\"}\n\t\tcontentType: json\n")
-put(f"{DEF}/database.tmdl", "database\n\tcompatibilityLevel: 1567\n")
+put(f"{DEF}/cultures/pt-PT.tmdl",
+    'cultureInfo pt-PT\n'
+    '\n'
+    '\tlinguisticMetadata =\n'
+    '\t\t\t{\n'
+    '\t\t\t  "Version": "1.0.0",\n'
+    '\t\t\t  "Language": "pt-PT"\n'
+    '\t\t\t}\n'
+    '\t\tcontentType: json\n'
+    '\n')
+put(f"{DEF}/database.tmdl", "database\n\tcompatibilityLevel: 1606\n\n")
 if os.path.exists(f"{DEF}/tables/Exemplo.tmdl"):
     os.remove(f"{DEF}/tables/Exemplo.tmdl")
 print("tables:", len(os.listdir(f"{DEF}/tables")), "relationships:", len(rels))
