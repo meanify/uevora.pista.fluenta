@@ -1,0 +1,42 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "2efff6611d78783af636",
+  "position": {
+    "x": 478.95847850842159,
+    "y": 417.772605215392,
+    "z": 3007,
+    "height": 302.227394784608,
+    "width": 291.54124923607225
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Hóspedes por país de residência (0009930)"
+                        }
+                      },
+                      "Property": "hospedes"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Hóspedes por país de residência (0009930).hospedes)",
+              "nativeQueryRef": "hospedes"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
