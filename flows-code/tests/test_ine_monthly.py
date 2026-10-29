@@ -81,17 +81,15 @@ class MonthlyFlowTests(unittest.TestCase):
             with self.subTest(code=code):
                 module = importlib.import_module(f"pistadigital.flows.ine_{code}_flow")
                 frame = self.process(code, [
-                    record(), record(geocod="PT", dim_3="T", valor="0"),
-                    record(geocod="1", dim_3="01", valor=".."),
+                    record(), record(geocod="PT", valor="0"),
+                    record(geocod="1", valor=".."),
+                    record(geocod="PT", dim_3="T"), record(geocod="1", dim_3="T"),
                 ])
                 self.assertEqual(frame.columns.tolist(), module.SCHEMA_COLUMNS)
                 self.assertEqual(frame.iloc[0].nuts_i, "Continente")
                 self.assertEqual(frame.iloc[0].nuts_ii, "Grande Lisboa" if code == "0012093" else "Norte")
-                self.assertEqual(frame.iloc[1].nuts_i, "Portugal")
-                self.assertEqual(frame.iloc[1].nuts_ii, "Total")
                 self.assertEqual(frame.iloc[0][metric], 12.5)
-                self.assertEqual(frame.iloc[1][metric], 0)
-                self.assertTrue(pd.isna(frame.iloc[2][metric]))
+                self.assertEqual(len(frame), 1)
                 self.assertTrue(frame.ano.eq(2026).all())
                 self.assertTrue(frame.mes.eq("08").all())
                 if accommodation:

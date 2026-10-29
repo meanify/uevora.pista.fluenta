@@ -55,7 +55,7 @@ def monthly_metadata():
                     "S3A202312": "Dezembro de 2023",
                     "S3A202401": "Janeiro de 2024",
                 },
-                "2": {"PT": "Portugal"},
+                "2": {"PT": "Portugal", "1": "Continente", "11": "Norte"},
                 "3": {"T": "Total"},
             }.items()
             for code, label in labels.items()
@@ -369,7 +369,7 @@ class MonthlyBatchCliTests(unittest.TestCase):
             metadata_response, data_response = Mock(), Mock()
             metadata_response.json.return_value = meta
             data_response.json.return_value = [{"Dados": {label: [
-                {"geocod": "PT", "dim_3": "T", "valor": "0"},
+                {"geocod": "11", "dim_3": "T", "valor": "0"},
             ]}}]
             responses.extend([metadata_response, data_response])
         with tempfile.TemporaryDirectory() as directory:

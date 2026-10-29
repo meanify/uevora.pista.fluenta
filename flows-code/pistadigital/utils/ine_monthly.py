@@ -10,7 +10,7 @@ from pistadigital.utils.ine_api import (
     monthly_dimension_labels, monthly_records,
 )
 from pistadigital.utils.ine_output import replace_period_data, validate_period, write_csv
-from pistadigital.utils.ine_transform import metric_value
+from pistadigital.utils.ine_transform import filter_detail_rows, metric_value
 
 
 logger = logging.getLogger("pista.fluenta.ine")
@@ -58,6 +58,7 @@ def process_monthly_indicator(
                 raise ValueError(f"Values in {column} exceed {length} characters.")
         if frame.duplicated(subset=[*lengths, "ano", "mes"]).any():
             raise ValueError("Transformed records contain duplicate primary keys.")
+        frame = filter_detail_rows(frame, rows, dimensions)
     except (KeyError, TypeError, ValueError) as exc:
         raise RuntimeError(f"Invalid INE response ({varcd}, {ano}-{mes:02d}): {exc}") from exc
     if gravar_bd:
