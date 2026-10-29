@@ -1,0 +1,135 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "8992abec370458df73cb",
+  "position": {
+    "x": 9.432354634427174,
+    "y": 117.38041322842705,
+    "z": 3002,
+    "height": 299.73926949401908,
+    "width": 557.55696283502846,
+    "tabOrder": 3002
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Ano"
+                    }
+                  },
+                  "Property": "Ano"
+                }
+              },
+              "queryRef": "Ano.Ano",
+              "nativeQueryRef": "Ano",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Dormidas mensais (mês anterior)"
+                }
+              },
+              "queryRef": "_Medidas.Dormidas mensais (mês anterior)",
+              "nativeQueryRef": "Dormidas mensais (mês anterior)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Estada média por tipo de alojamento (0009880)"
+                    }
+                  },
+                  "Property": "Estada média INE (tipo)"
+                }
+              },
+              "queryRef": "Estada média por tipo de alojamento (0009880).Estada média INE (tipo)",
+              "nativeQueryRef": "Estada média INE (tipo)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Medidas"
+                  }
+                },
+                "Property": "Dormidas mensais (mês anterior)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "a7b31d2f35d21bd24a48",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Ano"
+              }
+            },
+            "Property": "Ano"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "18e0f02055a2ce100796",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas"
+              }
+            },
+            "Property": "Dormidas mensais (mês anterior)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c82561ee6c179908486a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Estada média por tipo de alojamento (0009880)"
+              }
+            },
+            "Property": "Estada média INE (tipo)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

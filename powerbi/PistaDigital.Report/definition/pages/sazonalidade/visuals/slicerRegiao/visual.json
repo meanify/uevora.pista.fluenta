@@ -20,14 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Região NUTS II"
+                      "Entity": "Geografia"
                     }
                   },
-                  "Property": "NUTS II"
+                  "Property": "NUTS III"
                 }
               },
-              "queryRef": "Região NUTS II.NUTS II",
-              "nativeQueryRef": "NUTS II"
+              "queryRef": "Geografia.NUTS III",
+              "nativeQueryRef": "NUTS III",
+              "active": true
             }
           ]
         }
@@ -86,14 +87,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10D"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -126,14 +120,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Região NUTS II'"
+                  "Value": "'Sub-região NUTS III'"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

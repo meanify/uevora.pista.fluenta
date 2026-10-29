@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "kpiDormidasKm2",
   "position": {
-    "x": 248,
-    "y": 172,
+    "x": 247.83202312268742,
+    "y": 172.28471495889423,
     "z": 20,
-    "height": 84,
-    "width": 244,
+    "height": 83.839085889087571,
+    "width": 244.14678857811217,
     "tabOrder": 20
   },
   "visual": {
@@ -40,7 +40,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -59,13 +59,6 @@
                       "Value": "'#001F44'"
                     }
                   }
-                }
-              }
-            },
-            "horizontalAlignment": {
-              "expr": {
-                "Literal": {
-                  "Value": "'left'"
                 }
               }
             }
@@ -120,7 +113,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

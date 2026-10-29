@@ -21,14 +21,13 @@
                   {
                     "value": "Quadro comparativo",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontWeight": "bold",
+                      "fontFamily": "Arial",
                       "fontSize": "28pt",
-                      "color": "#ffffff",
-                      "fontWeight": "bold"
+                      "color": "#ffffff"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }

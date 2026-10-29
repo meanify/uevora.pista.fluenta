@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "Métrica de pressão.Métrica",
-              "nativeQueryRef": "Métrica"
+              "nativeQueryRef": "Métrica",
+              "active": true
             }
           ]
         }
@@ -86,14 +87,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10D"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -133,7 +127,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

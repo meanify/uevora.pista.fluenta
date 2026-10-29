@@ -5,6 +5,19 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		formatString: #,0
 		lineageTag: 3bfceae4-55c4-5020-bf4e-ee66f1023b53
 
+	/// Hóspedes mensais por tipo de alojamento (NUTS 2013) do ano anterior.
+	measure 'Hóspedes mensais (tipo, ano anterior)' = CALCULATE([Hóspedes mensais (tipo)], DATEADD('Calendário'[Date], -1, YEAR))
+		formatString: #,0
+		lineageTag: d5d4a792-72cb-543b-8d94-ddadf3c69bdd
+
+	/// Variação homóloga de [Hóspedes mensais (tipo)]. Em branco sem ano anterior publicado.
+	measure 'Hóspedes mensais (tipo) YoY %' =
+			VAR Atual = [Hóspedes mensais (tipo)]
+			VAR Anterior = [Hóspedes mensais (tipo, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: b704250f-344f-5cde-9861-787a5f58db5c
+
 	column nuts_i
 		dataType: string
 		lineageTag: 8b36968a-f5bc-5f24-b63c-72b5ad04a25a
@@ -94,7 +107,11 @@ table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0009812_ds", Kind = "Table"]}[Data],
-				    ComData = Table.AddColumn(Origem, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento]))),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
 				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    GeoKey

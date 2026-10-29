@@ -5,6 +5,25 @@ table 'Hóspedes por tipo de alojamento (0009876)'
 		formatString: #,0
 		lineageTag: 79025c97-231f-5060-9495-db51da0c57ea
 
+	/// Hóspedes por tipo de alojamento do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Hóspedes (tipo, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Hóspedes (tipo)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0
+		lineageTag: ee8787ae-17ea-5fbe-b7ae-f20367150804
+
+	/// Variação homóloga de [Hóspedes (tipo)]. Em branco sem ano anterior publicado.
+	measure 'Hóspedes (tipo) YoY %' =
+			VAR Atual = [Hóspedes (tipo)]
+			VAR Anterior = [Hóspedes (tipo, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 18938dce-521f-5df1-be33-f3a5930382f9
+
 	column nuts_i
 		dataType: string
 		lineageTag: 0d3fdab9-db51-59f1-8c18-9f52be5ae1c4
@@ -106,7 +125,12 @@ table 'Hóspedes por tipo de alojamento (0009876)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0009876_ds", Kind = "Table"]}[Data],
-				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento", "classificacao"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento])) and ([classificacao] <> "Total" or [subtipo_alojamento] = "Total" or not List.Contains(SubtiposComClasse, [subtipo_alojamento]))),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

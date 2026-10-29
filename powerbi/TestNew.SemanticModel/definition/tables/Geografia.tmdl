@@ -1,0 +1,80 @@
+/// Geografia ao nível do município, construída a partir de todos os indicadores municipais.
+table Geografia
+	lineageTag: 22e3060e-59a1-5408-95ce-73dd707a0728
+
+	column GeoKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 568fc784-f7f9-59b4-8713-cf6ce1701c2d
+		summarizeBy: none
+		sourceColumn: [GeoKey]
+
+	column 'NUTS I'
+		dataType: string
+		lineageTag: 8771a6fe-8b10-5d87-873e-446af0c8c5f2
+		summarizeBy: none
+		sourceColumn: [NUTS I]
+
+	column 'NUTS II'
+		dataType: string
+		lineageTag: 41b3818c-927f-5d4f-90e4-d80565d62978
+		summarizeBy: none
+		sourceColumn: [NUTS II]
+
+	column 'NUTS III'
+		dataType: string
+		lineageTag: 9862fd24-d24f-50af-a937-ca121b1eb8c4
+		summarizeBy: none
+		sourceColumn: [NUTS III]
+
+	column Distrito
+		dataType: string
+		lineageTag: 43f7f09c-4ad1-5cc0-91db-2476de4c4f43
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: [Distrito]
+
+	column Município
+		dataType: string
+		lineageTag: 7240dbc1-867e-5346-8b6f-772a4a562688
+		summarizeBy: none
+		sourceColumn: [Município]
+
+	column 'Município (mapa)'
+		dataType: string
+		lineageTag: ded17b3f-19d1-5fa3-8e0b-1854a366ac9c
+		dataCategory: Place
+		summarizeBy: none
+		sourceColumn: [Município (mapa)]
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: a5014890-9297-5430-b57d-7d77d07e4218
+		summarizeBy: none
+		sourceColumn: [NutsIIKey]
+
+	partition Geografia = calculated
+		mode: import
+		source =
+				ADDCOLUMNS(
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Superfície das unidades territoriais (0008350)', "GeoKey", 'Superfície das unidades territoriais (0008350)'[GeoKey], "NUTS I", 'Superfície das unidades territoriais (0008350)'[nuts_i], "NUTS II", 'Superfície das unidades territoriais (0008350)'[nuts_ii], "NUTS III", 'Superfície das unidades territoriais (0008350)'[nuts_iii], "Distrito", 'Superfície das unidades territoriais (0008350)'[distrito], "Município", 'Superfície das unidades territoriais (0008350)'[municipio], "NutsIIKey", 'Superfície das unidades territoriais (0008350)'[NutsIIKey]),
+				            SELECTCOLUMNS('Dormidas por país de residência (0009183)', "GeoKey", 'Dormidas por país de residência (0009183)'[GeoKey], "NUTS I", 'Dormidas por país de residência (0009183)'[nuts_i], "NUTS II", 'Dormidas por país de residência (0009183)'[nuts_ii], "NUTS III", 'Dormidas por país de residência (0009183)'[nuts_iii], "Distrito", 'Dormidas por país de residência (0009183)'[distrito], "Município", 'Dormidas por país de residência (0009183)'[municipio], "NutsIIKey", 'Dormidas por país de residência (0009183)'[NutsIIKey]),
+				            SELECTCOLUMNS('Estabelecimentos de alojamento turístico (0009873)', "GeoKey", 'Estabelecimentos de alojamento turístico (0009873)'[GeoKey], "NUTS I", 'Estabelecimentos de alojamento turístico (0009873)'[nuts_i], "NUTS II", 'Estabelecimentos de alojamento turístico (0009873)'[nuts_ii], "NUTS III", 'Estabelecimentos de alojamento turístico (0009873)'[nuts_iii], "Distrito", 'Estabelecimentos de alojamento turístico (0009873)'[distrito], "Município", 'Estabelecimentos de alojamento turístico (0009873)'[municipio], "NutsIIKey", 'Estabelecimentos de alojamento turístico (0009873)'[NutsIIKey]),
+				            SELECTCOLUMNS('Quartos em alojamento turístico (0009874)', "GeoKey", 'Quartos em alojamento turístico (0009874)'[GeoKey], "NUTS I", 'Quartos em alojamento turístico (0009874)'[nuts_i], "NUTS II", 'Quartos em alojamento turístico (0009874)'[nuts_ii], "NUTS III", 'Quartos em alojamento turístico (0009874)'[nuts_iii], "Distrito", 'Quartos em alojamento turístico (0009874)'[distrito], "Município", 'Quartos em alojamento turístico (0009874)'[municipio], "NutsIIKey", 'Quartos em alojamento turístico (0009874)'[NutsIIKey]),
+				            SELECTCOLUMNS('Hóspedes por tipo de alojamento (0009876)', "GeoKey", 'Hóspedes por tipo de alojamento (0009876)'[GeoKey], "NUTS I", 'Hóspedes por tipo de alojamento (0009876)'[nuts_i], "NUTS II", 'Hóspedes por tipo de alojamento (0009876)'[nuts_ii], "NUTS III", 'Hóspedes por tipo de alojamento (0009876)'[nuts_iii], "Distrito", 'Hóspedes por tipo de alojamento (0009876)'[distrito], "Município", 'Hóspedes por tipo de alojamento (0009876)'[municipio], "NutsIIKey", 'Hóspedes por tipo de alojamento (0009876)'[NutsIIKey]),
+				            SELECTCOLUMNS('Dormidas por tipo de alojamento (0009877)', "GeoKey", 'Dormidas por tipo de alojamento (0009877)'[GeoKey], "NUTS I", 'Dormidas por tipo de alojamento (0009877)'[nuts_i], "NUTS II", 'Dormidas por tipo de alojamento (0009877)'[nuts_ii], "NUTS III", 'Dormidas por tipo de alojamento (0009877)'[nuts_iii], "Distrito", 'Dormidas por tipo de alojamento (0009877)'[distrito], "Município", 'Dormidas por tipo de alojamento (0009877)'[municipio], "NutsIIKey", 'Dormidas por tipo de alojamento (0009877)'[NutsIIKey]),
+				            SELECTCOLUMNS('Estada média por tipo de alojamento (0009880)', "GeoKey", 'Estada média por tipo de alojamento (0009880)'[GeoKey], "NUTS I", 'Estada média por tipo de alojamento (0009880)'[nuts_i], "NUTS II", 'Estada média por tipo de alojamento (0009880)'[nuts_ii], "NUTS III", 'Estada média por tipo de alojamento (0009880)'[nuts_iii], "Distrito", 'Estada média por tipo de alojamento (0009880)'[distrito], "Município", 'Estada média por tipo de alojamento (0009880)'[municipio], "NutsIIKey", 'Estada média por tipo de alojamento (0009880)'[NutsIIKey]),
+				            SELECTCOLUMNS('Rendimento médio por quarto (0009929)', "GeoKey", 'Rendimento médio por quarto (0009929)'[GeoKey], "NUTS I", 'Rendimento médio por quarto (0009929)'[nuts_i], "NUTS II", 'Rendimento médio por quarto (0009929)'[nuts_ii], "NUTS III", 'Rendimento médio por quarto (0009929)'[nuts_iii], "Distrito", 'Rendimento médio por quarto (0009929)'[distrito], "Município", 'Rendimento médio por quarto (0009929)'[municipio], "NutsIIKey", 'Rendimento médio por quarto (0009929)'[NutsIIKey]),
+				            SELECTCOLUMNS('Hóspedes por país de residência (0009930)', "GeoKey", 'Hóspedes por país de residência (0009930)'[GeoKey], "NUTS I", 'Hóspedes por país de residência (0009930)'[nuts_i], "NUTS II", 'Hóspedes por país de residência (0009930)'[nuts_ii], "NUTS III", 'Hóspedes por país de residência (0009930)'[nuts_iii], "Distrito", 'Hóspedes por país de residência (0009930)'[distrito], "Município", 'Hóspedes por país de residência (0009930)'[municipio], "NutsIIKey", 'Hóspedes por país de residência (0009930)'[NutsIIKey]),
+				            SELECTCOLUMNS('Dormidas mensais por segmento (0010735)', "GeoKey", 'Dormidas mensais por segmento (0010735)'[GeoKey], "NUTS I", 'Dormidas mensais por segmento (0010735)'[nuts_i], "NUTS II", 'Dormidas mensais por segmento (0010735)'[nuts_ii], "NUTS III", 'Dormidas mensais por segmento (0010735)'[nuts_iii], "Distrito", 'Dormidas mensais por segmento (0010735)'[distrito], "Município", 'Dormidas mensais por segmento (0010735)'[municipio], "NutsIIKey", 'Dormidas mensais por segmento (0010735)'[NutsIIKey]),
+				            SELECTCOLUMNS('Hóspedes mensais por segmento (0010736)', "GeoKey", 'Hóspedes mensais por segmento (0010736)'[GeoKey], "NUTS I", 'Hóspedes mensais por segmento (0010736)'[nuts_i], "NUTS II", 'Hóspedes mensais por segmento (0010736)'[nuts_ii], "NUTS III", 'Hóspedes mensais por segmento (0010736)'[nuts_iii], "Distrito", 'Hóspedes mensais por segmento (0010736)'[distrito], "Município", 'Hóspedes mensais por segmento (0010736)'[municipio], "NutsIIKey", 'Hóspedes mensais por segmento (0010736)'[NutsIIKey]),
+				            SELECTCOLUMNS('Estada média por país de residência (0011140)', "GeoKey", 'Estada média por país de residência (0011140)'[GeoKey], "NUTS I", 'Estada média por país de residência (0011140)'[nuts_i], "NUTS II", 'Estada média por país de residência (0011140)'[nuts_ii], "NUTS III", 'Estada média por país de residência (0011140)'[nuts_iii], "Distrito", 'Estada média por país de residência (0011140)'[distrito], "Município", 'Estada média por país de residência (0011140)'[municipio], "NutsIIKey", 'Estada média por país de residência (0011140)'[NutsIIKey])
+				        )
+				    ),
+				    "Município (mapa)", [Município] & ", Portugal"
+				)
+

@@ -3,7 +3,7 @@
   "name": "headerAccent",
   "position": {
     "x": 240.0010234759803,
-    "y": 96.41962515192222,
+    "y": 96.419625151922219,
     "z": 2,
     "height": 4,
     "width": 1040,
@@ -21,7 +21,7 @@
                   {
                     "value": " ",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "2pt",
                       "fontWeight": "normal",
                       "color": "#FFAD00"

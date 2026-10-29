@@ -1,0 +1,22 @@
+/// País ou local de residência dos hóspedes.
+table Residência
+	lineageTag: 7348e7bd-1af5-5666-85ae-1cb5380c2d52
+
+	column 'Local de residência'
+		dataType: string
+		isKey
+		lineageTag: 34b595b8-d25b-514f-bb85-5cd14d00c048
+		summarizeBy: none
+		sourceColumn: [Local de residência]
+
+	partition Residência = calculated
+		mode: import
+		source =
+				DISTINCT(
+				    UNION(
+				            SELECTCOLUMNS('Dormidas por país de residência (0009183)', "Local de residência", 'Dormidas por país de residência (0009183)'[local_residencia]),
+				            SELECTCOLUMNS('Hóspedes por país de residência (0009930)', "Local de residência", 'Hóspedes por país de residência (0009930)'[local_residencia]),
+				            SELECTCOLUMNS('Estada média por país de residência (0011140)', "Local de residência", 'Estada média por país de residência (0011140)'[local_residencia])
+				        )
+				)
+

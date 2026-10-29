@@ -21,7 +21,7 @@
                   {
                     "value": "Mês de pico ÷ média mensal do ano. Quanto maior, mais a economia local depende de agosto. O índice usa sempre o último ano civil completo: um ano cortado a meio é todo pico e nenhum inverno.",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#4E4F50",
                       "fontWeight": "normal"

@@ -5,7 +5,7 @@
     "x": 0,
     "y": 0,
     "z": 3001,
-    "height": 96.41962515192222,
+    "height": 96.419625151922219,
     "width": 240.0010234759803,
     "tabOrder": 3001
   },
@@ -30,7 +30,7 @@
                     "value": "PISTA DIGITAL",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "14pt",
                       "color": "#ffffff"
                     }
@@ -43,7 +43,7 @@
                   {
                     "value": "Universidade de Évora",
                     "textStyle": {
-                      "fontFamily": "Montserrat",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#ced4da"
                     }

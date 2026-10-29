@@ -5,6 +5,24 @@ table 'Dormidas por tipo de alojamento (0009877)'
 		formatString: #,0
 		lineageTag: 7c358e0e-b7ef-548e-9018-8cb4a0df9d84
 
+	/// Dormidas do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Dormidas (ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Dormidas (tipo)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0
+		lineageTag: 6eb98aae-b580-54f4-b123-4445d89a55ce
+
+	measure 'Dormidas YoY %' =
+			VAR Atual = [Dormidas (tipo)]
+			VAR Anterior = [Dormidas (ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 5f334fff-3cc3-54c4-a0d8-1281fc66faaf
+
 	column nuts_i
 		dataType: string
 		lineageTag: a5993d02-4380-565b-9956-17bd54ffb7bb
@@ -106,7 +124,12 @@ table 'Dormidas por tipo de alojamento (0009877)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0009877_ds", Kind = "Table"]}[Data],
-				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento", "classificacao"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento])) and ([classificacao] <> "Total" or [subtipo_alojamento] = "Total" or not List.Contains(SubtiposComClasse, [subtipo_alojamento]))),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

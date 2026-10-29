@@ -2,35 +2,17 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "matrizMesAno",
   "position": {
-    "x": 248,
-    "y": 172,
+    "x": 247.83202312268742,
+    "y": 172.28471495889423,
     "z": 20,
-    "height": 440,
-    "width": 620,
+    "height": 280.07782538772113,
+    "width": 620.0407121247905,
     "tabOrder": 20
   },
   "visual": {
     "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Calendário"
-                    }
-                  },
-                  "Property": "Ano"
-                }
-              },
-              "queryRef": "Calendário.Ano",
-              "nativeQueryRef": "Ano"
-            }
-          ]
-        },
         "Columns": {
           "projections": [
             {
@@ -45,7 +27,27 @@
                 }
               },
               "queryRef": "Calendário.Mês",
-              "nativeQueryRef": "Mês"
+              "nativeQueryRef": "Mês",
+              "active": true
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Calendário"
+                    }
+                  },
+                  "Property": "Ano"
+                }
+              },
+              "queryRef": "Calendário.Ano",
+              "nativeQueryRef": "Ano",
+              "active": true
             }
           ]
         },
@@ -105,7 +107,11 @@
                             }
                           },
                           "nullColoringStrategy": {
-                            "strategy": "asNone"
+                            "strategy": {
+                              "Literal": {
+                                "Value": "'asZero'"
+                              }
+                            }
                           }
                         }
                       }
@@ -117,7 +123,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -140,7 +146,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -167,7 +173,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -230,7 +236,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "Geografia.NUTS III",
-              "nativeQueryRef": "NUTS III"
+              "nativeQueryRef": "NUTS III",
+              "active": true
             }
           ]
         }
@@ -86,14 +87,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10D"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -109,6 +103,11 @@
               }
             }
           }
+        }
+      ],
+      "general": [
+        {
+          "properties": {}
         }
       ]
     },
@@ -133,7 +132,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

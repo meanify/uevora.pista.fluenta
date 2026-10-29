@@ -1,0 +1,41 @@
+/// Tipo e subtipo de alojamento, conforme aos indicadores que os publicam. A classificação (estrelas) fica local a cada indicador.
+table 'Tipo de alojamento'
+	lineageTag: 1b60c5a8-9358-5269-b6ef-747499b81d1b
+
+	column TipoKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: a6d6e025-5883-517b-b5da-75e01dc27a8a
+		summarizeBy: none
+		sourceColumn: [TipoKey]
+
+	column 'Tipo de alojamento'
+		dataType: string
+		lineageTag: c955cf2e-0936-52ab-979d-3f0461a5aa52
+		summarizeBy: none
+		sourceColumn: [Tipo de alojamento]
+
+	column 'Subtipo de alojamento'
+		dataType: string
+		lineageTag: 47b329a3-a20e-5532-9808-c8e73223b8c5
+		summarizeBy: none
+		sourceColumn: [Subtipo de alojamento]
+
+	partition 'Tipo de alojamento' = calculated
+		mode: import
+		source =
+				DISTINCT(
+				    UNION(
+				        SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)', "TipoKey", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[tipo_alojamento] & "|" & 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[subtipo_alojamento], "Tipo de alojamento", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[tipo_alojamento], "Subtipo de alojamento", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)', "TipoKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[tipo_alojamento] & "|" & 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[subtipo_alojamento], "Tipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[tipo_alojamento], "Subtipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Estabelecimentos de alojamento turístico (0009873)', "TipoKey", 'Estabelecimentos de alojamento turístico (0009873)'[tipo_alojamento] & "|" & 'Estabelecimentos de alojamento turístico (0009873)'[subtipo_alojamento], "Tipo de alojamento", 'Estabelecimentos de alojamento turístico (0009873)'[tipo_alojamento], "Subtipo de alojamento", 'Estabelecimentos de alojamento turístico (0009873)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Quartos em alojamento turístico (0009874)', "TipoKey", 'Quartos em alojamento turístico (0009874)'[tipo_alojamento] & "|" & 'Quartos em alojamento turístico (0009874)'[subtipo_alojamento], "Tipo de alojamento", 'Quartos em alojamento turístico (0009874)'[tipo_alojamento], "Subtipo de alojamento", 'Quartos em alojamento turístico (0009874)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Hóspedes por tipo de alojamento (0009876)', "TipoKey", 'Hóspedes por tipo de alojamento (0009876)'[tipo_alojamento] & "|" & 'Hóspedes por tipo de alojamento (0009876)'[subtipo_alojamento], "Tipo de alojamento", 'Hóspedes por tipo de alojamento (0009876)'[tipo_alojamento], "Subtipo de alojamento", 'Hóspedes por tipo de alojamento (0009876)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Dormidas por tipo de alojamento (0009877)', "TipoKey", 'Dormidas por tipo de alojamento (0009877)'[tipo_alojamento] & "|" & 'Dormidas por tipo de alojamento (0009877)'[subtipo_alojamento], "Tipo de alojamento", 'Dormidas por tipo de alojamento (0009877)'[tipo_alojamento], "Subtipo de alojamento", 'Dormidas por tipo de alojamento (0009877)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Estada média por tipo de alojamento (0009880)', "TipoKey", 'Estada média por tipo de alojamento (0009880)'[tipo_alojamento] & "|" & 'Estada média por tipo de alojamento (0009880)'[subtipo_alojamento], "Tipo de alojamento", 'Estada média por tipo de alojamento (0009880)'[tipo_alojamento], "Subtipo de alojamento", 'Estada média por tipo de alojamento (0009880)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Rendimento médio por quarto (0009929)', "TipoKey", 'Rendimento médio por quarto (0009929)'[tipo_alojamento] & "|" & 'Rendimento médio por quarto (0009929)'[subtipo_alojamento], "Tipo de alojamento", 'Rendimento médio por quarto (0009929)'[tipo_alojamento], "Subtipo de alojamento", 'Rendimento médio por quarto (0009929)'[subtipo_alojamento]),
+				        SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)', "TipoKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[tipo_alojamento] & "|" & 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[subtipo_alojamento], "Tipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[tipo_alojamento], "Subtipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[subtipo_alojamento])
+				    )
+				)
+

@@ -27,43 +27,8 @@
                 }
               },
               "queryRef": "Geografia.Município",
-              "nativeQueryRef": "Município"
-            }
-          ]
-        },
-        "X": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Quartos por estabelecimento"
-                }
-              },
-              "queryRef": "_Medidas.Quartos por estabelecimento",
-              "nativeQueryRef": "Quartos por estabelecimento"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Rendimento médio por quarto (0009929)"
-                    }
-                  },
-                  "Property": "RevPAR médio INE"
-                }
-              },
-              "queryRef": "Rendimento médio por quarto (0009929).RevPAR médio INE",
-              "nativeQueryRef": "RevPAR médio INE"
+              "nativeQueryRef": "Município",
+              "active": true
             }
           ]
         },
@@ -84,6 +49,43 @@
               "nativeQueryRef": "classificacao"
             }
           ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Quartos por estabelecimento"
+                }
+              },
+              "queryRef": "_Medidas.Quartos por estabelecimento",
+              "nativeQueryRef": "Quartos por estabelecimento",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Rendimento médio por quarto (0009929)"
+                    }
+                  },
+                  "Property": "RevPAR médio INE"
+                }
+              },
+              "queryRef": "Rendimento médio por quarto (0009929).RevPAR médio INE",
+              "nativeQueryRef": "RevPAR médio INE"
+            }
+          ]
         }
       }
     },
@@ -101,7 +103,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -139,7 +141,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -184,7 +186,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -227,7 +229,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

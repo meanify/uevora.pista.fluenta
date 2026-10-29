@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ctxDormidasYoY",
   "position": {
-    "x": 248,
-    "y": 260,
+    "x": 48.829357715622429,
+    "y": 257.96641812026945,
     "z": 30,
-    "height": 52,
-    "width": 78,
+    "height": 107.79311042882688,
+    "width": 141.88152996614821,
     "tabOrder": 30
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Medidas"
+                      "Entity": "Dormidas por tipo de alojamento (0009877)"
                     }
                   },
                   "Property": "Dormidas YoY %"
                 }
               },
-              "queryRef": "_Medidas.Dormidas YoY %",
+              "queryRef": "Dormidas por tipo de alojamento (0009877).Dormidas YoY %",
               "nativeQueryRef": "Dormidas YoY %"
             }
           ]
@@ -40,7 +40,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -59,13 +59,6 @@
                       "Value": "'#001F44'"
                     }
                   }
-                }
-              }
-            },
-            "horizontalAlignment": {
-              "expr": {
-                "Literal": {
-                  "Value": "'left'"
                 }
               }
             }
@@ -120,7 +113,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

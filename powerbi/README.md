@@ -10,7 +10,6 @@ over the INE indicators produced by [flows-code](../flows-code/README.md).
    and **Store reports using enhanced metadata format (PBIR)**.
 2. Open `PistaDigital.pbip`.
 3. Make sure the `Pista Digital` ODBC DSN exists (see Connection), then sign in with the database user.
-4. Install the Montserrat font (Google Fonts) on every machine that edits the report.
 
 ## Connection
 
@@ -23,6 +22,24 @@ credentials are supplied by Power BI itself — never stored in these files:
 |---|---|---|
 | `DSN` | System DSN pointing at `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `Pista Digital` |
 | `BaseDados` | `PISTA_DB_NAME` | `pista` |
+
+A third parameter, `RegiaoNUTSII` (default `Alentejo`), scopes the model to one
+NUTS II region. Every fact query filters `nuts_ii` on it straight after `Fonte`,
+so the filter folds into the ODBC query and only that region is imported; the
+calculated dimensions (`Geografia`, `Região NUTS II`, …) follow. The municipal
+indicators use NUTS 2013, where Alentejo still includes Lezíria do Tejo; 0012093
+uses NUTS 2024, where it does not.
+
+The flows store every level of INE's breakdowns, with `Total` for the levels a
+row does not reach, while the base measures `SUM`. So each query also keeps only
+the most detailed row of each branch: municipalities (no NUTS II / NUTS III
+totals), and the leaves of the accommodation, residence and segment breakdowns.
+A parent is dropped only when the table has children under it, so a branch INE
+does not break down further (Alojamento local, Pousadas) keeps its own row — that
+row still reads `Total` in the columns it does not reach. `Estrangeiro` is dropped
+in favour of the countries. Averaged indicators (`Estada média INE`, `RevPAR médio
+INE`) therefore average the leaves, not INE's published total; use the weighted
+measures in `_Medidas` for an overall figure.
 
 All tables load through the shared `Fonte` query, so the connection is defined once.
 
@@ -105,7 +122,8 @@ attribute, so every key is guaranteed to match.
 - **Geografia** — município grain (`NUTS I | NUTS II | NUTS III | Distrito | Município`),
   joined to the 12 municipality-grain indicators.
 - **Região NUTS II** — joined to `Geografia` and to the three NUTS II-only
-  indicators, so a NUTS II selection filters both families.
+  indicators, so a NUTS II selection filters both families. With `RegiaoNUTSII`
+  set it holds a single row.
 - **Tipo de alojamento** — tipo + subtipo, across the nine indicators that publish them.
 - **Residência**, **Segmento de alojamento** — single-attribute dimensions.
 
@@ -122,7 +140,8 @@ month-on-month variation, and tourism intensity per km².
 
 Every one of the 15 indicators has a pair — a prior-year value and a variance —
 generated from its base measure, so the names follow from it: `Hóspedes (tipo)`
-gives `Hóspedes (tipo, ano anterior)` and `Hóspedes (tipo) YoY %`.
+gives `Hóspedes (tipo, ano anterior)` and `Hóspedes (tipo) YoY %`. The pair sits
+on the indicator's own table, next to its base measure, rather than on `_Medidas`.
 
 Two patterns, because the families hang off different dimensions:
 
@@ -159,22 +178,23 @@ comparators the KPI tiles read against. Both average each peer's own value rathe
 than pooling the group's numerators and denominators: a pooled ratio is dominated
 by the largest município, which is not what "face aos pares" means.
 
-`Percentil de pressão` ranks nationally instead, and `Municípios com dados de
-pressão` is its denominator («78, entre 308 municípios»).
+`Percentil de pressão` ranks across every imported município instead (the whole
+`RegiaoNUTSII` region), and `Municípios com dados de pressão` is its denominator
+(«12, entre 58 municípios»).
 
 `Cor do município em foco` returns a hex string (`#FFAD00` for the focus
 município, `#2066BC` for the peers) rather than a 0/1 flag, because *Field value*
 conditional formatting reads the measure straight into the fill. It needs
-`Geografia[Município]` on the axis to resolve. `Cor da região em foco` is the
-same idea one level up, over the disconnected `Região em foco`, and needs
-`Região NUTS II[NUTS II]` on the axis.
+`Geografia[Município]` on the axis to resolve. `Cor da sub-região em foco` is the
+same idea one level up, over the disconnected `Sub-região em foco`, and needs
+`Geografia[NUTS III]` on the axis.
 
 Each page's header sub-title is a card over a string measure (`Subtítulo · …`),
 so the band echoes the current selection instead of repeating a fixed sentence.
 
 ### Disconnected tables
 
-`Município selecionado`, `Região em foco` and `Métrica de pressão` have no
+`Município selecionado`, `Sub-região em foco` and `Métrica de pressão` have no
 relationships on purpose. The first two carry *which* territory is highlighted
 without filtering it — a slicer that filtered would remove the very peers the
 comparison is against — and the third drives `Pressão (métrica selecionada)`.
@@ -254,7 +274,7 @@ default; only an ad-hoc drag of those columns onto a visual would hit it.
 
 `PistaDigital.Report/StaticResources/RegisteredResources/PistaDigitalTheme.json`:
 navy `#001F44`, gold `#FFAD00`, link `#2066BC`, ink `#1D2127`, hairline `#4E4F50`,
-Montserrat, 0 px corner radius, no shadows, navy table headers.
+Arial (the site uses Montserrat; the report uses Arial so it renders the same on any machine and in the Service), 0 px corner radius, no shadows, navy table headers.
 
 ## `PistaDigital.pbit`
 

@@ -5,6 +5,19 @@ table 'Dormidas mensais por segmento (0010735)'
 		formatString: #,0
 		lineageTag: a268ad13-78e4-5e06-9d9f-43b8fe8de328
 
+	/// Dormidas mensais por segmento do ano anterior.
+	measure 'Dormidas mensais (segmento, ano anterior)' = CALCULATE([Dormidas mensais (segmento)], DATEADD('Calendário'[Date], -1, YEAR))
+		formatString: #,0
+		lineageTag: 4b53c3f9-568f-556e-8f38-55230928a679
+
+	/// Variação homóloga de [Dormidas mensais (segmento)]. Em branco sem ano anterior publicado.
+	measure 'Dormidas mensais (segmento) YoY %' =
+			VAR Atual = [Dormidas mensais (segmento)]
+			VAR Anterior = [Dormidas mensais (segmento, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 01381692-1c2a-5c98-886b-6235e808076c
+
 	column nuts_i
 		dataType: string
 		lineageTag: c81b458b-9c1b-5a13-bfde-c3e14a826853
@@ -113,7 +126,9 @@ table 'Dormidas mensais por segmento (0010735)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0010735_ds", Kind = "Table"]}[Data],
-				    ComData = Table.AddColumn(Origem, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    Folhas = Table.SelectRows(Regiao, each [segmento_alojamento] <> "Total"),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
 				    GeoKey = Table.AddColumn(ComData, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in

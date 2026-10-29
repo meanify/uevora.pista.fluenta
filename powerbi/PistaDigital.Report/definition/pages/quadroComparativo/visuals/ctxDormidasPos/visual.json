@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ctxDormidasPos",
   "position": {
-    "x": 331,
-    "y": 260,
+    "x": 326.57580407377321,
+    "y": 260.02828173421187,
     "z": 31,
-    "height": 52,
-    "width": 78,
+    "height": 51.759184041881042,
+    "width": 82.568222162048329,
     "tabOrder": 31
   },
   "visual": {
@@ -40,7 +40,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -59,13 +59,6 @@
                       "Value": "'#001F44'"
                     }
                   }
-                }
-              }
-            },
-            "horizontalAlignment": {
-              "expr": {
-                "Literal": {
-                  "Value": "'left'"
                 }
               }
             }
@@ -120,7 +113,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

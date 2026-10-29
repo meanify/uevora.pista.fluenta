@@ -5,6 +5,25 @@ table 'Hóspedes por país de residência (0009930)'
 		formatString: #,0
 		lineageTag: d2fe82ac-0194-5953-90a9-71d09de457b4
 
+	/// Hóspedes por país de residência do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Hóspedes (residência, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Hóspedes (residência)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0
+		lineageTag: 41b1bf84-c0b2-5ea8-8ded-fb9c7607599f
+
+	/// Variação homóloga de [Hóspedes (residência)]. Em branco sem ano anterior publicado.
+	measure 'Hóspedes (residência) YoY %' =
+			VAR Atual = [Hóspedes (residência)]
+			VAR Anterior = [Hóspedes (residência, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: c5cfe5c4-e0d2-5e6b-8c97-84d21d6ccd9a
+
 	column nuts_i
 		dataType: string
 		lineageTag: 71bf9745-273a-5523-bf69-d414d5e5f6ca
@@ -94,7 +113,10 @@ table 'Hóspedes por país de residência (0009930)'
 		source =
 				let
 				    Origem = Fonte{[Name = "ine_0009930_ds", Kind = "Table"]}[Data],
-				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Regiao = Table.SelectRows(Origem, each [nuts_ii] = RegiaoNUTSII and [municipio] <> "Total"),
+				    ComPaises = not Table.IsEmpty(Table.SelectRows(Regiao, each not List.Contains({"Total", "Portugal", "Estrangeiro"}, [local_residencia]))),
+				    Folhas = Table.SelectRows(Regiao, each [local_residencia] <> "Total" and ([local_residencia] <> "Estrangeiro" or not ComPaises)),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
 				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
 				in
 				    NutsII

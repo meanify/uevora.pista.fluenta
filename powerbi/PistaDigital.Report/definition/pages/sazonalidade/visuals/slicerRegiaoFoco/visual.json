@@ -20,14 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Região em foco"
+                      "Entity": "Sub-região em foco"
                     }
                   },
-                  "Property": "NUTS II"
+                  "Property": "NUTS III"
                 }
               },
-              "queryRef": "Região em foco.NUTS II",
-              "nativeQueryRef": "NUTS II"
+              "queryRef": "Sub-região em foco.NUTS III",
+              "nativeQueryRef": "NUTS III",
+              "active": true
             }
           ]
         }
@@ -86,14 +87,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
-                }
-              }
-            },
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "10D"
+                  "Value": "'Arial'"
                 }
               }
             },
@@ -126,14 +120,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Região em foco'"
+                  "Value": "'Sub-região em foco'"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Montserrat'"
+                  "Value": "'Arial'"
                 }
               }
             },

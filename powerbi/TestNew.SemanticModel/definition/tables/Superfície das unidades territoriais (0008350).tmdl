@@ -1,0 +1,95 @@
+table 'Superfície das unidades territoriais (0008350)'
+	lineageTag: 9e429e81-ccc7-53da-9c2b-92876bc80bdf
+
+	measure 'Superfície (km²)' = SUM('Superfície das unidades territoriais (0008350)'[superficie_unidades_territoriais])
+		formatString: #,0.00
+		lineageTag: 9ad9132b-06b3-535f-9148-eb3343877832
+
+	column nuts_i
+		dataType: string
+		lineageTag: 94e92886-326d-507d-8bb5-d41f3fb57fba
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 33e482cf-be0a-5413-b5e3-79f7b7cfc02e
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: f9f73cb8-04fa-577f-9b6f-610278a5aa03
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: 121173e5-a964-51cc-9697-819628dcdde6
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: 75cd5a93-c75d-5d1e-9fe5-4329f4080c0d
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: b89d11c2-5b7a-5f2c-8b41-0f05f1b7fde9
+		summarizeBy: none
+		sourceColumn: ano
+
+	column superficie_unidades_territoriais
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 4aa72828-67f1-5eec-abb9-38749ca03511
+		summarizeBy: sum
+		sourceColumn: superficie_unidades_territoriais
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: e947e115-c400-5db0-8159-d13ccf5db997
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: c7f45299-deed-566d-95f9-8923afc2f396
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: 7090dc09-7cf7-5587-b492-61897b25ecaa
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 5612e359-0639-5303-b0a1-6f6810b4d416
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Superfície das unidades territoriais (0008350)' = m
+		mode: import
+		source =
+				let
+				    Origem = Fonte{[Name = "ine_0008350_ds", Kind = "Table"]}[Data],
+				    GeoKey = Table.AddColumn(Origem, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
