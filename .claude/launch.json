@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "dashboards",
-      "runtimeExecutable": ".venv/bin/python",
-      "runtimeArgs": ["flows-code/dashboards.py", "--port", "8050"],
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd standalone-dashboard && ../.venv/bin/python dashboards.py --port 8050"],
       "port": 8050
     }
   ]
