@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dashboards",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["flows-code/dashboards.py", "--port", "8050"],
+      "port": 8050
+    }
+  ]
+}
