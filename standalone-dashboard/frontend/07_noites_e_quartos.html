@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noites e quartos · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+<style>.grid[hidden]{display:none}.cmp{font-size:12px;color:var(--ink-3);margin:0}
+.hero{grid-column:span 4;background:var(--anil);color:var(--surface);border-radius:10px;padding:18px 20px}.hero p{margin:0}.hero .v{font-size:64px;font-weight:700;letter-spacing:-.03em;line-height:1}
+@media (max-width:900px){.hero{grid-column:span 12}}</style>
+</head><body>
+<header class="top"></header>
+<main><div class="head"><div><h1>Noites e quartos</h1><p class="aud">Oferta e procura de alojamento no Alentejo, ligadas por um indicador de referência: as noites por quarto.</p></div>
+<div class="filters"><div class="tog" id="tabs" role="group" aria-label="Página"><button data-p="procura">Procura</button><button data-p="oferta">Oferta</button><button data-p="equilibrio">Equilíbrio</button></div>
+<label for="ano">Ano</label><select id="ano"></select>
+<label for="seg">Alojamento</label><select id="seg"></select>
+<div class="tog" id="terr" role="group" aria-label="Definição territorial"><button data-t="2024">NUTS 2024</button><button data-t="2013">NUTS 2013</button></div></div></div>
+<div id="status" class="status" role="status"></div>
+
+<div class="grid" id="procura">
+<div class="kpis">
+<div class="kpi"><p class="l">Dormidas</p><p class="v" id="q_dorm">–</p><p class="d" id="q_dorm_d"></p><p class="cmp" id="q_dorm_c"></p></div>
+<div class="kpi"><p class="l">Hóspedes</p><p class="v" id="q_hosp">–</p><p class="d" id="q_hosp_d"></p><p class="cmp" id="q_hosp_c"></p></div>
+<div class="kpi"><p class="l">Estada média</p><p class="v" id="q_est">–</p><p class="d" id="q_est_d"></p><p class="cmp" id="q_est_c"></p></div>
+<div class="kpi"><p class="l">Quota internacional</p><p class="v" id="q_int">–</p><p class="d" id="q_int_d">das dormidas</p></div>
+<div class="kpi"><p class="l" id="q_pico_l">Dormidas no mês de pico</p><p class="v" id="q_pico">–</p><p class="d" id="q_pico_d"></p></div>
+</div>
+<section class="panel s8"><h2>Hóspedes e dormidas por mês</h2><p class="sub" id="q1_sub">Milhares</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Dormidas</span><span><span class="sw" style="background:var(--ocre)"></span>Hóspedes</span></div>
+<div class="chart" style="height:240px"><canvas id="q1" role="img" aria-label="Hóspedes e dormidas mensais"></canvas></div></section>
+<section class="panel s4"><h2>Dormidas por NUTS III</h2><p class="sub" id="q2_sub">Milhares · INE 0009877</p>
+<div class="chart" style="height:262px"><canvas id="q2" role="img" aria-label="Dormidas por sub-região"></canvas></div></section>
+<section class="panel s4"><h2>Dormidas por tipo de alojamento</h2><p class="sub" id="q3_sub">Milhares</p>
+<div class="legend" id="q3_leg"></div>
+<div class="chart" style="height:230px"><canvas id="q3" role="img" aria-label="Dormidas por tipo de alojamento no ano e no ano anterior"></canvas></div></section>
+<section class="panel s4"><h2>Estada média por tipo</h2><p class="sub" id="q4_sub">Noites por hóspede, recalculada (dormidas ÷ hóspedes)</p>
+<div class="chart" style="height:252px"><canvas id="q4" role="img" aria-label="Estada média por tipo de alojamento"></canvas></div></section>
+<section class="panel s4"><h2>Os 8 concelhos com mais dormidas</h2><p class="sub" id="q5_sub">Milhares · INE 0009877</p>
+<div class="chart" style="height:252px"><canvas id="q5" role="img" aria-label="Concelhos com mais dormidas"></canvas></div></section>
+</div>
+
+<div class="grid" id="oferta" hidden>
+<div class="kpis">
+<div class="kpi"><p class="l">Estabelecimentos</p><p class="v" id="o_est">–</p><p class="d" id="o_est_d"></p></div>
+<div class="kpi"><p class="l">Quartos</p><p class="v" id="o_qua">–</p><p class="d" id="o_qua_d"></p></div>
+<div class="kpi"><p class="l">Quartos por estabelecimento</p><p class="v" id="o_dim">–</p><p class="d" id="o_dim_d"></p></div>
+<div class="kpi"><p class="l">Quartos por km²</p><p class="v" id="o_km2">–</p><p class="d" id="o_km2_d"></p></div>
+<div class="kpi"><p class="l">Peso do TER e habitação</p><p class="v" id="o_ter">–</p><p class="d" id="o_ter_d"></p></div>
+</div>
+<section class="panel s8"><h2 id="o1_h">Quartos por tipo de alojamento</h2><p class="sub" id="o1_sub">Milhares de quartos · INE 0009874</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Hotelaria</span><span><span class="sw" style="background:var(--ocre)"></span>Alojamento local</span><span><span class="sw dash"></span>TER e habitação</span></div>
+<div class="chart" style="height:240px"><canvas id="o1" role="img" aria-label="Evolução dos quartos por tipo"></canvas></div></section>
+<section class="panel s4"><h2>Quartos por NUTS III</h2><p class="sub" id="o2_sub">Milhares de quartos</p>
+<div class="chart" style="height:262px"><canvas id="o2" role="img" aria-label="Quartos por sub-região"></canvas></div></section>
+<section class="panel s4"><h2>Estabelecimentos por tipo</h2><p class="sub" id="o3_sub">Número · INE 0009873</p>
+<div class="legend" id="o3_leg"></div>
+<div class="chart" style="height:230px"><canvas id="o3" role="img" aria-label="Estabelecimentos por tipo no ano de referência e no ano selecionado"></canvas></div></section>
+<section class="panel s4"><h2>Hotelaria por classificação</h2><p class="sub" id="o4_sub">Estabelecimentos · campo classificacao</p>
+<div class="chart" style="height:252px"><canvas id="o4" role="img" aria-label="Estabelecimentos de hotelaria por classificação"></canvas></div></section>
+<section class="panel s4"><h2>Dimensão média por tipo</h2><p class="sub" id="o5_sub">Quartos por estabelecimento</p>
+<div class="chart" style="height:252px"><canvas id="o5" role="img" aria-label="Quartos por estabelecimento por tipo"></canvas></div></section>
+</div>
+
+<div class="grid" id="equilibrio" hidden>
+<div class="hero"><p style="font-size:13px;opacity:.85">Indicador de referência</p><p class="v" id="e_npq">–</p><p style="font-size:16px;font-weight:600;margin-top:6px" id="e_npq_l">noites por quarto, por ano</p>
+<p style="font-size:13px;margin-top:10px;opacity:.9" id="e_npq_d"></p></div>
+<div class="kpi s4"><p class="l" id="e_gap_l">Gap oferta-procura</p><p class="v" id="e_gap">–</p><p class="d" id="e_gap_d"></p><p class="cmp" id="e_gap_c"></p></div>
+<div class="kpi s4"><p class="l">Hóspedes por estabelecimento</p><p class="v" id="e_hpe">–</p><p class="d" id="e_hpe_d"></p><p class="cmp" id="e_hpe_c"></p></div>
+<section class="panel s7"><h2 id="e1_h">Procura e oferta em índice</h2><p class="sub" id="e1_sub">Dormidas vs quartos · INE 0009877 + 0009874</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Dormidas</span><span><span class="sw dash"></span>Quartos</span></div>
+<div class="chart" style="height:260px"><canvas id="e1" role="img" aria-label="Índice das dormidas e dos quartos"></canvas></div></section>
+<section class="panel s5"><h2>Noites por quarto, por tipo</h2><p class="sub" id="e2_sub"></p>
+<div class="legend" id="e2_leg"></div>
+<div class="chart" style="height:252px"><canvas id="e2" role="img" aria-label="Noites por quarto por tipo de alojamento"></canvas></div></section>
+<section class="panel s7"><h2>Como crescem oferta e procura em cada concelho</h2><p class="sub" id="e3_sub">Variação de quartos (X) e de dormidas (Y); a diagonal marca crescimento igual</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Dormidas crescem mais</span><span><span class="sw" style="background:var(--neg)"></span>Quartos crescem mais</span><span><span class="sw dash"></span>Crescimento igual</span></div>
+<div class="chart" style="height:340px"><canvas id="e3" role="img" aria-label="Dispersão de concelhos por crescimento de quartos e de dormidas"></canvas></div></section>
+<section class="panel s5"><h2>Concelhos com maior desequilíbrio</h2><p class="sub" id="tb_sub">Noites por quarto e gap de crescimento</p>
+<table class="t"><thead><tr><th>Concelho</th><th class="n">Noites/quarto</th><th class="n">Gap</th><th>Leitura</th></tr></thead><tbody id="tb"></tbody></table>
+<p class="sub" style="margin-top:10px" id="tb_note"></p></section>
+</div>
+<p class="note">Noites por quarto = dormidas ÷ quartos. Não é a taxa de ocupação oficial (que exige os quartos disponíveis em cada dia); é um indicador de intensidade de uso da capacidade instalada. Totais a partir das linhas "Total" do INE de cada município; os valores por tipo, NUTS III e classificação somam só os municípios publicados (os confidenciais ficam de fora, nunca contam como zero). Os dados anuais de alojamento começam em 2017. Quando um indicador não tem dados para o ano escolhido (quartos em 2025, estabelecimentos em 2024), usa-se o último ano anterior disponível e indica-se o ano. Portugal = soma dos municípios publicados.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script src="assets/common.js"></script>
+<script>
+const TABS=['procura','oferta','equilibrio'];
+const st={ano:null,seg:'Total',terr:'2024',tab:'procura',...params()};if(!TABS.includes(st.tab))st.tab='procura';
+let D=null;
+async function init(){
+  const meta=await api('meta');const ys=meta.anos_anuais.slice().reverse();
+  if(!st.ano)st.ano=ys[0];
+  fillSelect($('ano'),ys,st.ano);fillSelect($('seg'),meta.segmentos,st.seg,v=>v==='Total'?'Todos':v);
+  $('ano').onchange=e=>{st.ano=e.target.value;load()};
+  $('seg').onchange=e=>{st.seg=e.target.value;load()};
+  territoryToggle($('terr'),st.terr,t=>{st.terr=t;load()});
+  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{st.tab=b.dataset.p;saveParams(st);show()});
+  load();
+}
+// Shows the active tab and draws its charts (hidden canvases have no size).
+function show(){
+  TABS.forEach(t=>$(t).hidden=t!==st.tab);
+  $('tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===st.tab));
+  if(D)DRAW[st.tab](D);
+}
+const yr=(y,ref)=>y&&y!==ref?' ('+y+')':'';
+const k1=v=>isNum(v)?v/1000:null;
+const segName=s=>s==='Total'?'todos os tipos':s;
+const typeCol=(t,seg,c=C.anil)=>seg==='Total'||seg===t?c:alpha(c,.3);
+const vs=(v,prev)=>prev?fmtSigned(v)+' vs '+prev:'sem ano anterior';
+const leg=(id,items)=>{$(id).innerHTML=items.map(([n,c])=>'<span><span class="sw" style="background:'+c+'"></span>'+esc(n)+'</span>').join('')};
+const bars=(labels,sets,o={})=>({empty:o.empty,type:'bar',data:{labels,datasets:sets.map(s=>({borderRadius:4,barThickness:o.bt||22,...s}))},
+  options:{indexAxis:o.h?'y':'x',scales:o.h?HAX():AX(),plugins:{tooltip:{callbacks:{label:o.tip||(t=>(t.dataset.label?t.dataset.label+': ':'')+fmt(t.raw,1))}}}}});
+
+async function load(){
+  saveParams(st);
+  const d=await apiLatest('noites-quartos',{ano:st.ano,seg:st.seg,terr:st.terr});if(!d)return;
+  D=d;show();footerMeta(d);
+}
+
+const DRAW={
+procura(d){
+  const P=d.procura,k=P.kpis,sn=segName(d.segmento);
+  setText('q_dorm',fmtBig(k.dormidas.valor));delta($('q_dorm_d'),k.dormidas.var,vs(k.dormidas.var,k.dormidas.ano_anterior));setText('q_dorm_c','Portugal: '+fmtSigned(k.dormidas.pt_var));
+  setText('q_hosp',fmtBig(k.hospedes.valor));delta($('q_hosp_d'),k.hospedes.var,vs(k.hospedes.var,k.hospedes.ano_anterior));setText('q_hosp_c','Portugal: '+fmtSigned(k.hospedes.pt_var));
+  setText('q_est',fmt(k.estada.valor,2)+yr(k.estada.ano,d.ano));delta($('q_est_d'),k.estada.delta,k.estada.ano_anterior?fmtSigned(k.estada.delta,2,' noites')+' vs '+k.estada.ano_anterior:'sem ano anterior');setText('q_est_c','Portugal: '+fmt(k.estada.pt,2));
+  const qi=k.quota_internacional;setText('q_int',fmtPct(qi.valor,0)+yr(qi.ano,d.ano));setText('q_int_d','das dormidas, todos os tipos · INE 0009183');
+  const pk=k.pico,M=P.mensal;
+  setText('q_pico_l',pk?'Dormidas em '+MESES_LONGOS[pk.mes-1].toLowerCase():'Dormidas no mês de pico');setText('q_pico',pk?fmtBig(pk.valor):'–');
+  setText('q_pico_d',pk?(isNum(pk.quota)?fmtPct(pk.quota,0)+' do ano':'meses incompletos')+(M.soma_municipal?' · soma municipal':''):(M.soma_municipal?'dados mensais municipais desde 2020':'sem dados mensais'));
+
+  setText('q1_sub','Milhares, '+d.ano+', '+sn+' · '+(M.soma_municipal?'soma dos meses municipais publicados (INE 0010735 + 0010736)':'INE 0009808 + 0009812'));
+  chart('q1',{empty:'Sem dados mensais para '+d.ano+(M.soma_municipal?' (os dados mensais municipais começam em 2020; use NUTS 2013 para anos anteriores).':'.'),type:'line',
+    data:{labels:MESES,datasets:[{label:'Dormidas',data:M.dormidas.map(k1),borderColor:C.anil,backgroundColor:alpha(C.anil,.1),fill:true,borderWidth:2,pointRadius:0,tension:.3},
+    {label:'Hóspedes',data:M.hospedes.map(k1),borderColor:C.ocre,backgroundColor:C.ocre,borderWidth:2,pointRadius:0,tension:.3}]},
+    options:{scales:AX(),interaction:{mode:'index',intersect:false},plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,1)+' mil'}}}}});
+
+  const N=P.nuts3,nc=N.reduce((a,n)=>a+n.conf,0);
+  setText('q2_sub','Milhares, '+d.ano+', '+sn+' · INE 0009877'+(nc?' · '+nc+' concelhos confidenciais excluídos':''));
+  chart('q2',bars(N.map(n=>n.nuts_iii),[{data:N.map(n=>k1(n.valor)),backgroundColor:C.anil}],{h:1,bt:20,tip:t=>fmt(t.raw,1)+' mil'}));
+
+  const T=P.tipos;leg('q3_leg',[[String(d.ano-1),alpha(C.ink3,.6)],[String(d.ano),C.anil]]);
+  setText('q3_sub','Milhares, '+(d.ano-1)+' vs '+d.ano+' · INE 0009877');
+  chart('q3',bars(T.map(t=>t.tipo),[{label:String(d.ano-1),data:T.map(t=>k1(t.anterior)),backgroundColor:alpha(C.ink3,.6)},{label:String(d.ano),data:T.map(t=>k1(t.valor)),backgroundColor:T.map(t=>typeCol(t.tipo,d.segmento))}],{tip:t=>t.dataset.label+': '+fmt(t.raw,1)+' mil'}));
+
+  setText('q4_sub','Noites por hóspede, '+d.ano+', recalculada (dormidas ÷ hóspedes)');
+  chart('q4',bars(T.map(t=>t.tipo),[{data:T.map(t=>t.estada),backgroundColor:T.map(t=>typeCol(t.tipo,d.segmento))}],{bt:28,tip:t=>fmt(t.raw,2)+' noites'}));
+
+  const TP=P.top;setText('q5_sub','Milhares, '+d.ano+', '+sn+' · INE 0009877');
+  chart('q5',bars(TP.map(r=>r.municipio),[{data:TP.map(r=>k1(r.valor)),backgroundColor:C.anil}],{h:1,bt:16,tip:t=>fmt(t.raw,1)+' mil'}));
+},
+oferta(d){
+  const O=d.oferta,k=O.kpis,sn=segName(d.segmento);
+  const e=k.estabelecimentos,q=k.quartos;
+  setText('o_est',fmt(e.valor)+yr(e.ano,d.ano));delta($('o_est_d'),e.var,e.ano?vs(e.var,e.ano_anterior):'sem dados até '+d.ano);
+  setText('o_qua',fmt(q.valor)+yr(q.ano,d.ano));delta($('o_qua_d'),q.var,q.ano?vs(q.var,q.ano_anterior):'sem dados até '+d.ano);
+  setText('o_dim',fmt(k.quartos_estab.valor,1)+yr(k.quartos_estab.ano,d.ano));setText('o_dim_d','Portugal: '+fmt(k.quartos_estab.pt,1)+(k.quartos_estab.ano?' · ano com quartos e estabelecimentos':''));
+  setText('o_km2',fmt(k.quartos_km2.valor,2)+yr(k.quartos_km2.ano,d.ano));setText('o_km2_d','Portugal: '+fmt(k.quartos_km2.pt,2)+' · INE 0009874 ÷ 0008350');
+  setText('o_ter',fmtPct(k.peso_ter.valor,0)+yr(k.peso_ter.ano,d.ano));setText('o_ter_d','dos quartos; Portugal: '+fmtPct(k.peso_ter.pt,0));
+
+  const QT=O.quartos_tipo,cols=[[C.anil,[]],[C.ocre,[]],[C.ink3,[5,4]]];
+  setText('o1_h','Quartos por tipo de alojamento, '+(QT.anos[0]||'–')+'–'+(QT.anos[QT.anos.length-1]||'–'));
+  setText('o1_sub','Milhares de quartos · INE 0009874 · soma dos concelhos publicados'+(QT.anos.length&&QT.anos[QT.anos.length-1]<d.ano?' · sem quartos carregados depois de '+QT.anos[QT.anos.length-1]:''));
+  chart('o1',{type:'line',data:{labels:QT.anos,datasets:QT.series.map((s,i)=>({label:s.tipo,data:s.valores.map(k1),borderColor:cols[i][0],backgroundColor:cols[i][0],borderDash:cols[i][1],
+    borderWidth:d.segmento===s.tipo?3:2,pointRadius:QT.anos.map(y=>y===q.ano?3:0),tension:.25,spanGaps:false}))},
+    options:{scales:AX(),interaction:{mode:'index',intersect:false},plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,2)+' mil'}}}}});
+
+  const N=O.nuts3,nc=N.reduce((a,n)=>a+n.conf,0);
+  setText('o2_sub','Milhares de quartos, '+(q.ano||'–')+', '+sn+(nc?' · '+nc+' concelhos confidenciais excluídos':''));
+  chart('o2',bars(N.map(n=>n.nuts_iii),[{data:N.map(n=>k1(n.valor)),backgroundColor:C.ocre}],{h:1,bt:20,empty:'Sem quartos publicados até '+d.ano+'.',tip:t=>fmt(t.raw,2)+' mil'}));
+
+  const E=O.estab_tipo;leg('o3_leg',(E.base?[[String(E.base),alpha(C.ink3,.6)]]:[]).concat([[String(E.ano||'–'),C.ocre]]));
+  setText('o3_sub','Número, '+(E.base?E.base+' vs ':'')+(E.ano||'–')+(E.ano&&E.ano!==d.ano?' (último ano carregado ≤ '+d.ano+')':'')+' · INE 0009873');
+  chart('o3',bars(E.tipos.map(t=>t.tipo),(E.base?[{label:String(E.base),data:E.tipos.map(t=>t.base),backgroundColor:alpha(C.ink3,.6)}]:[]).concat([{label:String(E.ano),data:E.tipos.map(t=>t.valor),backgroundColor:E.tipos.map(t=>typeCol(t.tipo,d.segmento,C.ocre))}]),{tip:t=>t.dataset.label+': '+fmt(t.raw)}));
+
+  const CL=O.classificacao,ce=CL.cobertura_estabelecimentos,cq=CL.cobertura_quartos;
+  setText('o4_sub','Estabelecimentos, '+(CL.anos.estabelecimentos||'–')+', todos os subtipos de hotelaria · soma dos valores publicados = '+fmtPct(isNum(ce)?ce*100:null,0)+' do total da hotelaria. Quartos por classificação quase todos confidenciais ('+fmtPct(isNum(cq)?cq*100:null,0)+' publicados).');
+  chart('o4',bars(CL.classes.map(c=>c.classe),[{data:CL.classes.map(c=>c.estabelecimentos),backgroundColor:C.ocre}],{h:1,bt:18,
+    tip:t=>{const c=CL.classes[t.dataIndex];return [fmt(c.estabelecimentos)+' estabelecimentos ('+c.estabelecimentos_publicados+' concelhos publicados)','Quartos '+(CL.anos.quartos||'')+': '+(isNum(c.quartos)?fmt(c.quartos)+' ('+c.quartos_publicados+' concelhos publicados)':'conf.')]}}));
+
+  const DM=O.dimensao,dy=[...new Set(DM.map(t=>t.ano).filter(Boolean))];
+  setText('o5_sub','Quartos por estabelecimento, '+(dy.join('/')||'–')+' (último ano com quartos e estabelecimentos ≤ '+d.ano+')');
+  chart('o5',bars(DM.map(t=>t.tipo),[{data:DM.map(t=>t.valor),backgroundColor:DM.map(t=>typeCol(t.tipo,d.segmento,C.ocre))}],{bt:28,tip:t=>fmt(t.raw,1)+' quartos'}));
+},
+equilibrio(d){
+  const E=d.equilibrio,k=E.kpis,n=k.noites_quarto,sn=segName(d.segmento);
+  setText('e_npq',fmt(n.valor,0));setText('e_npq_l','noites por quarto em '+(E.ano||'–')+(E.ano&&E.ano!==d.ano?' (último ano com quartos)':''));
+  const dn=isNum(n.valor)&&isNum(n.anterior)?n.valor-n.anterior:null;
+  setText('e_npq_d','Dormidas ÷ quartos, '+sn+'. Mede quanto da capacidade instalada é usada pela procura; não é a taxa de ocupação oficial. '+
+    (isNum(dn)?(Math.round(dn)>=0?'Mais ':'Menos ')+fmt(Math.abs(dn),0)+' noites do que em '+n.ano_anterior+'. ':'')+'Portugal: '+fmt(n.pt,0)+'.');
+  const g=k.gap;setText('e_gap_l','Gap oferta-procura '+(E.base?E.base+'–'+E.ano:''));setText('e_gap',fmtSigned(g.valor,0,' p.p.'));
+  delta($('e_gap_d'),g.valor,!isNum(g.valor)?'sem ano de base anterior':g.valor>=0?'a procura cresce mais do que a oferta':'a oferta cresce mais do que a procura');
+  setText('e_gap_c',isNum(g.valor)?'dormidas '+fmtSigned(g.dormidas,0)+', quartos '+fmtSigned(g.quartos,0):'');
+  const h=k.hospedes_estab;setText('e_hpe',fmt(h.valor,0)+yr(h.ano,d.ano));delta($('e_hpe_d'),h.var,h.ano_anterior?vs(h.var,h.ano_anterior):'sem ano anterior');setText('e_hpe_c','Portugal: '+fmt(h.pt,0));
+
+  const I=E.indice;setText('e1_h','Procura e oferta em índice ('+(I.base||'–')+' = 100)');
+  setText('e1_sub','Dormidas vs quartos, '+sn+' · soma dos concelhos publicados · os dados anuais começam em 2017'+(I.anos.some((y,i)=>!isNum(I.quartos[i]))?' · quartos sem dados em '+I.anos.filter((y,i)=>!isNum(I.quartos[i])).join(', '):''));
+  chart('e1',{type:'line',data:{labels:I.anos,datasets:[{label:'Dormidas',data:I.dormidas,borderColor:C.anil,backgroundColor:C.anil,borderWidth:2,pointRadius:0,tension:.25,spanGaps:false},
+    {label:'Quartos',data:I.quartos,borderColor:C.ink3,backgroundColor:C.ink3,borderDash:[5,4],borderWidth:2,pointRadius:0,tension:.25,spanGaps:false}]},
+    options:{scales:AX(),interaction:{mode:'index',intersect:false},plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,0)}}}}});
+
+  const T=E.tipos,ty=[...new Set(T.map(t=>t.ano).filter(Boolean))].join('/')||'–';
+  leg('e2_leg',(E.base?[[String(E.base),alpha(C.ink3,.6)]]:[]).concat([[ty,C.anil]]));setText('e2_sub','Dormidas ÷ quartos, '+ty+(E.base?' vs '+E.base:''));
+  chart('e2',bars(T.map(t=>t.tipo),(E.base?[{label:String(E.base),data:T.map(t=>t.base),backgroundColor:alpha(C.ink3,.6)}]:[]).concat([{label:ty,data:T.map(t=>t.valor),backgroundColor:T.map(t=>typeCol(t.tipo,d.segmento))}]),{tip:t=>t.dataset.label+': '+fmt(t.raw,0)+' noites'}));
+
+  const S=E.dispersao,named=new Set(E.tabela.map(r=>r.municipio));
+  setText('e3_sub','Variação '+(E.base||'–')+'–'+(E.ano||'–')+' de quartos (X) e de dormidas (Y), '+sn+'; a diagonal marca crescimento igual · '+S.length+' concelhos com ≥ '+E.min_quartos+' quartos em '+(E.base||'–'));
+  const ext=S.flatMap(p=>[p.cresc_quartos,p.cresc_dormidas]),lo=Math.min(0,...ext),hi=Math.max(10,...ext);
+  const diag={id:'diag',beforeDatasetsDraw(c){const{ctx:x,scales:s,chartArea:a}=c;const v0=Math.max(s.x.min,s.y.min),v1=Math.min(s.x.max,s.y.max);x.save();x.setLineDash([4,4]);x.strokeStyle=C.ink3;
+    x.beginPath();x.moveTo(s.x.getPixelForValue(v0),s.y.getPixelForValue(v0));x.lineTo(s.x.getPixelForValue(v1),s.y.getPixelForValue(v1));x.stroke();x.setLineDash([]);
+    x.fillStyle=C.ink3;x.font='11px "Public Sans",sans-serif';x.fillText('Procura a pressionar a oferta',a.left+8,a.top+14);x.textAlign='right';x.fillText('Oferta a crescer mais do que a procura',a.right-8,a.bottom-8);x.restore()}};
+  chart('e3',{empty:E.base?'Nenhum concelho com ≥ '+E.min_quartos+' quartos em '+E.base+' e dados nos dois anos.':'Sem ano de base anterior a '+(E.ano||d.ano)+'.',type:'scatter',
+    data:{datasets:[{data:S.map(p=>({x:p.cresc_quartos,y:p.cresc_dormidas})),pointRadius:6,pointHoverRadius:8,backgroundColor:S.map(p=>alpha(p.gap<0?C.neg:C.anil,.75)),borderColor:C.surface,borderWidth:1}]},
+    plugins:[diag,pointLabels(S.map(p=>named.has(p.municipio)?p.municipio:''))],
+    options:{layout:{padding:{right:60}},scales:{x:{min:Math.floor(lo/10)*10,max:Math.ceil(hi/10)*10,title:{display:true,text:'Crescimento dos quartos (%)'},grid:{color:C.grid}},
+      y:{min:Math.floor(lo/10)*10,max:Math.ceil(hi/10)*10,title:{display:true,text:'Crescimento das dormidas (%)'},grid:{color:C.grid}}},
+      plugins:{tooltip:{callbacks:{label:t=>{const p=S[t.dataIndex];return p.municipio+': quartos '+fmtSigned(p.cresc_quartos,0)+', dormidas '+fmtSigned(p.cresc_dormidas,0)+' · gap '+fmtSigned(p.gap,0,' p.p.')}}}}}});
+
+  setText('tb_sub','Noites por quarto '+(E.ano||'–')+' e gap de crescimento '+(E.base||'–')+'–'+(E.ano||'–')+' · maiores e menores gaps');
+  $('tb').innerHTML=E.tabela.length?E.tabela.map(r=>'<tr><td>'+esc(r.municipio)+'</td><td class="n">'+fmt(r.noites_quarto,0)+'</td><td class="n '+(r.gap<0?'dn':'up')+'">'+fmtSigned(r.gap,0,' p.p.')+'</td><td>'+esc(r.leitura)+'</td></tr>').join('')
+    :'<tr><td colspan="4" class="conf">Sem concelhos com dados nos dois anos.</td></tr>';
+  setText('tb_note','Gap = crescimento das dormidas menos crescimento dos quartos, em p.p. Leitura: gap positivo com noites por quarto acima da média do Alentejo ('+fmt(n.valor,0)+') = procura a pressionar; abaixo = espaço para crescer; gap negativo acima da média = oferta em expansão, abaixo = oferta em excesso; |gap| < 2 p.p. = equilibrado.');
+}};
+init().catch(fail);
+</script></body></html>

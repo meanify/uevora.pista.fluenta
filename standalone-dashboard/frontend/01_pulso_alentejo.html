@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pulso do Alentejo · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+<style>.cmp{font-size:12px;color:var(--ink-3);margin:0}
+.sec{grid-column:span 12;font-size:13px;font-weight:600;color:var(--anil);margin:10px 0 -4px;padding-left:10px;border-left:4px solid var(--anil)}</style>
+</head><body>
+<header class="top"></header>
+<main><div class="head"><div><h1>Pulso do Alentejo</h1><p class="aud">Para decisores políticos, CCDR e Turismo do Alentejo: volume, sazonalidade e peso da região no país.</p></div>
+<div class="filters"><label for="ano">Ano</label><select id="ano"></select>
+<div class="tog" id="terr" role="group" aria-label="Definição territorial"><button data-t="2024">Alentejo NUTS 2024</button><button data-t="2013">NUTS 2013 (com Lezíria)</button></div></div></div>
+<div id="status" class="status" role="status"></div>
+<div class="grid">
+<h2 class="sec">Visão geral</h2>
+<div class="kpis">
+<div class="kpi"><p class="l">Dormidas</p><p class="v" id="k_dorm">–</p><p class="d" id="k_dorm_d"></p><p class="cmp" id="k_dorm_c"></p></div>
+<div class="kpi"><p class="l">Hóspedes</p><p class="v" id="k_hosp">–</p><p class="d" id="k_hosp_d"></p><p class="cmp" id="k_hosp_c"></p></div>
+<div class="kpi"><p class="l">Estada média</p><p class="v" id="k_est">–</p><p class="d" id="k_est_d"></p><p class="cmp" id="k_est_c"></p></div>
+<div class="kpi"><p class="l">Quota nacional das dormidas</p><p class="v" id="k_quo">–</p><p class="d" id="k_quo_d"></p><p class="cmp" id="k_quo_c"></p></div>
+<div class="kpi"><p class="l">Peso do mercado interno</p><p class="v" id="k_int">–</p><p class="d">das dormidas</p><p class="cmp" id="k_int_c"></p></div>
+<div class="kpi"><p class="l">RevPAR (estimativa)</p><p class="v" id="k_rev">–</p><p class="d" id="k_rev_d"></p><p class="cmp" id="k_rev_c"></p></div>
+<div class="kpi new"><p class="l">Proveitos totais</p><p class="v">–</p><span class="nf">Nova fonte: INE proveitos</span></div>
+</div>
+<section class="panel s8"><h2>Sazonalidade mensal das dormidas</h2><p class="sub" id="saz_sub">Milhares de dormidas</p>
+<div class="legend" id="saz_lg"></div>
+<div class="chart" style="height:240px"><canvas id="saz" role="img" aria-label="Dormidas mensais do ano selecionado, do ano anterior e de 2019"></canvas></div></section>
+<section class="panel s4"><h2>Variação homóloga por NUTS III</h2><p class="sub">Dormidas · INE 0009877</p>
+<div class="chart" style="height:262px"><canvas id="nuts3" role="img" aria-label="Crescimento das dormidas por sub-região"></canvas></div></section>
+<section class="panel s7"><h2>Sazonalidade mês × ano</h2><p class="sub" id="hm_sub">Milhares de dormidas; a cor mostra a intensidade</p><div id="hm"></div>
+<p class="sub" style="margin:8px 0 0">Escala comum a todos os anos. “–” = mês ainda não publicado.</p></section>
+<section class="panel s5"><h2>Territórios-chave</h2><p class="sub" id="terr_sub">Crescimento das dormidas; agrupamento próprio de concelhos · INE 0009877</p>
+<div class="chart" style="height:200px"><canvas id="terrc" role="img" aria-label="Crescimento das dormidas por território turístico"></canvas></div>
+<p class="sub" style="margin:8px 0 0" id="terr_note"></p></section>
+<h2 class="sec">Alentejo e Portugal</h2>
+<section class="panel s7"><h2 id="idx_h">Evolução em índice (2019 = 100)</h2><p class="sub">Dormidas · Alentejo: INE 0009877; Portugal e Centro: INE 0009808 (só anos com os 12 meses)</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Alentejo</span><span><span class="sw dash"></span>Portugal</span><span><span class="sw" style="background:var(--ocre)"></span>Centro (região par)</span></div>
+<div class="chart" style="height:250px"><canvas id="b100" role="img" aria-label="Índice das dormidas do Alentejo, Portugal e Centro com base 2019"></canvas></div></section>
+<section class="panel s5"><h2>Posicionamento entre regiões</h2><p class="sub">Crescimento das dormidas vs estada média, NUTS II (NUTS 2013) · INE 0009808 + 0009812</p>
+<div class="chart" style="height:270px"><canvas id="pos" role="img" aria-label="Dispersão das regiões NUTS II com o Alentejo destacado"></canvas></div></section>
+<section class="panel s6"><h2>Mix de tipologias</h2><p class="sub" id="mix_sub">Quota dos quartos por tipo de alojamento · INE 0009874</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Alentejo</span><span><span class="sw" style="background:var(--ink-3)"></span>Portugal</span></div>
+<div class="chart" style="height:220px"><canvas id="mix" role="img" aria-label="Quota de quartos por tipologia no Alentejo e em Portugal"></canvas></div>
+<p class="sub" style="margin:8px 0 0">“Não atribuído” = parte do total sem tipo publicado (valores municipais confidenciais).</p></section>
+<section class="panel s6"><h2>Indicadores de sazonalidade</h2><p class="sub">Valores mais baixos indicam menos sazonalidade</p>
+<table class="t"><thead><tr><th>Território · ano</th><th class="n">Pico/vale</th><th class="n">% jul–set</th><th class="n">% jun–set</th><th class="n">Gini mensal</th></tr></thead><tbody id="sztb"></tbody></table>
+<p class="sub" style="margin-top:10px">Pico/vale = mês máximo ÷ mês mínimo. Gini calculado sobre as 12 quotas mensais. Só anos com os 12 meses publicados. Portugal: INE 0009808.</p></section>
+</div>
+<p class="note">Fontes: INE 0009877, 0009876, 0009183, 0009929, 0009874, 0009808, 0009812, 0010735. Totais calculados a partir das linhas "Total" do INE de cada município; Portugal = soma dos municípios publicados. <span id="rev_note"></span></p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script src="assets/common.js"></script>
+<script>
+const st={ano:null,terr:'2024',...params()};
+async function init(){
+  const meta=await api('meta');
+  const years=meta.anos_anuais.slice().reverse();
+  if(!st.ano)st.ano=years[0];
+  fillSelect($('ano'),years,st.ano);
+  $('ano').onchange=e=>{st.ano=e.target.value;load()};
+  territoryToggle($('terr'),st.terr,t=>{st.terr=t;load()});
+  load();
+}
+const pct=v=>fmt(v,0)+'%';
+async function load(){
+  saveParams(st);
+  const d=await apiLatest('pulso',st);if(!d)return;const k=d.kpis;const prev=d.ano-1;
+  setText('k_dorm',fmtBig(k.dormidas));delta($('k_dorm_d'),k.dormidas_var,fmtSigned(k.dormidas_var)+' vs '+prev);setText('k_dorm_c','Portugal: '+fmtSigned(k.dormidas_pt_var));
+  setText('k_hosp',fmtBig(k.hospedes));delta($('k_hosp_d'),k.hospedes_var,fmtSigned(k.hospedes_var)+' vs '+prev);setText('k_hosp_c','Portugal: '+fmtSigned(k.hospedes_pt_var));
+  setText('k_est',fmt(k.estada,2));delta($('k_est_d'),k.estada_dif,fmtSigned(k.estada_dif,2,' noites'));setText('k_est_c','Portugal: '+fmt(k.estada_pt,2));
+  setText('k_quo',fmtPct(k.quota_nacional,1));delta($('k_quo_d'),k.quota_nacional_dif,fmtSigned(k.quota_nacional_dif,1,' p.p.')+' vs '+prev);
+  setText('k_quo_c',isNum(k.quota_nacional_dif)?(k.quota_nacional_dif>0?'a ganhar peso':k.quota_nacional_dif<0?'a perder peso':'peso estável'):'');
+  setText('k_int',fmtPct(k.mercado_interno,0));setText('k_int_c','Portugal: '+fmtPct(k.mercado_interno_pt,0));
+  if(k.revpar){const r=k.revpar;setText('k_rev',fmt(r.valor,0)+' €');
+    const t=isNum(k.revpar_var)?fmtSigned(k.revpar_var)+' vs '+(r.ano-1):(r.ano!==d.ano?'dados de '+r.ano:'sem valor de '+(r.ano-1)+' para comparar');
+    delta($('k_rev_d'),k.revpar_var,t);setText('k_rev_c','Portugal: '+(isNum(k.revpar_pt)?fmt(k.revpar_pt,0)+' €':'–')+(r.ano!==d.ano?' ('+r.ano+')':''));
+    setText('rev_note','RevPAR: o INE só publica valores municipais; o valor regional (e o nacional) é a média ponderada pelos quartos de '+r.municipios+' municípios (RevPAR '+r.ano+', quartos '+r.ano_quartos+').');
+  }else{setText('k_rev','–');setText('k_rev_d','não publicado');setText('k_rev_c','');setText('rev_note','')}
+
+  const s=d.sazonalidade.series;const styles=[[C.anil,[],true],[C.ocre,[],false],[C.ink3,[5,4],false]];
+  const ds=s.map((x,i)=>{const [col,dash,fill]=styles[i];return {label:String(x.ano),data:x.valores.map(v=>isNum(v)?v/1000:null),borderColor:col,borderDash:dash,backgroundColor:alpha(col,.1),fill,borderWidth:2,pointRadius:0,tension:.3}});
+  $('saz_lg').innerHTML=s.map((x,i)=>'<span><span class="sw'+(i===2?' dash':'')+'" style="'+(i===2?'':'background:'+styles[i][0])+'"></span>'+x.ano+(i===0?' (selecionado)':'')+'</span>').join('');
+  const src=d.sazonalidade.soma_municipal?'soma dos municípios, INE 0010735 (desde 2020; 2019 indisponível em NUTS 2024)':'INE 0009808';
+  setText('saz_sub','Milhares de dormidas · '+src);
+  chart('saz',{empty:'Sem dados mensais de '+d.ano+' para '+d.territorio+': a série municipal mensal (INE 0010735) começa em 2020. Escolha NUTS 2013 para ver anos anteriores.',type:'line',data:{labels:MESES,datasets:ds},options:{scales:AX({y:{grid:{color:C.grid},border:{display:false},beginAtZero:true}}),interaction:{mode:'index',intersect:false},
+    plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,1)+' mil'}}}}});
+
+  const n3=d.nuts3;
+  chart('nuts3',{empty:'Sem ano anterior a '+d.ano+' para comparar.',type:'bar',data:{labels:n3.map(r=>r.nuts_iii),datasets:[{data:n3.map(r=>r.variacao),backgroundColor:n3.map(r=>r.variacao<0?C.neg:C.anil),borderRadius:4,barThickness:20}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>v+'%'}}}),plugins:{tooltip:{callbacks:{label:t=>fmtSigned(t.raw)}}}}});
+
+  const hm=d.heatmap;setText('hm_sub','Milhares de dormidas; a cor mostra a intensidade · '+src);
+  $('hm').innerHTML=hm.linhas.length?heatmap(MESES,hm.linhas,{show:v=>fmt(v/1000),tip:v=>fmt(v/1000,1)+' mil',missing:'–',labelWidth:44,titles:MESES_LONGOS})
+    :'<p class="empty">Sem dados mensais até '+d.ano+' para '+esc(d.territorio)+' (a série municipal mensal começa em 2020).</p>';
+
+  const T=d.territorios;
+  chart('terrc',{empty:'Sem ano anterior a '+d.ano+' para comparar.',type:'bar',data:{labels:T.map(r=>r.territorio),datasets:[{data:T.map(r=>r.variacao),backgroundColor:T.map(r=>r.variacao<0?C.neg:C.ocre),borderRadius:4,barThickness:18}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>v+'%'}}}),plugins:{tooltip:{callbacks:{label:t=>fmtSigned(t.raw)+' vs '+prev}}}}});
+  setText('terr_sub','Crescimento das dormidas '+d.ano+' vs '+prev+'; agrupamento próprio de concelhos, igual nas duas definições territoriais · INE 0009877');
+  const om=T.filter(r=>r.omitidos.length&&r.omitidos.length<r.municipios.length);
+  setText('terr_note',T.map(r=>r.territorio+': '+r.municipios.join(', ')).join('. ')+'. A composição de Serra de São Mamede é um pressuposto (não definida no mockup).'
+    +(om.length?' Sem valor publicado nos dois anos (excluídos do cálculo): '+om.map(r=>r.omitidos.join(', ')).join(', ')+'.':''));
+
+  const I=d.indice;setText('idx_h','Evolução em índice ('+I.base+' = 100)');
+  const line=(label,data,col,dash=[])=>({label,data,borderColor:col,borderDash:dash,backgroundColor:col,borderWidth:2,pointRadius:I.anos.length<3?3:0,tension:.25,spanGaps:false});
+  chart('b100',{type:'line',data:{labels:I.anos.map(String),datasets:[line('Alentejo',I.alentejo,C.anil),line('Portugal',I.portugal,C.ink3,[5,4]),line('Centro',I.centro,C.ocre)]},
+    options:{scales:AX(),interaction:{mode:'index',intersect:false},plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,1)}}}}});
+
+  const R=d.posicionamento;
+  chart('pos',{empty:'Sem dados mensais regionais completos para '+d.ano+' e '+prev+'.',type:'scatter',data:{datasets:[{data:R.map(r=>({x:r.crescimento,y:r.estada,n:r.regiao})),pointRadius:R.map(r=>r.regiao==='Alentejo'?9:6),
+    backgroundColor:R.map(r=>r.regiao==='Alentejo'?C.ocre:alpha(C.ink3,.5)),borderColor:C.surface,borderWidth:2}]},
+    plugins:[pointLabels(R.map(r=>short(r.regiao)),i=>R[i].regiao==='Alentejo'?C.ocre:C.ink2)],
+    options:{layout:{padding:{right:80}},scales:{x:{title:{display:true,text:'Crescimento das dormidas vs '+prev+' (%)'},grid:{color:C.grid}},y:{title:{display:true,text:'Estada média (noites)'},grid:{color:C.grid}}},
+    plugins:{tooltip:{callbacks:{label:t=>t.raw.n+': '+fmtSigned(t.raw.x)+' · '+fmt(t.raw.y,2)+' noites'}}}}});
+
+  const X=d.mix;
+  setText('mix_sub','Quota dos quartos por tipo de alojamento'+(X?', '+X.ano+(X.ano!==d.ano?' (último ano publicado até '+d.ano+')':''):'')+' · INE 0009874');
+  const bar=(label,data,col)=>({label,data,backgroundColor:col,borderRadius:4,barThickness:22});
+  chart('mix',{empty:'Sem quartos publicados até '+d.ano+'.',type:'bar',data:{labels:X?X.tipos:[],datasets:X?[bar('Alentejo',X.alentejo,C.anil),bar('Portugal',X.portugal,alpha(C.ink3,.6))]:[]},
+    options:{scales:AX({y:{grid:{color:C.grid},border:{display:false},ticks:{callback:pct}}}),plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmtPct(t.raw,1)}}}}});
+
+  const ind=d.indicadores_sazonalidade.map(r=>({...r,nome:'Alentejo '+r.ano,b:r.ano===d.ano})).concat(d.sazonalidade_portugal?[{...d.sazonalidade_portugal,nome:'Portugal '+d.sazonalidade_portugal.ano}]:[]);
+  $('sztb').innerHTML=(d.indicadores_sazonalidade.length?'':'<tr><td colspan="5" class="empty">Alentejo: sem anos completos para esta definição territorial.</td></tr>')+ind.map(r=>{const w=v=>r.b?'<strong>'+v+'</strong>':v;
+    return '<tr><td>'+w(esc(r.nome))+'</td><td class="n">'+w(fmt(r.pico_vale,1))+'</td><td class="n">'+w(fmtPct(r.quota_jul_set,0))+'</td><td class="n">'+w(fmtPct(r.quota_jun_set,0))+'</td><td class="n">'+w(fmt(r.gini,2))+'</td></tr>'}).join('');
+  footerMeta(d);
+}
+init().catch(fail);
+</script></body></html>

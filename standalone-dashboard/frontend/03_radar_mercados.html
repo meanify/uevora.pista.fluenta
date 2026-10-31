@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar de mercados · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+</head><body>
+<header class="top"></header>
+<main><div class="head"><div><h1>Radar de mercados</h1><p class="aud">Para as equipas de promoção: que mercados crescem, quais ficam mais tempo e em que concelhos dormem.</p></div>
+<div class="filters"><label for="ano">Ano</label><select id="ano"></select>
+<label for="base">Crescimento</label><select id="base"><option value="anterior">vs ano anterior</option><option value="2019">vs 2019</option></select>
+<div class="tog" id="terr" role="group" aria-label="Definição territorial"><button data-t="2024">NUTS 2024</button><button data-t="2013">NUTS 2013</button></div></div></div>
+<div id="status" class="status" role="status"></div>
+<div class="grid">
+<div class="kpis">
+<div class="kpi"><p class="l">Quota internacional</p><p class="v" id="k1">–</p><p class="d" id="k1d"></p></div>
+<div class="kpi"><p class="l">Concentração de mercados (HHI)</p><p class="v" id="k2">–</p><p class="d" id="k2d"></p></div>
+<div class="kpi"><p class="l">Peso dos 3 maiores mercados</p><p class="v" id="k3">–</p><p class="d">dos hóspedes estrangeiros</p></div>
+<div class="kpi"><p class="l">Peso do mercado interno</p><p class="v" id="k5">–</p><p class="d">dos hóspedes residem em Portugal</p><p class="d" id="k5p"></p></div>
+<div class="kpi"><p class="l">Mercados em crescimento</p><p class="v" id="k4">–</p><p class="d" id="k4d">principais mercados</p></div>
+</div>
+<section class="panel s8"><h2>Matriz de mercados</h2><p class="sub" id="bb_sub">Crescimento de hóspedes vs estada média; o tamanho da bolha é o volume de dormidas · INE 0009930 + 0009183</p>
+<div class="chart" style="height:340px"><canvas id="bb" role="img" aria-label="Bolhas dos mercados emissores por crescimento e estada média"></canvas></div>
+<p class="sub" style="margin:6px 0 0">As linhas tracejadas marcam o conjunto dos hóspedes estrangeiros no Alentejo. Clique numa bolha para ver onde esse mercado dorme.</p></section>
+<section class="panel s4"><h2>Principais mercados estrangeiros</h2><p class="sub">Quota das dormidas de estrangeiros</p>
+<div class="chart" style="height:320px"><canvas id="top" role="img" aria-label="Quota dos principais mercados estrangeiros"></canvas></div></section>
+<section class="panel s6"><h2>Onde dorme este mercado</h2><p class="sub">Municípios com mais dormidas do mercado escolhido</p>
+<label for="mkt" class="sub" style="display:inline">Mercado </label><select id="mkt"></select>
+<div class="chart" style="height:240px;margin-top:10px"><canvas id="where" role="img" aria-label="Municípios com mais dormidas do mercado escolhido"></canvas></div></section>
+<section class="panel s6"><h2>Especialização face a Portugal</h2><p class="sub" id="ql_sub">Quota do mercado nos hóspedes estrangeiros do Alentejo ÷ quota em Portugal, menos 1 · INE 0009930</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Mais forte no Alentejo</span><span><span class="sw" style="background:var(--neg)"></span>Mais fraco no Alentejo</span></div>
+<div class="chart" style="height:240px"><canvas id="ql" role="img" aria-label="Índice de especialização dos mercados no Alentejo face a Portugal"></canvas></div></section>
+<section class="panel s7"><h2>Leitura dos quadrantes</h2><p class="sub">Ação sugerida para cada grupo de mercados</p>
+<table class="t"><thead><tr><th>Quadrante</th><th>Mercados</th><th>Ação</th></tr></thead><tbody id="quad"></tbody></table></section>
+<section class="panel s5 new"><h2>Indicadores a integrar</h2><p class="sub">Para medir campanhas e reputação; exigem fontes novas</p>
+<table class="t"><tbody><tr><td>Gasto por nacionalidade</td><td>SIBS</td></tr><tr><td>Reputação online por concelho</td><td>Booking, Google</td></tr>
+<tr><td>Participantes em eventos e feiras</td><td>ERT Alentejo</td></tr><tr><td>Tráfego dos sites de promoção</td><td>Analytics da ERT</td></tr></tbody></table><span class="nf">Nova fonte</span></section>
+</div>
+<p class="note">Os valores regionais por mercado somam os municípios com valor publicado; os municípios com valor confidencial ficam de fora, pelo que são limites inferiores. HHI calculado sobre as quotas de hóspedes de cada país no total de estrangeiros. Portugal (peso do mercado interno e especialização) soma igualmente os municípios com valor publicado.</p></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script src="assets/common.js"></script>
+<script>
+const st={ano:null,base:'anterior',terr:'2024',...params()};
+let D=null,sel=null;
+async function init(){
+  const meta=await api('meta');
+  const years=meta.anos_mercados.filter(y=>y>=2019).reverse();if(!st.ano)st.ano=years[0];
+  fillSelect($('ano'),years,st.ano);$('base').value=st.base;
+  $('ano').onchange=e=>{st.ano=e.target.value;load()};
+  $('base').onchange=e=>{st.base=e.target.value;load()};
+  territoryToggle($('terr'),st.terr,t=>{st.terr=t;load()});
+  $('mkt').onchange=e=>pick(e.target.value);
+  load();
+}
+function pick(n){sel=n;$('mkt').value=n;const M=D.mercados;const c=charts.bb;
+  if(c){const ds=c.data.datasets[0];ds.backgroundColor=M.map(m=>m.mercado===n?alpha(C.ocre,.75):alpha(C.anil,.3));ds.borderColor=M.map(m=>m.mercado===n?C.ocre:C.anil);c.update()}
+  const W=D.onde[n]||[];
+  chart('where',{type:'bar',data:{labels:W.map(r=>r.municipio),datasets:[{data:W.map(r=>r.dormidas/1000),backgroundColor:C.ocre,borderRadius:4,barThickness:18}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},title:{display:true,text:'Milhares de dormidas'}}}),plugins:{tooltip:{callbacks:{label:t=>fmt(t.raw*1000)+' dormidas'}}}}});
+}
+async function load(){
+  saveParams(st);
+  const d=await apiLatest('radar',st);if(!d)return;D=d;const k=d.kpis;const base=d.ano_base;
+  setText('k1',fmtPct(k.quota_internacional,0));delta($('k1d'),k.quota_internacional_dif,fmtSigned(k.quota_internacional_dif,1,' p.p.')+' vs '+base);
+  setText('k2',fmt(k.hhi,0));setText('k2d',!isNum(k.hhi)?'':k.hhi<1500?'baixa concentração (< 1 500)':k.hhi<2500?'concentração moderada':'concentração elevada');
+  setText('k3',fmtPct(k.top3,0));
+  setText('k5',fmtPct(k.quota_interna,0));setText('k5p',isNum(k.quota_interna_portugal)?'Portugal: '+fmtPct(k.quota_interna_portugal,0):'');
+  setText('k4',k.em_crescimento+' de '+k.mercados);setText('k4d','principais mercados, hóspedes vs '+base);
+  setText('bb_sub','Crescimento de hóspedes '+base+'–'+d.ano+' vs estada média '+d.ano+'; o tamanho da bolha é o volume de dormidas · INE 0009930 + 0009183');
+
+  const M=d.mercados;const MX=d.referencia.crescimento,MY=d.referencia.estada;
+  const maxN=Math.max(...M.map(m=>m.dormidas||0));
+  // Bubble size follows the chart width so small screens do not overlap.
+  const maxR=Math.max(9,Math.min(22,$('bb').parentNode.clientWidth/30));
+  const ref={id:'ref',beforeDatasetsDraw(c){if(!isNum(MX)||!isNum(MY))return;const{ctx:x,chartArea:a,scales:s}=c;x.save();x.setLineDash([4,4]);x.strokeStyle=C.ink3;
+    const px=s.x.getPixelForValue(MX),py=s.y.getPixelForValue(MY);x.beginPath();x.moveTo(px,a.top);x.lineTo(px,a.bottom);x.moveTo(a.left,py);x.lineTo(a.right,py);x.stroke();x.setLineDash([]);
+    x.fillStyle=C.ink3;x.font='11px "Public Sans",sans-serif';x.textAlign='right';x.fillText('Estrelas',a.right-6,a.top+14);x.fillText('De passagem',a.right-6,a.bottom-8);
+    x.textAlign='left';x.fillText('Fiéis',a.left+6,a.top+14);x.fillText('A rever',a.left+6,a.bottom-8);x.restore()}};
+  chart('bb',{type:'bubble',plugins:[ref,pointLabels(M.map(m=>short(m.mercado)))],data:{datasets:[{data:M.map(m=>({x:m.crescimento,y:m.estada,r:3+Math.sqrt((m.dormidas||0)/maxN)*maxR,n:m.mercado,v:m.dormidas})),borderWidth:1.5}]},
+    options:{layout:{padding:{right:90,top:10}},scales:{x:{title:{display:true,text:'Crescimento de hóspedes vs '+base+' (%)'},grid:{color:C.grid}},y:{grace:'10%',title:{display:true,text:'Estada média (noites)'},grid:{color:C.grid}}},
+    plugins:{tooltip:{callbacks:{label:t=>t.raw.n+': '+fmtSigned(t.raw.x)+' · '+fmt(t.raw.y,2)+' noites · '+fmt(t.raw.v)+' dormidas'}}},onClick:(e,el)=>{if(el.length)pick(M[el[0].index].mercado)}}});
+
+  chart('top',{type:'bar',data:{labels:M.map(m=>short(m.mercado)),datasets:[{data:M.map(m=>m.quota_dormidas),backgroundColor:C.anil,borderRadius:4,barThickness:18}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>v+'%'}}}),plugins:{tooltip:{callbacks:{label:t=>fmtPct(t.raw)}}}}});
+  $('mkt').innerHTML=M.map(m=>'<option value="'+esc(m.mercado)+'">'+esc(short(m.mercado))+'</option>').join('');
+  $('quad').innerHTML=d.quadrantes.map(q=>'<tr><td>'+q.quadrante+'</td><td>'+(q.mercados.map(short).join(', ')||'–')+'</td><td>'+q.acao+'</td></tr>').join('');
+  const Q=d.especializacao;fitBars('ql',Q.length,22,200);setText('ql_sub','Quota do mercado nos hóspedes estrangeiros do Alentejo ÷ quota em Portugal, menos 1, '+d.ano+' · INE 0009930');
+  chart('ql',{type:'bar',data:{labels:Q.map(q=>short(q.mercado)),datasets:[{data:Q.map(q=>q.indice),backgroundColor:Q.map(q=>q.indice<0?C.neg:C.anil),borderRadius:4,barThickness:16}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>fmtSigned(v,0)}}}),plugins:{tooltip:{callbacks:{label:t=>{const q=Q[t.dataIndex];return fmtSigned(q.indice,0)+' · quota '+fmtPct(q.quota_alentejo)+' no Alentejo vs '+fmtPct(q.quota_portugal)+' em Portugal'}}}}},
+    empty:'Sem quotas publicadas para calcular a especialização em '+d.ano+'.'});
+  pick(M.some(m=>m.mercado===sel)?sel:(M[0]||{}).mercado);
+  footerMeta(d);
+}
+init().catch(fail);
+</script></body></html>

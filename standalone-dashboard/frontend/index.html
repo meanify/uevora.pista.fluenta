@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboards de turismo · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+<style>a.card{text-decoration:none;color:inherit;border-left:6px solid var(--anil);border-radius:0 10px 10px 0}a.card:hover{background:var(--anil-soft)}
+a.card h2{font-size:18px;margin:2px 0 6px}a.card p{color:var(--ink-2);margin:0}
+h2.sec{font-size:18px;margin:26px 0 4px}p.lead{color:var(--ink-2);margin:0 0 12px;max-width:80ch}
+dl.g{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:6px 12px;font-size:13px}
+dl.g.two{grid-template-columns:max-content 1fr max-content 1fr;column-gap:12px}dl.g.two dd{margin-right:18px}
+@media (max-width:900px){dl.g.two{grid-template-columns:max-content 1fr}}
+dl.g dt{font-weight:600}dl.g dd{margin:0;color:var(--ink-2)}
+.sig{display:inline-block;min-width:34px;text-align:center;font-size:11px;padding:1px 6px;border-radius:4px;border:1px dashed var(--line);color:var(--ink-3)}</style>
+</head><body>
+<header class="top"></header>
+<main><div class="head"><div><h1>Dashboards de turismo</h1><p class="aud">Sete dashboards sobre os dados INE da Pista Digital, um para cada público. Todos os valores são lidos diretamente dos indicadores INE carregados na Pista Digital. <a href="#guia">Como ler as dashboards</a> (siglas e fórmulas).</p></div></div>
+<div id="status" class="status" role="status"></div>
+<div class="grid">
+<a class="panel s4 card" href="01_pulso_alentejo.html"><p class="sub" style="margin:0">Decisores políticos, CCDR e ERT</p><h2>Pulso do Alentejo</h2><p>Volume, sazonalidade, territórios-chave e peso do Alentejo em Portugal.</p></a>
+<a class="panel s4 card" href="02_raio_x_concelho.html"><p class="sub" style="margin:0">Câmaras municipais</p><h2>Raio-X do concelho</h2><p>Pressão turística, calendário mensal e mercados, comparados com concelhos pares.</p></a>
+<a class="panel s4 card" href="03_radar_mercados.html"><p class="sub" style="margin:0">Promoção turística</p><h2>Radar de mercados</h2><p>Matriz crescimento vs estada média, concentração de mercados e onde cada mercado dorme.</p></a>
+<a class="panel s4 card" href="04_mapa_oportunidades.html"><p class="sub" style="margin:0">Investidores e empresários</p><h2>Mapa de oportunidades</h2><p>Gap oferta-procura, RevPAR por segmento e dimensão da oferta.</p></a>
+<a class="panel s4 card" href="05_alentejo_em_numeros.html"><p class="sub" style="margin:0">Academia, media e público</p><h2>Alentejo em números</h2><p>Quatro números-chave, narrativa por capítulos e tabela exportável.</p></a>
+<a class="panel s4 card" href="06_barometro_empresario.html"><p class="sub" style="margin:0">Hoteleiros e gestores de alojamento</p><h2>Barómetro do empresário</h2><p>Perfil mensal do concelho e segmento face à região e ao país.</p></a>
+<a class="panel s4 card" href="07_noites_e_quartos.html"><p class="sub" style="margin:0">Técnicos, ERT e investidores</p><h2>Noites e quartos</h2><p>Procura, oferta e o equilíbrio entre ambas, medido em noites por quarto.</p></a>
+<section class="panel s4"><h2>Dados disponíveis</h2><p class="sub">Anos carregados na base de dados</p><table class="t"><tbody id="cov"></tbody></table></section>
+</div>
+
+<h2 class="sec" id="guia">Como ler as dashboards</h2>
+<p class="lead">Todos os números vêm dos indicadores do INE sobre alojamento turístico. Os rácios são sempre recalculados a partir dos totais; nunca se somam nem se faz a média de rácios publicados.</p>
+<div class="grid">
+<section class="panel s5"><h2>Filtros e sinais</h2><p class="sub">O que significa o que aparece no ecrã</p>
+<dl class="g">
+<dt>NUTS 2024</dt><dd>O Alentejo atual, sem a Lezíria do Tejo. É a opção por omissão.</dd>
+<dt>NUTS 2013</dt><dd>O Alentejo antigo, que inclui também a Lezíria do Tejo (11 concelhos).</dd>
+<dt>Ano</dt><dd>Ano de referência. O último ano do INE pode ser provisório; os meses vão até ao último publicado.</dd>
+<dt><span class="sig">conf.</span></dt><dd>Valor confidencial: o INE não o publica (segredo estatístico). Nunca é tratado como zero.</dd>
+<dt><span class="sig">–</span></dt><dd>Sem dados para essa seleção, ou mês ainda não publicado.</dd>
+<dt>(2024)</dt><dd>Um ano entre parênteses indica que esse indicador ainda não tem o ano escolhido e se usou o último disponível.</dd>
+<dt><span class="sig" style="border-style:dashed">- - -</span></dt><dd>Painel a tracejado: indicador que exige uma fonte nova, ainda não carregada (ocupação, ADR, população…).</dd>
+<dt>Portugal</dt><dd>Soma de todos os concelhos do país, ou o total nacional nos dados mensais regionais.</dd>
+</dl></section>
+<section class="panel s7"><h2>Termos</h2><p class="sub">Siglas e conceitos usados</p>
+<dl class="g">
+<dt>Dormidas</dt><dd>Noites passadas por hóspedes em alojamento turístico. Um hóspede que fica 3 noites conta 3 dormidas.</dd>
+<dt>Hóspedes</dt><dd>Pessoas alojadas num estabelecimento turístico; quem muda de alojamento conta em cada um.</dd>
+<dt>Hotelaria</dt><dd>Hotéis, hotéis-apartamentos, apartamentos turísticos, aldeamentos e pousadas.</dd>
+<dt>AL</dt><dd>Alojamento local (moradias, apartamentos e hostels registados como AL), com 10 ou mais camas.</dd>
+<dt>TER</dt><dd>Turismo no Espaço Rural e de Habitação: casas de campo, agroturismo, turismo de habitação, hotéis rurais.</dd>
+<dt>RevPAR</dt><dd>Rendimento médio por quarto disponível (€): receita de aposento a dividir por todos os quartos disponíveis, ocupados ou não. Junta preço e ocupação num só número.</dd>
+<dt>Mercado</dt><dd>País de residência do hóspede. "Mercado interno" = residentes em Portugal.</dd>
+<dt>NUTS III</dt><dd>Sub-regiões: Alentejo Central, Alentejo Litoral, Alto Alentejo, Baixo Alentejo (e Lezíria do Tejo na NUTS 2013).</dd>
+<dt>Pares</dt><dd>Concelhos da mesma NUTS III que o concelho escolhido.</dd>
+<dt>Territórios-chave</dt><dd>Grupos de concelhos definidos pela Pista Digital (Alqueva, Costa Vicentina, Comporta, Património UNESCO, Serra de São Mamede), não do INE.</dd>
+</dl></section>
+<section class="panel s12"><h2>Como se calcula</h2><p class="sub">Fórmulas dos indicadores</p>
+<dl class="g two">
+<dt>Estada média</dt><dd>Dormidas ÷ hóspedes (noites por hóspede).</dd>
+<dt>Variação homóloga</dt><dd>Variação face ao mesmo período do ano anterior, em %.</dd>
+<dt>Quota</dt><dd>Parte de um total, em %. Ex.: quota internacional = residentes no estrangeiro ÷ total (de dormidas ou de hóspedes, como indicado no painel).</dd>
+<dt>p.p.</dt><dd>Pontos percentuais: diferença entre duas percentagens (de 30% para 32% = +2 p.p.).</dd>
+<dt>Índice 2019 = 100</dt><dd>Valor do ano ÷ valor de 2019 × 100. Acima de 100 = acima do nível pré-pandemia. Onde se compara com o início da série, a base é 2017 (primeiro ano dos dados anuais).</dd>
+<dt>Por km²</dt><dd>Dormidas (ou quartos) ÷ área do concelho. Mede a pressão turística no território.</dd>
+<dt>Noites por quarto</dt><dd>Dormidas ÷ quartos. Mede a intensidade de uso da oferta; não é a taxa de ocupação oficial.</dd>
+<dt>Gap oferta-procura</dt><dd>Crescimento das dormidas − crescimento dos quartos, em p.p. Positivo = a procura cresce mais do que a oferta.</dd>
+<dt>RevPAR regional</dt><dd>O INE só o publica por concelho; o valor do Alentejo ou de Portugal é a média ponderada pelos quartos de cada concelho.</dd>
+<dt>Receita estimada</dt><dd>RevPAR × quartos × 365 dias.</dd>
+<dt>Calendário</dt><dd>Mapa de calor mês a mês. No Raio-X, cada mês em % do mês mais forte do ano (= 100).</dd>
+<dt>Sazonalidade</dt><dd>Pico/vale = mês com mais dormidas ÷ mês com menos. Gini mensal: 0 = igual todo o ano, perto de 1 = tudo num mês.</dd>
+<dt>HHI</dt><dd>Concentração de mercados: soma dos quadrados das quotas (%) de cada país estrangeiro. Abaixo de 1 500 = baixa; acima de 2 500 = elevada.</dd>
+<dt>Especialização</dt><dd>Peso do mercado nos hóspedes estrangeiros do Alentejo ÷ o mesmo peso em Portugal − 1. +50% = o mercado pesa 1,5 vezes mais no Alentejo.</dd>
+<dt>Quadrantes</dt><dd>Cada mercado face ao conjunto dos estrangeiros: cresce mais (direita) e fica mais tempo (cima) = "Estrelas".</dd>
+</dl></section>
+</div>
+</main>
+<script src="assets/common.js"></script>
+<script>
+api('meta').then(m=>{
+  const span=a=>a.length?a[0]+'–'+a[a.length-1]:'–';
+  $('cov').innerHTML=[['Procura anual por município',span(m.anos_anuais)],['Oferta e procura (quartos)',span(m.anos_oferta_procura)],['Mercados emissores',span(m.anos_mercados)],['Municípios do Alentejo (NUTS 2013)',m.municipios.length]]
+    .map(r=>'<tr><td>'+r[0]+'</td><td class="n">'+r[1]+'</td></tr>').join('');
+  footerMeta(m);
+}).catch(fail);
+</script></body></html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mapa de oportunidades · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+</head><body>
+<header class="top"></header>
+<main><div class="head"><div><h1>Mapa de oportunidades</h1><p class="aud">Para investidores e empresários: onde a procura cresce mais depressa do que a oferta e que segmentos rendem mais por quarto.</p></div>
+<div class="filters"><label for="ini">Período</label><select id="ini"></select><span class="sub">–</span><select id="fim" aria-label="Ano final"></select>
+<label for="seg">Segmento</label><select id="seg"></select>
+<div class="tog" id="terr" role="group" aria-label="Definição territorial"><button data-t="2024">NUTS 2024</button><button data-t="2013">NUTS 2013</button></div></div></div>
+<div id="status" class="status" role="status"></div>
+<div class="grid">
+<div class="kpis">
+<div class="kpi"><p class="l">Dormidas por quarto e ano</p><p class="v" id="k1">–</p><p class="d" id="k1d">proxy de utilização da oferta</p></div>
+<div class="kpi"><p class="l">Quartos por estabelecimento</p><p class="v" id="k2">–</p><p class="d" id="k2d"></p></div>
+<div class="kpi"><p class="l">RevPAR hotelaria 4–5★ (estimativa)</p><p class="v" id="k3">–</p><p class="d" id="k3d"></p></div>
+<div class="kpi"><p class="l">Receita estimada de alojamento</p><p class="v" id="k4">–</p><p class="d" id="k4d">RevPAR × quartos × 365</p></div>
+<div class="kpi new"><p class="l">Taxa de ocupação-cama</p><p class="v">–</p><span class="nf">Nova fonte: INE ocupação</span></div>
+<div class="kpi new"><p class="l">ADR (preço médio por quarto)</p><p class="v">–</p><span class="nf">Nova fonte: INE proveitos</span></div>
+</div>
+<section class="panel s6"><h2>Gap oferta-procura</h2><p class="sub" id="gap_sub">Crescimento das dormidas menos crescimento dos quartos, em p.p.</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Procura cresce mais do que a oferta</span><span><span class="sw" style="background:var(--neg)"></span>Oferta cresce mais</span></div>
+<div class="chart" style="height:340px"><canvas id="gap" role="img" aria-label="Gap entre crescimento de dormidas e de quartos por município"></canvas></div></section>
+<section class="panel s6"><h2>Peso na oferta vs peso na procura</h2><p class="sub" id="segq_sub">Quota de quartos e quota de dormidas por segmento · INE 0009874 + 0009877</p>
+<div class="legend"><span><span class="sw" style="background:var(--ink-3)"></span>Quartos</span><span><span class="sw" style="background:var(--anil)"></span>Dormidas</span></div>
+<div class="chart" style="height:340px"><canvas id="segq" role="img" aria-label="Quota de quartos e de dormidas por segmento"></canvas></div></section>
+<section class="panel s6"><h2 id="ten_h">Oferta e procura no longo prazo</h2><p class="sub" id="ten_sub">Quartos vs dormidas · INE 0009874 + 0009877</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Dormidas</span><span><span class="sw dash"></span>Quartos</span></div>
+<div class="chart" style="height:280px"><canvas id="ten" role="img" aria-label="Índice de dormidas e de quartos desde o primeiro ano publicado"></canvas></div></section>
+<section class="panel s6"><h2>RevPAR por tipo e classificação</h2><p class="sub" id="rev_sub">Euros · INE 0009929</p>
+<div class="chart" style="height:280px"><canvas id="rev" role="img" aria-label="RevPAR por classificação de alojamento"></canvas></div></section>
+<section class="panel s6"><h2>Dimensão vs utilização por município</h2><p class="sub" id="sc_sub">Quartos por estabelecimento vs dormidas por quarto; cor = gap oferta-procura</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Procura cresce mais</span><span><span class="sw" style="background:var(--neg)"></span>Oferta cresce mais</span><span><span class="sw" style="background:var(--ink-3)"></span>Sem gap calculado</span></div>
+<div class="chart" style="height:280px"><canvas id="sc" role="img" aria-label="Dispersão de municípios por dimensão média e utilização"></canvas></div></section>
+<section class="panel s6 new"><h2>Pipeline de oferta</h2><p class="sub">Novos registos e projetos em licenciamento</p>
+<p class="empty" style="border:1px dashed var(--line);border-radius:8px;min-height:220px;display:flex;align-items:center;justify-content:center;padding:16px">Requer RNT e RNAL (Turismo de Portugal), com georreferenciação.<br>Visual sugerido: mapa de pontos e barras por ano de registo.</p><span class="nf">Nova fonte: RNT / RNAL</span></section>
+</div>
+<p class="note">O INE publica o RevPAR só por município; os valores regionais são médias ponderadas pelos quartos da mesma categoria nos municípios com valor publicado (n = número de municípios). A receita estimada assume RevPAR diário por quarto disponível; confirme a unidade no metadado INE do indicador 0009929. O RevPAR 4–5★ junta hotéis, hotéis-apartamentos, apartamentos e aldeamentos de 4 e 5 estrelas, cada município ponderado pelos seus últimos quartos publicados da mesma categoria; a maioria destes valores é confidencial, por isso a estimativa assenta em poucos municípios. O índice de oferta e procura começa no primeiro ano carregado (os dados anuais de alojamento começam em 2017) e soma os valores municipais publicados. Quando um ano não está carregado para um indicador, usa-se o último ano anterior disponível e indica-se o ano.</p></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script src="assets/common.js"></script>
+<script>
+const st={inicio:null,fim:null,seg:'Total',terr:'2024',...params()};
+async function init(){
+  const meta=await api('meta');const ys=meta.anos_oferta_procura;
+  if(!st.fim)st.fim=ys[ys.length-1];
+  if(!st.inicio)st.inicio=ys.includes(2019)&&+st.fim>2019?2019:ys[0];
+  if(+st.inicio>=+st.fim)st.inicio=ys[0];
+  fillSelect($('ini'),ys.slice(0,-1),st.inicio);fillSelect($('fim'),ys.slice(1).reverse(),st.fim);
+  fillSelect($('seg'),meta.segmentos,st.seg,v=>v==='Total'?'Todos':v);
+  $('ini').onchange=e=>{st.inicio=e.target.value;if(+st.inicio>=+st.fim){st.fim=String(+st.inicio+1);$('fim').value=st.fim}load()};
+  $('fim').onchange=e=>{st.fim=e.target.value;if(+st.inicio>=+st.fim){st.inicio=String(+st.fim-1);$('ini').value=st.inicio}load()};
+  $('seg').onchange=e=>{st.seg=e.target.value;load()};
+  territoryToggle($('terr'),st.terr,t=>{st.terr=t;load()});
+  load();
+}
+const yr=(y,ref)=>y&&y!==ref?' ('+y+')':'';
+async function load(){
+  saveParams(st);
+  const d=await apiLatest('oportunidades',st);if(!d)return;const k=d.kpis;
+  setText('k1',fmt(k.dormidas_quarto,0));setText('k1d','dormidas '+d.fim+' ÷ quartos '+d.fim);
+  setText('k2',fmt(k.quartos_estab,1));setText('k2d','estabelecimentos '+(d.ano_estabelecimentos||'–')+(d.ano_estabelecimentos!==d.fim?' (último ano carregado)':''));
+  const r45=k.revpar_4_5;setText('k3',r45?fmt(r45.valor,0)+' €'+yr(r45.ano,d.fim):'conf.');
+  setText('k3d',[r45?'n = '+r45.municipios+' municípios':'4–5★ sem valores publicados',k.revpar_hotelaria?'hotelaria: '+fmt(k.revpar_hotelaria.valor,0)+' €'+yr(k.revpar_hotelaria.ano,d.fim):'',
+    k.revpar_ter?'TER e habitação: '+fmt(k.revpar_ter.valor,0)+' €'+yr(k.revpar_ter.ano,d.fim):''].filter(Boolean).join(' · '));
+  if(k.receita){setText('k4','~'+fmt(k.receita.valor/1e6,0)+' M€');setText('k4d','RevPAR × quartos × 365, '+k.receita.ano+' · '+fmtPct(k.receita.cobertura_quartos*100,0)+' dos quartos cobertos')}
+  else{setText('k4','–');setText('k4d','RevPAR não publicado')}
+
+  const G=d.gap;const shown=G.length>16?G.slice(0,10).concat(G.slice(-6)):G;fitBars('gap',shown.length,20,200);
+  setText('gap_sub','Crescimento das dormidas menos crescimento dos quartos, '+d.inicio+'–'+d.fim+', em p.p. · '+(G.length>16?'10 maiores e 6 menores de '+G.length+' municípios':G.length+' municípios')+' com ≥ '+d.min_quartos+' quartos em '+d.inicio);
+  chart('gap',{empty:'Nenhum município com ≥ '+d.min_quartos+' quartos deste segmento em '+d.inicio+' e dados nos dois anos.',type:'bar',data:{labels:shown.map(g=>g.municipio),datasets:[{data:shown.map(g=>g.gap),backgroundColor:shown.map(g=>g.gap<0?C.neg:C.anil),borderRadius:4,barThickness:14}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>v+' p.p.'}}}),
+    plugins:{tooltip:{callbacks:{label:t=>{const g=shown[t.dataIndex];return ['Gap: '+fmtSigned(g.gap,1,' p.p.'),'Dormidas: '+fmtSigned(g.cresc_dormidas),'Quartos: '+fmtSigned(g.cresc_quartos)]}}}}}});
+
+  const Q=d.quotas;const on=q=>d.segmento==='Total'||q===d.segmento;setText('segq_sub','Quota de quartos e de dormidas por segmento, '+d.fim+' · INE 0009874 + 0009877');
+  chart('segq',{type:'bar',data:{labels:Q.map(q=>q.segmento),datasets:[{label:'Quartos',data:Q.map(q=>q.quartos),backgroundColor:Q.map(q=>alpha(C.ink3,on(q.segmento)?.6:.2)),borderRadius:4,barThickness:24},{label:'Dormidas',data:Q.map(q=>q.dormidas),backgroundColor:Q.map(q=>on(q.segmento)?C.anil:alpha(C.anil,.25)),borderRadius:4,barThickness:24}]},
+    options:{scales:AX({y:{grid:{color:C.grid},ticks:{callback:v=>v+'%'}}}),plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmtPct(t.raw)}}}}});
+
+  const I=d.indice;setText('ten_h','Oferta e procura desde '+(I.base||'–')+' ('+(I.base||'–')+' = 100)');
+  const miss=(s,n)=>{const y=I.anos.filter((_,i)=>!isNum(s[i]));return y.length?' · '+n+' sem dados em '+y.join(', '):''};
+  setText('ten_sub','Quartos vs dormidas, '+(d.segmento==='Total'?'todos os tipos':d.segmento)+' · soma dos municípios publicados · os dados anuais começam em 2017'+miss(I.quartos,'quartos')+miss(I.dormidas,'dormidas'));
+  const pr=I.anos.map(y=>y>=+d.inicio&&y<=+d.fim);
+  chart('ten',{type:'line',data:{labels:I.anos,datasets:[{label:'Dormidas',data:I.dormidas,borderColor:C.anil,backgroundColor:C.anil,borderWidth:2,pointRadius:pr.map(p=>p?3:0),tension:.25,spanGaps:false},
+    {label:'Quartos',data:I.quartos,borderColor:C.ink3,backgroundColor:C.ink3,borderDash:[5,4],borderWidth:2,pointRadius:pr.map(p=>p?3:0),tension:.25,spanGaps:false}]},
+    options:{scales:AX(),plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,0)}}}}});
+
+  const RV=d.revpar;const ry=[...new Set(RV.map(r=>r.ano))];
+  setText('rev_sub','Euros, ano '+ry.join('/')+(ry.some(y=>y!==d.fim)?' (último publicado ≤ '+d.fim+')':'')+' · INE 0009929, média ponderada pelos quartos');
+  chart('rev',{empty:'RevPAR não publicado até '+d.fim+'.',type:'bar',data:{labels:RV.map(r=>r.categoria+' (n='+r.municipios+')'),datasets:[{data:RV.map(r=>r.valor),backgroundColor:RV.map(r=>{const c=/Hot|Apart/.test(r.categoria)?C.anil:r.categoria==='Todos os tipos'?C.ink3:C.ocre;
+      const sel=d.segmento==='Total'||r.categoria.startsWith(d.segmento==='Hotelaria'?'Hot':d.segmento)||(d.segmento==='Hotelaria'&&r.categoria.startsWith('Apart'));return sel?c:alpha(c,.3)}),borderRadius:4,barThickness:18}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>v+' €'}}}),plugins:{tooltip:{callbacks:{label:t=>fmt(t.raw,1)+' €'}}}}});
+
+  const P=d.dispersao;
+  setText('sc_sub','Quartos por estabelecimento ('+(d.ano_estabelecimentos||'–')+') vs dormidas por quarto ('+d.fim+'); cor = gap oferta-procura '+d.inicio+'–'+d.fim);
+  const mxGap=Math.max(1,...P.map(p=>Math.abs(p.gap||0)));
+  chart('sc',{empty:'Sem municípios com estabelecimentos, quartos e dormidas publicados.',type:'scatter',data:{datasets:[{data:P.map(p=>({x:p.quartos_estab,y:p.dormidas_quarto,n:p.municipio,g:p.gap})),pointRadius:7,pointHoverRadius:9,
+    backgroundColor:P.map(p=>!isNum(p.gap)?alpha(C.ink3,.6):p.gap<0?alpha(C.neg,.6+Math.abs(p.gap)/mxGap*.4):alpha(C.anil,.6+p.gap/mxGap*.4)),borderColor:C.surface,borderWidth:1}]},
+    options:{scales:{x:{title:{display:true,text:'Quartos por estabelecimento'},grid:{color:C.grid}},y:{title:{display:true,text:'Dormidas por quarto e ano'},grid:{color:C.grid}}},
+    plugins:{tooltip:{callbacks:{label:t=>t.raw.n+': '+fmt(t.raw.x,1)+' quartos/estab. · '+fmt(t.raw.y,0)+' dormidas/quarto · gap '+fmtSigned(t.raw.g,1,' p.p.')}}}}});
+  footerMeta(d);
+}
+init().catch(fail);
+</script></body></html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Raio-X do concelho · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/common.css">
+</head><body>
+<header class="top"></header>
+<main><div class="head"><div><h1>Raio-X do concelho</h1><p class="aud">Para as câmaras municipais: pressão turística, calendário, mercados e evolução, sempre comparados com concelhos vizinhos.</p></div>
+<div class="filters"><label for="mun">Município</label><select id="mun"></select><label for="ano">Ano</label><select id="ano"></select></div></div>
+<div id="status" class="status" role="status"></div>
+<div class="grid">
+<div class="kpis">
+<div class="kpi"><p class="l">Dormidas por km²</p><p class="v" id="k1">–</p><p class="d" id="k1s"></p></div>
+<div class="kpi"><p class="l">Quartos por km²</p><p class="v" id="k2">–</p><p class="d" id="k2s">INE 0009874 ÷ 0008350</p></div>
+<div class="kpi"><p class="l">Peso do alojamento local</p><p class="v" id="k3">–</p><p class="d" id="k3s">dos quartos do concelho</p></div>
+<div class="kpi"><p class="l">Estada média</p><p class="v" id="k4">–</p><p class="d" id="k4s"></p></div>
+<div class="kpi new"><p class="l">Intensidade turística</p><p class="v">–</p><p class="d">dormidas por 100 habitantes</p><span class="nf">Nova fonte: INE população</span></div>
+<div class="kpi"><p class="l">Mês de pico</p><p class="v" id="k5">–</p><p class="d" id="k5s"></p></div>
+</div>
+<section class="panel s5"><h2>Pressão turística face aos pares</h2><p class="sub" id="peers_sub">Dormidas por km², municípios da mesma NUTS III</p>
+<div class="chart" style="height:280px"><canvas id="peers" role="img" aria-label="Dormidas por km2 do município e dos pares"></canvas></div></section>
+<section class="panel s7"><h2>Calendário de pressão</h2><p class="sub" id="hm_sub">Dormidas mensais em índice (mês máximo = 100) · INE 0010735</p>
+<div id="hm" role="img" aria-label="Mapa de calor das dormidas mensais do município, dos pares e do Alentejo"></div>
+<div class="legend" style="margin-top:10px;align-items:center">baixo <span style="display:inline-block;width:120px;height:8px;border-radius:2px;background:linear-gradient(90deg,var(--anil-soft),var(--anil))"></span> alto · <span class="conf">conf.</span> = valor confidencial do INE</div></section>
+<section class="panel s6"><h2>Quem nos visita, comparado com o Alentejo</h2><p class="sub" id="mk_sub">Diferença de quota de hóspedes em p.p. · INE 0009930</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Sobre-representado no concelho</span><span><span class="sw" style="background:var(--neg)"></span>Sub-representado</span></div>
+<div class="chart" style="height:250px"><canvas id="mk" role="img" aria-label="Diferença de quota de mercados entre o concelho e o Alentejo"></canvas></div></section>
+<section class="panel s6"><h2 id="ev_h">Evolução do concelho (2019 = 100)</h2><p class="sub">Dormidas · INE 0009877</p>
+<div class="legend" id="ev_lg"></div>
+<div class="chart" style="height:250px"><canvas id="ev" role="img" aria-label="Índice das dormidas do concelho face à NUTS III e ao Alentejo"></canvas></div></section>
+<section class="panel s6"><h2>Localização</h2><p class="sub">Mapa coroplético da NUTS III com o concelho destacado</p>
+<div class="empty" style="border:1px dashed var(--line);border-radius:8px;min-height:220px;display:flex;align-items:center;justify-content:center;padding:16px">Mapa por integrar: o projeto ainda não tem a geometria dos concelhos.<br>Cor: dormidas por km². Destaque: município selecionado.</div></section>
+<section class="panel s6 new"><h2>Indicadores a integrar</h2><p class="sub">Exigem fontes fora dos indicadores INE atuais</p>
+<table class="t"><tbody><tr><td>Alojamento local no parque habitacional</td><td>RNAL + Censos</td></tr>
+<tr><td>Visitantes em museus e equipamentos municipais</td><td>Dados da câmara</td></tr>
+<tr><td>Gasto com cartões estrangeiros</td><td>SIBS</td></tr><tr><td>Avaliação online dos alojamentos</td><td>Booking, Google</td></tr></tbody></table></section>
+</div>
+<p class="note">Pares = municípios da mesma NUTS III. As médias dos pares são ponderadas (soma das dormidas ÷ soma das áreas ou dos hóspedes) e excluem o município selecionado. <span id="area_note"></span></p></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script src="assets/common.js"></script>
+<script>
+const st={municipio:'Évora',ano:null,...params()};
+async function init(){
+  const meta=await api('meta');
+  const groups={};meta.municipios.forEach(m=>(groups[m.nuts_iii]=groups[m.nuts_iii]||[]).push(m.municipio));
+  $('mun').innerHTML=Object.entries(groups).map(([g,ms])=>'<optgroup label="'+esc(g)+'">'+ms.map(m=>'<option'+(m===st.municipio?' selected':'')+'>'+esc(m)+'</option>').join('')+'</optgroup>').join('');
+  const years=meta.anos_anuais.slice().reverse();if(!st.ano)st.ano=years[0];
+  fillSelect($('ano'),years,st.ano);
+  $('mun').onchange=e=>{st.municipio=e.target.value;load()};
+  $('ano').onchange=e=>{st.ano=e.target.value;load()};
+  load();
+}
+async function load(){
+  saveParams(st);
+  const d=await apiLatest('raio-x',st);if(!d)return;const k=d.kpis;
+  setText('k1',fmt(k.dormidas_km2));setText('k1s','média dos pares: '+fmt(k.dormidas_km2_pares));
+  setText('k2',fmt(k.quartos_km2,2));setText('k2s','INE 0009874 ÷ 0008350 · quartos '+(d.ano_quartos||'–')+(d.ano_quartos!==d.ano?' (último ano publicado)':''));
+  setText('k3',fmtPct(k.peso_al,0));setText('k3s','dos quartos do concelho ('+(d.ano_quartos||'–')+')');
+  setText('k4',fmt(k.estada,2));setText('k4s','média dos pares: '+fmt(k.estada_pares,2));
+  if(k.pico){setText('k5',MESES_LONGOS[k.pico.mes-1]);setText('k5s',fmtPct(k.pico.quota,0)+' das dormidas do ano')}
+  else{setText('k5','–');setText('k5s','sem os 12 meses publicados')}
+  setText('peers_sub','Dormidas por km², municípios de '+d.nuts_iii);
+  setText('area_note',d.ano_area?'Área: INE 0008350, '+d.ano_area+'.':'');
+
+  const P=d.pressao;fitBars('peers',P.length,22,250);
+  chart('peers',{type:'bar',data:{labels:P.map(r=>r.municipio),datasets:[{data:P.map(r=>r.dormidas_km2),backgroundColor:P.map(r=>r.municipio===d.municipio?C.anil:alpha(C.ink3,.45)),borderRadius:4,barThickness:16}]},
+    options:{indexAxis:'y',scales:HAX(),plugins:{tooltip:{callbacks:{label:t=>fmt(t.raw)+' dormidas/km²'}}}}});
+
+  const cp=d.calendario_pares,rows=d.calendario.map((r,i)=>i===1?{...r,nome:'Pares ('+cp.completos+' de '+cp.total+')'}:r);
+  setText('hm_sub','Dormidas mensais em índice (mês máximo = 100), '+d.ano+' · INE 0010735; Alentejo: INE 0009808'+(cp.completos<cp.total?' · pares sem os 12 meses publicados ficam de fora':''));
+  $('hm').innerHTML=d.mensal_desde&&d.ano>=d.mensal_desde?heatmap(MESES.map(m=>m[0].toUpperCase()),rows,{scale:'row',titles:MESES_LONGOS,tip:v=>fmt(v)+' dormidas',labelWidth:150})
+    :'<p class="empty">Sem dados mensais municipais para '+d.ano+' (a série INE 0010735 começa em '+(d.mensal_desde||2020)+').</p>';
+
+  const M=d.mercados;
+  const pt=isNum(d.portugal_dif_pp)?' · Portugal (mercado interno): '+fmtSigned(d.portugal_dif_pp,1,' p.p.'):'';
+  setText('mk_sub','Mercados estrangeiros, diferença de quota de hóspedes em p.p., '+d.ano+' · INE 0009930'+pt+(d.mercados_confidenciais?' · '+d.mercados_confidenciais+' mercados confidenciais omitidos':''));
+  chart('mk',{empty:'Sem dados de mercados para '+d.municipio+' em '+d.ano+' (a série INE 0009930 começa em 2018).',type:'bar',data:{labels:M.map(r=>short(r.mercado)),datasets:[{data:M.map(r=>r.dif_pp),backgroundColor:M.map(r=>r.dif_pp<0?C.neg:C.anil),borderRadius:4,barThickness:18}]},
+    options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:v=>v+' p.p.'}}}),plugins:{tooltip:{callbacks:{label:t=>fmtSigned(t.raw,1,' p.p.')}}}}});
+
+  const E=d.evolucao;const cols=[C.anil,C.ocre,C.ink3];
+  setText('ev_h','Evolução do concelho ('+E.base+' = 100)');
+  $('ev_lg').innerHTML=E.series.map((s,i)=>'<span><span class="sw'+(i===2?' dash':'')+'" style="'+(i===2?'':'background:'+cols[i])+'"></span>'+esc(s.nome)+'</span>').join('');
+  chart('ev',{type:'line',data:{labels:E.anos,datasets:E.series.map((s,i)=>({label:s.nome,data:s.valores,borderColor:cols[i],borderDash:i===2?[5,4]:[],borderWidth:2,pointRadius:i===0?3:0,tension:.3}))},
+    options:{scales:AX(),interaction:{mode:'index',intersect:false},plugins:{tooltip:{callbacks:{label:t=>t.dataset.label+': '+fmt(t.raw,0)}}}}});
+  footerMeta(d,'Alentejo NUTS II (NUTS 2013, com Lezíria do Tejo); pares = mesma NUTS III');
+}
+init().catch(fail);
+</script></body></html>
