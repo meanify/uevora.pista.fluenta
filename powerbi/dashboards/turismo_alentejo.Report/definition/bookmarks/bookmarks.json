@@ -1,0 +1,16 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmarksMetadata/1.0.0/schema.json",
+  "items": [
+    {
+      "name": "capitulos",
+      "displayName": "Capítulos",
+      "children": [
+        "cap1",
+        "cap2",
+        "cap3",
+        "cap4",
+        "cap5"
+      ]
+    }
+  ]
+}

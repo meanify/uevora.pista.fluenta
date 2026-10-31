@@ -1,0 +1,73 @@
+/// Tipo › subtipo › classificação, conforme aos oito indicadores que os publicam. Liga aos factos por TipoKey (tipo|subtipo|classificação). Nível 1 é a linha Total do INE; nível 2 são as categorias detalhadas.
+table 'Tipo de alojamento'
+	lineageTag: 1b60c5a8-9358-5269-b6ef-747499b81d1b
+
+	column TipoKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: a6d6e025-5883-517b-b5da-75e01dc27a8a
+		summarizeBy: none
+		sourceColumn: [TipoKey]
+
+	column 'Tipo de alojamento'
+		dataType: string
+		lineageTag: c955cf2e-0936-52ab-979d-3f0461a5aa52
+		summarizeBy: none
+		sourceColumn: [Tipo de alojamento]
+
+	column 'Subtipo de alojamento'
+		dataType: string
+		lineageTag: 47b329a3-a20e-5532-9808-c8e73223b8c5
+		summarizeBy: none
+		sourceColumn: [Subtipo de alojamento]
+
+	/// Estrelas ou categoria. Os indicadores mensais NUTS II não a publicam e ficam em «Total».
+	column Classificação
+		dataType: string
+		lineageTag: 1d75a117-2dcd-4957-8b50-887837bac190
+		summarizeBy: none
+		sourceColumn: [Classificação]
+
+	/// 1 = linha Total do INE, 2 = categoria detalhada. As medidas base usam o nível mais agregado visível.
+	column Nível
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c30ce1d1-9821-4328-9aa6-f4f23b034925
+		summarizeBy: none
+		sourceColumn: [Nível]
+
+	hierarchy 'Hierarquia de alojamento'
+		lineageTag: fc1aa0bb-e0cf-4e1f-970f-6747bf0d58b9
+
+		level 'Tipo de alojamento'
+			lineageTag: 1a0e645a-595b-40b2-a4b5-36d6ad23e30d
+			column: 'Tipo de alojamento'
+
+		level 'Subtipo de alojamento'
+			lineageTag: 620c347e-cfcb-42d6-b7b3-09c7acde72df
+			column: 'Subtipo de alojamento'
+
+		level Classificação
+			lineageTag: 1b79f0fb-f0c3-4e88-bbff-c7fe5dad26d2
+			column: Classificação
+
+	partition 'Tipo de alojamento' = calculated
+		mode: import
+		source =
+				VAR Tipos =
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Estabelecimentos de alojamento turístico', "TipoKey", 'Estabelecimentos de alojamento turístico'[TipoKey], "Tipo de alojamento", 'Estabelecimentos de alojamento turístico'[tipo_alojamento], "Subtipo de alojamento", 'Estabelecimentos de alojamento turístico'[subtipo_alojamento], "Classificação", 'Estabelecimentos de alojamento turístico'[classificacao]),
+				            SELECTCOLUMNS('Quartos em alojamento turístico', "TipoKey", 'Quartos em alojamento turístico'[TipoKey], "Tipo de alojamento", 'Quartos em alojamento turístico'[tipo_alojamento], "Subtipo de alojamento", 'Quartos em alojamento turístico'[subtipo_alojamento], "Classificação", 'Quartos em alojamento turístico'[classificacao]),
+				            SELECTCOLUMNS('Hóspedes por tipo de alojamento', "TipoKey", 'Hóspedes por tipo de alojamento'[TipoKey], "Tipo de alojamento", 'Hóspedes por tipo de alojamento'[tipo_alojamento], "Subtipo de alojamento", 'Hóspedes por tipo de alojamento'[subtipo_alojamento], "Classificação", 'Hóspedes por tipo de alojamento'[classificacao]),
+				            SELECTCOLUMNS('Dormidas por tipo de alojamento', "TipoKey", 'Dormidas por tipo de alojamento'[TipoKey], "Tipo de alojamento", 'Dormidas por tipo de alojamento'[tipo_alojamento], "Subtipo de alojamento", 'Dormidas por tipo de alojamento'[subtipo_alojamento], "Classificação", 'Dormidas por tipo de alojamento'[classificacao]),
+				            SELECTCOLUMNS('Rendimento médio por quarto', "TipoKey", 'Rendimento médio por quarto'[TipoKey], "Tipo de alojamento", 'Rendimento médio por quarto'[tipo_alojamento], "Subtipo de alojamento", 'Rendimento médio por quarto'[subtipo_alojamento], "Classificação", 'Rendimento médio por quarto'[classificacao]),
+				            SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013)', "TipoKey", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[TipoKey], "Tipo de alojamento", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[tipo_alojamento], "Subtipo de alojamento", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[subtipo_alojamento], "Classificação", "Total"),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013)', "TipoKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[TipoKey], "Tipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[tipo_alojamento], "Subtipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[subtipo_alojamento], "Classificação", "Total"),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024)', "TipoKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[TipoKey], "Tipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[tipo_alojamento], "Subtipo de alojamento", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[subtipo_alojamento], "Classificação", "Total")
+				        )
+				    )
+				RETURN
+				    ADDCOLUMNS(Tipos, "Nível", IF([Tipo de alojamento] = "Total", 1, 2))

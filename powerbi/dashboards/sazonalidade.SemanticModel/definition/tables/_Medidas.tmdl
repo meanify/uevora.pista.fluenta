@@ -790,13 +790,13 @@ table _Medidas
 	measure DormidasMensaisTipoYoY = CALCULATE([DormidasMensaisTipo], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: Procura\Dormidas
-		lineageTag: 73c29ce5-51f7-40f5-9668-25987f0b29bc
+		lineageTag: d7d369bc-783e-4186-8bee-53deafad7b21
 
 	/// [Quartos] com o item «Variação face ao ano base». Eixo explícito para dispersões, onde um item de cálculo alteraria os dois eixos.
 	measure QuartosYoY = CALCULATE([Quartos], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: Oferta
-		lineageTag: ba3dd554-8555-42f9-81e7-e769db0d5733
+		lineageTag: 4cc54d5f-4f26-45c8-85a6-af48e5114256
 
 	/// 1 nos municípios da NUTS III do 'Município selecionado' (o próprio incluído), em branco nos outros. Filtro de visual (= 1) para mostrar só os pares.
 	measure EmGrupoDePares =
@@ -805,7 +805,7 @@ table _Medidas
 			RETURN IF(NOT ISBLANK(NutsSel) && SELECTEDVALUE('Geografia'[NUTS III]) = NutsSel, 1)
 		formatString: 0
 		displayFolder: Formatação\Filtros
-		lineageTag: 13c7a300-d141-437d-8a99-22ad3606bb6d
+		lineageTag: 6391701e-7dad-4f31-b8d4-f73643d5b715
 
 	/// Leitura do [GapOfertaProcura]: ≥ 12 p.p. procura a pressionar, ≥ 5 espaço para crescer, > −5 equilibrado, > −8 oferta em expansão, abaixo oferta em excesso.
 	measure LeituraGapOfertaProcura =
@@ -821,7 +821,7 @@ table _Medidas
 			        "Oferta em excesso"
 			    )
 		displayFolder: Oferta e procura
-		lineageTag: 7c390b80-991e-4f2a-9cd1-fd319f4575cc
+		lineageTag: 63133fa7-7dac-45b3-9595-9b7bb58bafc1
 
 	column _
 		dataType: string

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "barometro",
+  "displayName": "Barómetro",
+  "displayOption": "FitToWidth",
+  "height": 1300,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "barometro_slicerMes",
+      "target": "barometro_kFracoVal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "barometro_slicerMes",
+      "target": "barometro_perfil",
+      "type": "NoFilter"
+    },
+    {
+      "source": "barometro_slicerMes",
+      "target": "barometro_variacaoMes",
+      "type": "NoFilter"
+    },
+    {
+      "source": "barometro_slicerMes",
+      "target": "barometro_matrizMesAno",
+      "type": "NoFilter"
+    },
+    {
+      "source": "barometro_slicerMes",
+      "target": "barometro_margem",
+      "type": "NoFilter"
+    },
+    {
+      "source": "barometro_slicerAno",
+      "target": "barometro_matrizMesAno",
+      "type": "NoFilter"
+    }
+  ]
+}

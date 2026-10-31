@@ -1,0 +1,82 @@
+/// Facto INE 0009874: Quartos por município, tipo de alojamento e ano. Origem: public.ine_0009874_ds. Todo o país, só linhas de município. Mantém a linha Total do INE (tipo, subtipo e classificação = Total) e as categorias mais detalhadas, que não somam o total por segredo estatístico.
+table 'Quartos em alojamento turístico'
+	lineageTag: d3b82074-0a55-51aa-aaeb-dc894b34dae3
+
+	column tipo_alojamento
+		dataType: string
+		isHidden
+		lineageTag: 2b52b387-184b-59cd-8b30-7b51eb2b4968
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		isHidden
+		lineageTag: a8ec4bfd-bb09-52fa-8ff9-829fa97c2db1
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column classificacao
+		dataType: string
+		isHidden
+		lineageTag: 988e01fa-32c4-534d-ae46-a2cd5f0885c4
+		summarizeBy: none
+		sourceColumn: classificacao
+
+	column ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: efe4127d-9b00-5828-ba6b-607fc5bb00ef
+		summarizeBy: none
+		sourceColumn: ano
+
+	column quartos
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: e4900528-fa79-5f49-8446-ca645599721e
+		summarizeBy: none
+		sourceColumn: quartos
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 67f26d9d-307c-5bd7-8091-976ad018b592
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: 80abe0ea-fc36-5d5c-bf52-dd7d07826c14
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	/// Chave tipo|subtipo para a dimensão 'Tipo de alojamento'.
+	column TipoKey
+		dataType: string
+		isHidden
+		lineageTag: 3c04fc4d-0be3-40e6-a2ae-834af6341335
+		summarizeBy: none
+		sourceColumn: TipoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Quartos em alojamento turístico' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Tabela = Origem{[Schema = "public", Item = "ine_0009874_ds"]}[Data],
+				    Municipios = Table.SelectRows(Tabela, each [municipio] <> "Total"),
+				    GeoKey = Table.AddColumn(Municipios, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    TipoKey = Table.AddColumn(GeoKey, "TipoKey", each [tipo_alojamento] & "|" & [subtipo_alojamento] & "|" & [classificacao], type text),
+				    Colunas = Table.SelectColumns(TipoKey, {"tipo_alojamento", "subtipo_alojamento", "classificacao", "ano", "quartos", "update_date", "GeoKey", "TipoKey"})
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,57 @@
+model Model
+	culture: pt-PT
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: pt-PT
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup Parâmetros
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup Mapeamentos
+
+	annotation PBI_QueryGroupOrder = 1
+
+annotation PBI_QueryOrder = ["Superfície das unidades territoriais","Dormidas por país de residência","Hóspedes por país de residência","Estabelecimentos de alojamento turístico","Quartos em alojamento turístico","Hóspedes por tipo de alojamento","Dormidas por tipo de alojamento","Rendimento médio por quarto","Dormidas mensais por segmento","Hóspedes mensais por segmento","Dormidas mensais por tipo de alojamento (NUTS 2013)","Hóspedes mensais por tipo de alojamento (NUTS 2013)","Hóspedes mensais por tipo de alojamento (NUTS 2024)","Geografia","Servidor","BaseDados","TerritoriosTuristicos","PeninsulaSetubal"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode","WebModelingEdit"]
+
+annotation __LastRPTime = 134377549986899289
+
+ref table 'Superfície das unidades territoriais'
+ref table 'Dormidas por país de residência'
+ref table 'Dormidas mensais por tipo de alojamento (NUTS 2013)'
+ref table 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'
+ref table 'Estabelecimentos de alojamento turístico'
+ref table 'Quartos em alojamento turístico'
+ref table 'Hóspedes por tipo de alojamento'
+ref table 'Dormidas por tipo de alojamento'
+ref table 'Rendimento médio por quarto'
+ref table 'Hóspedes por país de residência'
+ref table 'Dormidas mensais por segmento'
+ref table 'Hóspedes mensais por segmento'
+ref table 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'
+ref table Ano
+ref table Calendário
+ref table Geografia
+ref table 'Região NUTS II'
+ref table 'Tipo de alojamento'
+ref table Residência
+ref table 'Segmento de alojamento'
+ref table 'Município selecionado'
+ref table 'Métrica de pressão'
+ref table _Medidas
+ref table 'Sub-região em foco'
+ref table 'Ano base'
+ref table 'Comparação territorial'
+ref table 'Comparação temporal'
+ref table 'Comparação entre pares'
+ref table 'Foco municipal'
+
+ref cultureInfo pt-PT
+

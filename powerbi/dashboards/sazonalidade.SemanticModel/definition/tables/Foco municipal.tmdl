@@ -1,0 +1,36 @@
+/// Avalia qualquer medida no município escolhido em 'Município selecionado' (tabela desligada), qualquer que seja o filtro de 'Geografia'. É o grupo exterior (precedência 30): combinado com os outros grupos dá, por exemplo, a diferença face à região ou o índice do município em foco. Aplica-se também às medidas de texto (mês de pico).
+table 'Foco municipal'
+	lineageTag: 1d6b0b75-01b8-46bd-a959-3340519f57e0
+
+	calculationGroup
+		precedence: 30
+
+		/// Sem alteração: o território do contexto atual.
+		calculationItem 'Contexto atual' = SELECTEDMEASURE()
+			ordinal: 0
+
+		/// O município de 'Município selecionado'; em branco sem seleção única.
+		calculationItem 'Município em foco' =
+				VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
+				RETURN IF(NOT ISBLANK(SelKey), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Foco municipal'), REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = SelKey))
+			ordinal: 1
+
+	column 'Âmbito'
+		dataType: string
+		lineageTag: 075f6459-5909-42b8-8423-06aac6b8136f
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9ac21510-96ad-443d-86ab-d5aeae970a9b
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+

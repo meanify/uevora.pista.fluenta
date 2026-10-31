@@ -1,0 +1,236 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Capítulo 4: Alentejo e Portugal",
+  "name": "cap4",
+  "options": {
+    "targetVisualNames": [
+      "emNumeros_tab1On",
+      "emNumeros_cap1Texto",
+      "emNumeros_cap1Grafico",
+      "emNumeros_cap1Seguinte",
+      "emNumeros_tab2On",
+      "emNumeros_cap2Texto",
+      "emNumeros_cap2Grafico",
+      "emNumeros_cap2Anterior",
+      "emNumeros_cap2Seguinte",
+      "emNumeros_tab3On",
+      "emNumeros_cap3Texto",
+      "emNumeros_cap3Grafico",
+      "emNumeros_cap3Anterior",
+      "emNumeros_cap3Seguinte",
+      "emNumeros_tab4On",
+      "emNumeros_cap4Texto",
+      "emNumeros_cap4Grafico",
+      "emNumeros_cap4Anterior",
+      "emNumeros_cap4Seguinte",
+      "emNumeros_tab5On",
+      "emNumeros_cap5Texto",
+      "emNumeros_cap5Grafico",
+      "emNumeros_cap5Anterior"
+    ],
+    "applyOnlyToTargetVisuals": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.26",
+    "activeSection": "emNumeros",
+    "sections": {
+      "emNumeros": {
+        "visualContainers": {
+          "emNumeros_tab1On": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap1Texto": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap1Grafico": {
+            "singleVisual": {
+              "visualType": "lineChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap1Seguinte": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_tab2On": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap2Texto": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap2Grafico": {
+            "singleVisual": {
+              "visualType": "clusteredColumnChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap2Anterior": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap2Seguinte": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_tab3On": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap3Texto": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap3Grafico": {
+            "singleVisual": {
+              "visualType": "lineChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap3Anterior": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap3Seguinte": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_tab4On": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "emNumeros_cap4Texto": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "emNumeros_cap4Grafico": {
+            "singleVisual": {
+              "visualType": "lineChart",
+              "objects": {}
+            }
+          },
+          "emNumeros_cap4Anterior": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "emNumeros_cap4Seguinte": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "emNumeros_tab5On": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap5Texto": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap5Grafico": {
+            "singleVisual": {
+              "visualType": "clusteredBarChart",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "emNumeros_cap5Anterior": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {},
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

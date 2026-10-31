@@ -1,0 +1,31 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "oferta",
+  "displayName": "Noites e Quartos · Oferta",
+  "displayOption": "FitToWidth",
+  "height": 1320,
+  "width": 1280,
+  "visibility": "HiddenInViewMode",
+  "visualInteractions": [
+    {
+      "source": "oferta_slicerAlojamento",
+      "target": "oferta_kTERVal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oferta_slicerAlojamento",
+      "target": "oferta_kTERL0",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oferta_slicerAno",
+      "target": "oferta_quartosTipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oferta_slicerAlojamento",
+      "target": "oferta_classificacao",
+      "type": "NoFilter"
+    }
+  ]
+}

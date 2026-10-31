@@ -1,0 +1,89 @@
+/// Compara o município em foco ('Município selecionado') com os pares da mesma NUTS III que publicam a medida: quantos são, a média deles e a posição do município. Mostrar sempre a posição com o número de pares («5.º de 12»).
+table 'Comparação entre pares'
+	lineageTag: 8fe30ed4-cdf5-44ed-a26b-49309d4c3ffa
+
+	calculationGroup
+		precedence: 5
+
+		/// Quantos municípios do grupo de pares publicam a medida.
+		calculationItem 'Pares com dados' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
+				    VAR NutsSel = LOOKUPVALUE('Geografia'[NUTS III], 'Geografia'[GeoKey], SelKey)
+				    VAR Valores =
+				        ADDCOLUMNS(
+				            CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia'), 'Geografia'[NUTS III] = NutsSel),
+				            "@Valor",
+				                VAR Chave = 'Geografia'[GeoKey]
+				                RETURN CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação entre pares'), REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave)
+				        )
+				    VAR ComDados = FILTER(Valores, NOT ISBLANK([@Valor]))
+				    RETURN IF(NOT ISBLANK(SelKey), COUNTROWS(ComDados))
+				)
+			ordinal: 0
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "#,0")
+
+		/// Média simples do valor de cada par (não um rácio agregado).
+		calculationItem 'Média dos pares' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
+				    VAR NutsSel = LOOKUPVALUE('Geografia'[NUTS III], 'Geografia'[GeoKey], SelKey)
+				    VAR Valores =
+				        ADDCOLUMNS(
+				            CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia'), 'Geografia'[NUTS III] = NutsSel),
+				            "@Valor",
+				                VAR Chave = 'Geografia'[GeoKey]
+				                RETURN CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação entre pares'), REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave)
+				        )
+				    VAR ComDados = FILTER(Valores, NOT ISBLANK([@Valor]))
+				    RETURN IF(NOT ISBLANK(SelKey), AVERAGEX(ComDados, [@Valor]))
+				)
+			ordinal: 1
+
+		/// Posição (densa, do maior para o menor) do município em foco; em branco se ele não publicar.
+		calculationItem 'Posição no grupo' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
+				    VAR NutsSel = LOOKUPVALUE('Geografia'[NUTS III], 'Geografia'[GeoKey], SelKey)
+				    VAR Valores =
+				        ADDCOLUMNS(
+				            CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia'), 'Geografia'[NUTS III] = NutsSel),
+				            "@Valor",
+				                VAR Chave = 'Geografia'[GeoKey]
+				                RETURN CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação entre pares'), REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave)
+				        )
+				    VAR ComDados = FILTER(Valores, NOT ISBLANK([@Valor]))
+				    VAR ValorSel = MAXX(FILTER(ComDados, 'Geografia'[GeoKey] = SelKey), [@Valor])
+				    RETURN
+				        IF(
+				            NOT ISBLANK(ValorSel),
+				            COUNTROWS(DISTINCT(SELECTCOLUMNS(FILTER(ComDados, [@Valor] > ValorSel), "@V", [@Valor]))) + 1
+				        )
+				)
+			ordinal: 2
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "#,0")
+
+	column 'Cálculo entre pares'
+		dataType: string
+		lineageTag: a3d449ed-e23a-48e8-bb70-97e2ccc8c753
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ec67eed3-cc39-496d-b5d7-59b510ef43e3
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic

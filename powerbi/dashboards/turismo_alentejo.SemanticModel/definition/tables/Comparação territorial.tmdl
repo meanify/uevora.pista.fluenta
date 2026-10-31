@@ -1,0 +1,115 @@
+/// Aplica qualquer medida a outro território (sub-região, região, Portugal), ou dá o peso e a diferença face a eles. Cada item avalia a medida sem o próprio filtro do grupo, por isso as medidas de rácio comparam o rácio, e as medidas de texto passam sem alteração.
+table 'Comparação territorial'
+	lineageTag: dc59c12e-9c02-4c82-97fa-36a5875cb267
+
+	calculationGroup
+		precedence: 20
+
+		/// O território do contexto atual.
+		calculationItem 'Seleção' = SELECTEDMEASURE()
+			ordinal: 0
+
+		/// A NUTS III do que está selecionado.
+		calculationItem 'Sub-região' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'[GeoKey], 'Geografia'[Município], 'Geografia'[Município (mapa)], 'Geografia'[Distrito], 'Geografia'[Território turístico], 'Geografia'[Litoral ou interior]), VALUES('Geografia'[NUTS III]))
+				)
+			ordinal: 1
+
+		/// A NUTS II do que está selecionado (mantém filtros de NUTS II 2024 e de região).
+		calculationItem 'Região' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'[GeoKey], 'Geografia'[Município], 'Geografia'[Município (mapa)], 'Geografia'[Distrito], 'Geografia'[Território turístico], 'Geografia'[Litoral ou interior], 'Geografia'[NUTS III]), VALUES('Geografia'[NUTS II]))
+				)
+			ordinal: 2
+
+		/// Todo o país. Nos indicadores municipais é a soma dos municípios publicados.
+		calculationItem Portugal =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'), REMOVEFILTERS('Região NUTS II'))
+				)
+			ordinal: 3
+
+		/// Seleção ÷ Região.
+		calculationItem 'Peso na região' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    DIVIDE(
+				        CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial')),
+				        CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'[GeoKey], 'Geografia'[Município], 'Geografia'[Município (mapa)], 'Geografia'[Distrito], 'Geografia'[Território turístico], 'Geografia'[Litoral ou interior], 'Geografia'[NUTS III]), VALUES('Geografia'[NUTS II]))
+				    )
+				)
+			ordinal: 4
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "0.0%")
+
+		/// Seleção ÷ Portugal (quota nacional).
+		calculationItem 'Peso em Portugal' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    DIVIDE(
+				        CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial')),
+				        CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'), REMOVEFILTERS('Região NUTS II'))
+				    )
+				)
+			ordinal: 5
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "0.0%")
+
+		/// Seleção − Região, nas unidades da medida (p.p. numa quota).
+		calculationItem 'Diferença face à região' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'))
+				        - CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'[GeoKey], 'Geografia'[Município], 'Geografia'[Município (mapa)], 'Geografia'[Distrito], 'Geografia'[Território turístico], 'Geografia'[Litoral ou interior], 'Geografia'[NUTS III]), VALUES('Geografia'[NUTS II]))
+				)
+			ordinal: 6
+
+		/// Seleção − Portugal.
+		calculationItem 'Diferença face a Portugal' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'))
+				        - CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'), REMOVEFILTERS('Região NUTS II'))
+				)
+			ordinal: 7
+
+		/// Seleção ÷ Portugal − 1 (quociente de localização). Usar com quotas.
+		calculationItem 'Especialização face a Portugal' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
+				    SELECTEDMEASURE(),
+				    DIVIDE(
+				        CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial')),
+				        CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'), REMOVEFILTERS('Região NUTS II'))
+				    ) - 1
+				)
+			ordinal: 8
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "+0%;-0%;0%")
+
+	column 'Território de comparação'
+		dataType: string
+		lineageTag: 436f7bb0-4284-4372-ba2f-df6a750ccad2
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7853dd7f-1db7-468b-8b20-c446530fb6dc
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic

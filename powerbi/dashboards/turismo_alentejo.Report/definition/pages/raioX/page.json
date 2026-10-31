@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "raioX",
+  "displayName": "Raio-X",
+  "displayOption": "FitToWidth",
+  "height": 1560,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "raioX_slicerAno",
+      "target": "raioX_evolucao",
+      "type": "NoFilter"
+    }
+  ]
+}

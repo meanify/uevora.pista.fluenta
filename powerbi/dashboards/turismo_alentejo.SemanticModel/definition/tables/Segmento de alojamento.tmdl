@@ -1,0 +1,41 @@
+/// Segmento de alojamento (Total, Hotelaria, Alojamento local, TER e habitação), conforme aos indicadores mensais municipais e ao tipo dos anuais: filtra os dois através de 'Tipo de alojamento'. «Total» é a linha Total do INE e funciona como «Todos».
+table 'Segmento de alojamento'
+	lineageTag: 505239d2-8406-5536-abd8-3ecb475d22d0
+
+	column Segmento
+		dataType: string
+		isKey
+		lineageTag: 40c97a2c-dba6-5d5f-824c-75dcd526dab0
+		summarizeBy: none
+		sourceColumn: [Segmento]
+		sortByColumn: Nível
+
+	/// 1 = Total do INE, 2 = segmento.
+	column Nível
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0f4582e7-7393-40df-b4f9-079a7d04a9fc
+		summarizeBy: none
+		sourceColumn: [Nível]
+
+	partition 'Segmento de alojamento' = calculated
+		mode: import
+		source =
+				VAR Segmentos =
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Dormidas mensais por segmento', "Segmento", 'Dormidas mensais por segmento'[segmento_alojamento]),
+				            SELECTCOLUMNS('Hóspedes mensais por segmento', "Segmento", 'Hóspedes mensais por segmento'[segmento_alojamento]),
+				            SELECTCOLUMNS('Estabelecimentos de alojamento turístico', "Segmento", 'Estabelecimentos de alojamento turístico'[tipo_alojamento]),
+				            SELECTCOLUMNS('Quartos em alojamento turístico', "Segmento", 'Quartos em alojamento turístico'[tipo_alojamento]),
+				            SELECTCOLUMNS('Hóspedes por tipo de alojamento', "Segmento", 'Hóspedes por tipo de alojamento'[tipo_alojamento]),
+				            SELECTCOLUMNS('Dormidas por tipo de alojamento', "Segmento", 'Dormidas por tipo de alojamento'[tipo_alojamento]),
+				            SELECTCOLUMNS('Rendimento médio por quarto', "Segmento", 'Rendimento médio por quarto'[tipo_alojamento]),
+				            SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013)', "Segmento", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[tipo_alojamento]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013)', "Segmento", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[tipo_alojamento]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024)', "Segmento", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[tipo_alojamento])
+				        )
+				    )
+				RETURN
+				    ADDCOLUMNS(Segmentos, "Nível", IF([Segmento] = "Total", 1, 2))

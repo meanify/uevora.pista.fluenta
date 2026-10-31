@@ -51,6 +51,7 @@ ref table 'Ano base'
 ref table 'Comparação territorial'
 ref table 'Comparação temporal'
 ref table 'Comparação entre pares'
+ref table 'Foco municipal'
 
 ref cultureInfo pt-PT
 

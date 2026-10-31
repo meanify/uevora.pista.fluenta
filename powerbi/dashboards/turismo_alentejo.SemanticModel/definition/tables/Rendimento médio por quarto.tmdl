@@ -1,0 +1,82 @@
+/// Facto INE 0009929: RevPAR publicado por município, tipo de alojamento e ano. Origem: public.ine_0009929_ds. Todo o país, só linhas de município. Mantém a linha Total do INE (tipo, subtipo e classificação = Total) e as categorias mais detalhadas, que não somam o total por segredo estatístico.
+table 'Rendimento médio por quarto'
+	lineageTag: 6f7405d9-984b-5d17-a204-db3ce3cc83c3
+
+	column tipo_alojamento
+		dataType: string
+		isHidden
+		lineageTag: 610acdac-ce52-52d1-b640-3b43d7746cff
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		isHidden
+		lineageTag: 55081e99-8c4a-542e-a40f-e312d79b4d8e
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column classificacao
+		dataType: string
+		isHidden
+		lineageTag: eb293c05-6318-5109-902a-9f6d18c13e2d
+		summarizeBy: none
+		sourceColumn: classificacao
+
+	column ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 380395a1-fa89-5339-8dab-0d2b35cbe144
+		summarizeBy: none
+		sourceColumn: ano
+
+	column rendimento_medio_por_quarto
+		dataType: double
+		isHidden
+		formatString: #,0.00 "€"
+		lineageTag: 0d84e58e-bdc4-5a03-a488-dd6a4e337d59
+		summarizeBy: none
+		sourceColumn: rendimento_medio_por_quarto
+
+		annotation SummarizationSetBy = Automatic
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: f8d7bf81-0a81-59f0-acf8-cee70da1c7f0
+		summarizeBy: none
+		sourceColumn: update_date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: ac81c2ad-88aa-5080-8cb8-d4b48e784542
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	/// Chave tipo|subtipo para a dimensão 'Tipo de alojamento'.
+	column TipoKey
+		dataType: string
+		isHidden
+		lineageTag: 733cfca4-3e97-46c0-bbda-41c74521ae61
+		summarizeBy: none
+		sourceColumn: TipoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Rendimento médio por quarto' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Tabela = Origem{[Schema = "public", Item = "ine_0009929_ds"]}[Data],
+				    Municipios = Table.SelectRows(Tabela, each [municipio] <> "Total"),
+				    GeoKey = Table.AddColumn(Municipios, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    TipoKey = Table.AddColumn(GeoKey, "TipoKey", each [tipo_alojamento] & "|" & [subtipo_alojamento] & "|" & [classificacao], type text),
+				    Colunas = Table.SelectColumns(TipoKey, {"tipo_alojamento", "subtipo_alojamento", "classificacao", "ano", "rendimento_medio_por_quarto", "update_date", "GeoKey", "TipoKey"})
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table

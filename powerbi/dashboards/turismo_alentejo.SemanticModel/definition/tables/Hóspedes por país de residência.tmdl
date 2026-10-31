@@ -1,0 +1,57 @@
+/// Facto INE 0009930: Hóspedes por município, local de residência e ano. Origem: public.ine_0009930_ds. Todo o país, só linhas de município.
+table 'Hóspedes por país de residência'
+	lineageTag: e25484da-670c-5a13-bc0e-9b4b45d8bb3b
+
+	column local_residencia
+		dataType: string
+		isHidden
+		lineageTag: a024b6a4-2807-5d6b-9a95-359ca2e4a8f4
+		summarizeBy: none
+		sourceColumn: local_residencia
+
+	column ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8e4fd500-ecfc-5ecf-b4da-89280c6f9e76
+		summarizeBy: none
+		sourceColumn: ano
+
+	column hospedes
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 61675831-ed50-5a3d-b140-9b991a08d299
+		summarizeBy: none
+		sourceColumn: hospedes
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 8d5edbac-ebaa-542d-9220-c52de842bd2c
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: f8a67436-10e3-528d-b1c5-f4568bab475f
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	partition 'Hóspedes por país de residência' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Tabela = Origem{[Schema = "public", Item = "ine_0009930_ds"]}[Data],
+				    Municipios = Table.SelectRows(Tabela, each [municipio] <> "Total"),
+				    GeoKey = Table.AddColumn(Municipios, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Colunas = Table.SelectColumns(GeoKey, {"local_residencia", "ano", "hospedes", "update_date", "GeoKey"})
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table

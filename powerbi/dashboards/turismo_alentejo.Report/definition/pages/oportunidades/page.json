@@ -1,0 +1,35 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "oportunidades",
+  "displayName": "Oportunidades",
+  "displayOption": "FitToWidth",
+  "height": 1640,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "oportunidades_slicerSegmento",
+      "target": "oportunidades_kRevparVal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oportunidades_slicerSegmento",
+      "target": "oportunidades_kRevparL0",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oportunidades_slicerSegmento",
+      "target": "oportunidades_quotas",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oportunidades_slicerAno",
+      "target": "oportunidades_indice2015",
+      "type": "NoFilter"
+    },
+    {
+      "source": "oportunidades_slicerBase",
+      "target": "oportunidades_indice2015",
+      "type": "NoFilter"
+    }
+  ]
+}

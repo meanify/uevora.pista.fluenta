@@ -1,0 +1,90 @@
+{
+  "name": "Turismo no Alentejo",
+  "dataColors": [
+    "#1F4FA3",
+    "#C9960F",
+    "#5F6F2E",
+    "#B3412E",
+    "#858E9B",
+    "#7FA6EC",
+    "#E2B53D",
+    "#A3B661"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1B2230",
+  "tableAccent": "#1F4FA3",
+  "good": "#5F6F2E",
+  "neutral": "#C9960F",
+  "bad": "#B3412E",
+  "maximum": "#1F4FA3",
+  "center": "#E3EBF8",
+  "minimum": "#FFFFFF",
+  "textClasses": {
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12,
+      "color": "#1B2230"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 9,
+      "color": "#545F6E"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Bold",
+      "fontSize": 24,
+      "color": "#1B2230"
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12,
+      "color": "#1B2230"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            }
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#E3E4DE"
+              }
+            },
+            "radius": 10
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#FAFAF7"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}

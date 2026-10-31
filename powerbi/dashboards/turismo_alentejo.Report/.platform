@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Turismo Alentejo"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a89fa90b-5632-49fc-895c-35db183ddca1"
+  }
+}

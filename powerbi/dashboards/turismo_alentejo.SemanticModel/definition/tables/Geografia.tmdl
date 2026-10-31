@@ -1,0 +1,118 @@
+/// Geografia ao nível do município (todo o país), lida em Power Query das tabelas INE municipais. NUTS na versão 2013 dos dados; 'NUTS II (2024)' dá a delimitação atual. Os agrupamentos próprios vêm das consultas TerritoriosTuristicos e PeninsulaSetubal.
+table Geografia
+	lineageTag: 22e3060e-59a1-5408-95ce-73dd707a0728
+
+	column GeoKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 568fc784-f7f9-59b4-8713-cf6ce1701c2d
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column 'NUTS I'
+		dataType: string
+		lineageTag: 8771a6fe-8b10-5d87-873e-446af0c8c5f2
+		summarizeBy: none
+		sourceColumn: NUTS I
+
+	column 'NUTS II'
+		dataType: string
+		lineageTag: 41b3818c-927f-5d4f-90e4-d80565d62978
+		summarizeBy: none
+		sourceColumn: NUTS II
+
+	column 'NUTS III'
+		dataType: string
+		lineageTag: 9862fd24-d24f-50af-a937-ca121b1eb8c4
+		summarizeBy: none
+		sourceColumn: NUTS III
+
+	column Distrito
+		dataType: string
+		lineageTag: 43f7f09c-4ad1-5cc0-91db-2476de4c4f43
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: Distrito
+
+	column 'Município'
+		dataType: string
+		lineageTag: 7240dbc1-867e-5346-8b6f-772a4a562688
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Município
+
+	column 'Município (mapa)'
+		dataType: string
+		lineageTag: ded17b3f-19d1-5fa3-8e0b-1854a366ac9c
+		dataCategory: Place
+		summarizeBy: none
+		sourceColumn: Município (mapa)
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: a5014890-9297-5430-b57d-7d77d07e4218
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	/// NUTS II na versão 2024: a Lezíria do Tejo, o Oeste e o Médio Tejo passam a Oeste e Vale do Tejo e a AML divide-se em Grande Lisboa e Península de Setúbal. «Alentejo» aqui exclui a Lezíria do Tejo.
+	column 'NUTS II (2024)'
+		dataType: string
+		lineageTag: 97791031-81f6-4579-a493-6f7987ac7035
+		summarizeBy: none
+		sourceColumn: NUTS II (2024)
+
+	/// Agrupamento próprio de concelhos (consulta TerritoriosTuristicos). Em branco fora destes territórios.
+	column 'Território turístico'
+		dataType: string
+		lineageTag: 71e8b8aa-6cfa-43fd-b6cd-ee2277cc8c57
+		summarizeBy: none
+		sourceColumn: Território turístico
+
+	/// Litoral (NUTS III Alentejo Litoral) ou Interior, só no Alentejo.
+	column 'Litoral ou interior'
+		dataType: string
+		lineageTag: 6105227f-ee94-4a6b-ba8f-a3cf0a86365b
+		summarizeBy: none
+		sourceColumn: Litoral ou interior
+
+	hierarchy 'Hierarquia geográfica'
+		lineageTag: d7701c23-8bf8-4146-a9c0-b410c7b53e2d
+
+		level 'NUTS II'
+			lineageTag: 6620f644-7317-49a5-9aa0-c4d5de283f1f
+			column: 'NUTS II'
+
+		level 'NUTS III'
+			lineageTag: cc7361d9-251f-42f2-8da4-b194c99ec55c
+			column: 'NUTS III'
+
+		level 'Município'
+			lineageTag: 8c26b9fe-8784-41de-bced-8d4869a5655a
+			column: 'Município'
+
+	partition Geografia = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Fontes = {"ine_0008350_ds", "ine_0009183_ds", "ine_0009930_ds", "ine_0009873_ds", "ine_0009874_ds", "ine_0009876_ds", "ine_0009877_ds", "ine_0009929_ds", "ine_0010735_ds", "ine_0010736_ds"},
+				    Colunas = {"nuts_i", "nuts_ii", "nuts_iii", "distrito", "municipio"},
+				    PorFonte = List.Transform(Fontes, each Table.Distinct(Table.SelectColumns(Origem{[Schema = "public", Item = _]}[Data], Colunas))),
+				    Uniao = Table.Distinct(Table.Combine(PorFonte)),
+				    Municipios = Table.SelectRows(Uniao, each [municipio] <> "Total"),
+				    GeoKey = Table.AddColumn(Municipios, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsIIKey = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text),
+				    Mapa = Table.AddColumn(NutsIIKey, "Município (mapa)", each [municipio] & ", Portugal", type text),
+				    Peninsula = List.Buffer(PeninsulaSetubal),
+				    Nuts2024 = Table.AddColumn(Mapa, "NUTS II (2024)", each if List.Contains({"Lezíria do Tejo", "Oeste", "Médio Tejo"}, [nuts_iii]) then "Oeste e Vale do Tejo" else if [nuts_iii] = "Área Metropolitana de Lisboa" then (if List.Contains(Peninsula, [municipio]) then "Península de Setúbal" else "Grande Lisboa") else [nuts_ii], type text),
+				    ComTerritorio = Table.NestedJoin(Nuts2024, {"nuts_ii", "municipio"}, TerritoriosTuristicos, {"nuts_ii", "municipio"}, "Territorio", JoinKind.LeftOuter),
+				    Territorio = Table.ExpandTableColumn(ComTerritorio, "Territorio", {"territorio"}, {"Território turístico"}),
+				    Litoral = Table.AddColumn(Territorio, "Litoral ou interior", each if [nuts_ii] <> "Alentejo" then null else if [nuts_iii] = "Alentejo Litoral" then "Litoral" else "Interior", type nullable text),
+				    Tipos = Table.TransformColumnTypes(Litoral, {{"Território turístico", type nullable text}}),
+				    Nomes = Table.RenameColumns(Tipos, {{"nuts_i", "NUTS I"}, {"nuts_ii", "NUTS II"}, {"nuts_iii", "NUTS III"}, {"distrito", "Distrito"}, {"municipio", "Município"}})
+				in
+				    Nomes
+
+	annotation PBI_ResultType = Table

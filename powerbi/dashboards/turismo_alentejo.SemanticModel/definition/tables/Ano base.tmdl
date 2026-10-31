@@ -1,0 +1,35 @@
+/// Tabela desligada com o ano de comparação das medidas e da 'Comparação temporal': «Ano anterior» (por omissão, sem seleção) ou um ano fixo (2015, 2019…).
+table 'Ano base'
+	lineageTag: 6387cd8c-afdb-437c-a027-016482ee9414
+
+	column 'Ano base'
+		dataType: string
+		lineageTag: 697199e8-d6ce-4675-b1a9-1745048fd7d5
+		summarizeBy: none
+		sourceColumn: [Ano base]
+		sortByColumn: Ordem
+
+	/// Ano numérico; em branco para «Ano anterior».
+	column Ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e8882900-6786-4303-9206-822f148ed66f
+		summarizeBy: none
+		sourceColumn: [Ano]
+
+	column Ordem
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f48632be-1977-4014-a5ab-5fd7da350680
+		summarizeBy: none
+		sourceColumn: [Ordem]
+
+	partition 'Ano base' = calculated
+		mode: import
+		source =
+				UNION(
+				    ROW("Ano base", "Ano anterior", "Ano", CONVERT(BLANK(), INTEGER), "Ordem", 0),
+				    SELECTCOLUMNS('Ano', "Ano base", FORMAT('Ano'[Ano], "0"), "Ano", 'Ano'[Ano], "Ordem", 'Ano'[Ano])
+				)

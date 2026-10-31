@@ -1,0 +1,78 @@
+/// Facto INE 0010735: Dormidas por município, segmento de alojamento e mês. Origem: public.ine_0010735_ds. Todo o país, só linhas de município. Mantém a linha Total do INE por segmento.
+table 'Dormidas mensais por segmento'
+	lineageTag: a773dc4a-2f9a-5d80-bbab-0358bc7b86e2
+
+	column segmento_alojamento
+		dataType: string
+		isHidden
+		lineageTag: d9b5db6f-c5b6-5dc5-a7c6-f59711de20a6
+		summarizeBy: none
+		sourceColumn: segmento_alojamento
+
+	column ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1696dbe8-d59f-53dd-9d9e-96e432a4ee7c
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = User
+
+	column mes
+		dataType: string
+		isHidden
+		lineageTag: d47506b7-d34a-5695-8905-0febd47a1e16
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: d4d8d850-29f6-5a88-b79d-32171edcfd39
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column dormidas
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 4c355d5f-6f66-5338-ae02-11a8bc2a37fc
+		summarizeBy: none
+		sourceColumn: dormidas
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 6d3f3bab-56c6-58b4-a900-86df84cde322
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: d4e11bd7-e630-5221-b6a3-c694465c8e8e
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	partition 'Dormidas mensais por segmento' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Tabela = Origem{[Schema = "public", Item = "ine_0010735_ds"]}[Data],
+				    Municipios = Table.SelectRows(Tabela, each [municipio] <> "Total"),
+				    ComData = Table.AddColumn(Municipios, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Colunas = Table.SelectColumns(GeoKey, {"segmento_alojamento", "ano", "mes", "Data", "dormidas", "update_date", "GeoKey"})
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table

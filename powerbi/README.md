@@ -8,7 +8,8 @@ over the INE indicators produced by [flows-code](../flows-code/README.md).
 
 1. Power BI Desktop → Options → Preview features → enable **Power BI Project (.pbip) save option**
    and **Store reports using enhanced metadata format (PBIR)**.
-2. Open `PistaDigital.pbip`.
+2. Open `PistaDigital.pbip`, `dashboards/sazonalidade.pbip` or `dashboards/turismo_alentejo.pbip`
+   (see *Turismo Alentejo report*).
 3. Sign in to PostgreSQL with the database user when prompted (see Connection).
 
 ## Connection
@@ -79,8 +80,11 @@ cannot create embed codes.
 ## Semantic model
 
 The model lives in `dashboards/sazonalidade.SemanticModel` and is a star schema:
-hidden fact tables, conformed dimensions, every measure in `_Medidas`, and two
-calculation groups for comparisons (territory, time, peers). It is built to serve the seven dashboards in
+hidden fact tables, conformed dimensions, every measure in `_Medidas`, and four
+calculation groups for comparisons (focus município, territory, time, peers).
+`dashboards/turismo_alentejo.SemanticModel` is a copy for the *Turismo Alentejo*
+report: only `.platform` (name and `logicalId`) differs. Apply every model change to
+both and check with `diff -r` that `definition/` stays identical. It is built to serve the seven dashboards in
 [`mockups/`](mockups/README.md) (see *Mockup coverage*).
 
 ### Conventions
@@ -174,17 +178,26 @@ the sum of the regions.
 
 ### Comparisons: calculation groups and `Ano base`
 
-Instead of a «Portugal», «região», «índice» or «pares» copy of each measure, three
+Instead of a «Portugal», «região», «índice» or «pares» copy of each measure, four
 calculation groups apply to any measure (put the column on a slicer, legend,
 matrix columns or a visual filter). They modify every measure in the visual, so in
 a scatter they apply to both axes.
 
-| `Comparação territorial` (20) | `Comparação temporal` (10) | `Comparação entre pares` (5) |
-|---|---|---|
-| Seleção · Sub-região · Região · Portugal | Valor · Valor no ano base | Pares com dados |
-| Peso na região · Peso em Portugal | Diferença face ao ano base | Média dos pares |
-| Diferença face à região / a Portugal | Variação face ao ano base | Posição no grupo |
-| Especialização face a Portugal | Índice (ano base = 100) | |
+| `Foco municipal` (30) | `Comparação territorial` (20) | `Comparação temporal` (10) | `Comparação entre pares` (5) |
+|---|---|---|---|
+| Contexto atual | Seleção · Sub-região · Região · Portugal | Valor · Valor no ano base | Pares com dados |
+| Município em foco | Peso na região · Peso em Portugal | Diferença face ao ano base | Média dos pares |
+| | Diferença face à região / a Portugal | Variação face ao ano base | Posição no grupo |
+| | Especialização face a Portugal | Índice (ano base = 100) | |
+
+With items of several groups in one visual, the higher precedence is the outer
+call: `Portugal` + `Variação face ao ano base` is the variation of Portugal, and
+`Município em foco` + `Diferença face à região` is that difference for the focus
+município. The reverse nesting is not available: `Peso em Portugal` +
+`Diferença face ao ano base` divides the two differences, it is not the change in
+the share. `Município em foco` evaluates any measure (text included) for the
+`Município selecionado` whatever the `Geografia` filter, so a KPI of the focus
+município sits next to a chart of its peers.
 
 Two rules make them safe on any measure:
 
@@ -192,7 +205,8 @@ Two rules make them safe on any measure:
   so the item is applied once, to the measure as a whole: a ratio such as
   `NoitesPorQuarto` is compared as a ratio, never rebuilt from shifted parts.
 - Text measures (`Cor…`, `Subtitulo…`, `MesPicoDormidas`, `MesMaisFracoDormidas`,
-  `QuadranteMercado`) pass through unchanged, and keep their own format string.
+  `QuadranteMercado`, `LeituraGapOfertaProcura`) pass through unchanged (except in
+  `Foco municipal`), and keep their own format string.
 
 `Ano base` is a disconnected table: «Ano anterior» (also when nothing is selected)
 or a fixed year. Time items need a single year in context and return blank
@@ -202,7 +216,9 @@ municipalities of its NUTS III that publish the measure.
 Measures already bound to report visuals (`DormidasResidenciaYoY`,
 `HospedesResidenciaAnoAnterior`, `PosicaoParesRevPAR`, …) are one-line wrappers,
 `CALCULATE([Base], <group>[<column>] = "<item>")`, so each comparison is defined once.
-For new visuals use the items directly.
+For new visuals use the items directly. The exception is a scatter, where an item
+would change both axes: `DormidasTipoYoY`, `DormidasMensaisTipoYoY`, `QuartosYoY`
+and `CrescimentoHospedesMercado` are explicit growth axes.
 
 ### `_Medidas` highlights
 
@@ -210,11 +226,11 @@ For new visuals use the items directly.
 |---|---|
 | Oferta | `Estabelecimentos`, `Quartos`, `QuartosPorEstabelecimento`, `HospedesPorEstabelecimento`, `QuotaQuartosTipo` (peso AL/TER, mix) |
 | Procura | `DormidasTipo`, `HospedesTipo`, `EstadaMediaTipo`, `QuotaDormidasTipo`, `EstadaMediaMensalTipo` (NUTS II) |
-| Oferta e procura | `NoitesPorQuarto` (indicador de referência), `GapOfertaProcura` (p.p. desde o ano base; ≥ 20 quartos) |
+| Oferta e procura | `NoitesPorQuarto` (indicador de referência), `GapOfertaProcura` (p.p. desde o ano base; ≥ 20 quartos), `LeituraGapOfertaProcura` |
 | Desempenho | `RevPAR` (ponderado por quartos), `ReceitaEstimadaAlojamento` (RevPAR × quartos × 365), `OcupacaoEstimada` |
 | Mercados | `QuotaDormidasResidencia` / `QuotaHospedesResidencia` (peso interno, quota internacional), `QuotaDormidasMercadoEstrangeiro`, `HHIMercados`, `PesoTop3Mercados`, `CrescimentoHospedesMercado`, `MercadosEmCrescimento`, `QuadranteMercado` + `ReferenciaCrescimentoHospedes` / `ReferenciaEstadaMedia` |
 | Sazonalidade | `QuotaMesDormidas` (perfil mensal), `IndiceSazonalidadeMensal` (mês máximo = 100), `MesPicoDormidas`, `MesMaisFracoDormidas`, `DormidasMesPico`, `RacioPicoVale`, `QuotaDormidasJunSet`, `QuotaDormidasJulSet`, `GiniMensal`, `TaxaSazonalidade`, `IndiceSazonalidadePico` |
-| Pressão e pares | `DormidasPorKm2`, `QuartosPorKm2`, `PercentilPressao`, peers through *Comparação entre pares* (same NUTS III) |
+| Pressão e pares | `DormidasPorKm2`, `QuartosPorKm2`, `PercentilPressao`, peers through *Comparação entre pares* (same NUTS III); `EmGrupoDePares` (visual filter = 1: only the focus município's NUTS III) |
 | Metadados | `DataAtualizacaoDados`, `AnoBase`, `Subtitulo…`, `Cor…` |
 
 Seasonality measures read the municipal 0010735, so they work for a concelho, a
@@ -291,6 +307,51 @@ Microsoft's TMDL conventions but has not been loaded by Desktop or by Microsoft'
 | Info | Placeholder — still to be built |
 
 `Visão Geral` and `Info` still carry the original placeholder in the content area.
+
+## Turismo Alentejo report
+
+`dashboards/turismo_alentejo.pbip` builds the seven dashboards of
+[`mockups/`](mockups/README.md) over its own copy of the model, with the mockup
+theme (`powerbi_tema_alentejo.json`, registered as `Turismo_no_Alentejo.json`).
+
+- **Pages** are 1280 px wide, as tall as the mockup (980–1830 px) and shown *fit to
+  width*, so they scroll like the HTML. Each page repeats a header (brand, horizontal
+  page navigator, anil rule), the title block and a footer with `DataAtualizacaoDados`.
+- **Pages:** Início, Pulso (visão geral and Alentejo e Portugal on one page), Raio-X,
+  Mercados, Oportunidades, Em números, Barómetro, and Noites e Quartos as three
+  pages (Procura in the navigator; Oferta and Equilíbrio are hidden and reached with
+  the Procura / Oferta / Equilíbrio buttons).
+- **Territory:** every data visual carries a visual-level filter
+  `'Região NUTS II'[NUTS II] = "Alentejo"` (NUTS 2013) instead of a page filter, so a
+  visual can opt out (the NUTS II scatter on Pulso). Portugal and the other
+  comparisons come from the calculation groups as visual filters or series.
+  On Pulso the «Só NUTS 2024» slicer narrows the municipal indicators to
+  `Geografia[NUTS II (2024)] = "Alentejo"`; the NUTS II monthly tables stay NUTS 2013.
+- **KPI tiles:** a framed text box with the label, a card with the value and up to
+  two small cards below. These are the same measure with *Variação face ao ano base*,
+  *Portugal*, *Média dos pares*, etc. as visual filters. Deltas are olive, and red
+  when negative. Dashed «Nova fonte» tiles mark indicators that are not in the INE tables.
+- **Raio-X:** the município comes from `Município selecionado`. The KPIs, calendar,
+  markets and evolution use *Município em foco*; the peer bars and the map use
+  `EmGrupoDePares = 1` and colour the focus município with `CorMunicipioEmFoco`.
+  Barómetro filters `Geografia[Município]` directly (no peers).
+- **Em números:** the five chapters are bookmarks (group *Capítulos*, data not
+  captured) that show one chapter's text, chart and buttons and hide the others.
+  The tab and *Capítulo anterior/seguinte* buttons call them.
+- **Saved selections:** Ano = 2025, Município = Évora, Segmento = Hotelaria,
+  Mês = agosto, `Ano base` = 2020 on Oportunidades (as in the mockups). Change them
+  in Desktop when a new year is loaded. Charts over years or months ignore the
+  year/month slicer (edit interactions). Comparison years fixed by the mockups
+  (2015 = 100, 2019 = 100, 2019 vs ano, 2020 →) are visual filters on `Ano base`.
+- **Not reproduced:** the dashed reference lines of the market matrix (the
+  Alentejo means are shown as cards below it), the «Centro» peer line of the Pulso
+  index, the «conf.» label (confidential values are blank), drill-through from
+  *Exploração livre*, and colour by gap in the dimension × use scatter.
+
+The report was generated and checked structurally (references, calculation-item
+names, interactions, bookmarks, layout overlaps), without Power BI Desktop. Open
+and save it in Desktop once: Desktop normalises the PBIR files and reports any
+formatting property it does not accept.
 
 ## Theme
 

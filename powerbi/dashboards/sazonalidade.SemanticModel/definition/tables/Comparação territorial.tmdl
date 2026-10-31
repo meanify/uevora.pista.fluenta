@@ -95,16 +95,6 @@ table 'Comparação territorial'
 			ordinal: 8
 			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "+0%;-0%;0%")
 
-		/// O município escolhido em 'Município selecionado' (tabela desligada), qualquer que seja o filtro de 'Geografia'. Permite mostrar o município em foco ao lado dos pares sem filtrar os pares.
-		calculationItem 'Município em foco' =
-				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
-				    SELECTEDMEASURE(),
-				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
-				    RETURN IF(NOT ISBLANK(SelKey), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação territorial'), REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = SelKey))
-				)
-			ordinal: 9
-
 	column 'Território de comparação'
 		dataType: string
 		lineageTag: 436f7bb0-4284-4372-ba2f-df6a750ccad2

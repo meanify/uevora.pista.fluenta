@@ -1,0 +1,50 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "mercados",
+  "displayName": "Mercados",
+  "displayOption": "FitToWidth",
+  "height": 1560,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_matriz",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_principais",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_especializacao",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_quadrantes",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_kInternacionalVal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_kInternacionalL0",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_kInternoVal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "mercados_slicerMercado",
+      "target": "mercados_kInternoL0",
+      "type": "NoFilter"
+    }
+  ]
+}

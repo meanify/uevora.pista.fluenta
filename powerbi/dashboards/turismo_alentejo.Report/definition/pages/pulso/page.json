@@ -1,0 +1,20 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "pulso",
+  "displayName": "Pulso",
+  "displayOption": "FitToWidth",
+  "height": 1830,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "pulso_slicerAno",
+      "target": "pulso_matrizMesAno",
+      "type": "NoFilter"
+    },
+    {
+      "source": "pulso_slicerAno",
+      "target": "pulso_indice2019",
+      "type": "NoFilter"
+    }
+  ]
+}
