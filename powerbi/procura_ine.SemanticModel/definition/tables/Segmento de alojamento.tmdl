@@ -1,0 +1,21 @@
+/// Segmento de alojamento dos indicadores mensais municipais.
+table 'Segmento de alojamento'
+	lineageTag: 505239d2-8406-5536-abd8-3ecb475d22d0
+
+	column Segmento
+		dataType: string
+		isKey
+		lineageTag: 40c97a2c-dba6-5d5f-824c-75dcd526dab0
+		summarizeBy: none
+		sourceColumn: [Segmento]
+
+	partition 'Segmento de alojamento' = calculated
+		mode: import
+		source =
+				DISTINCT(
+				    UNION(
+				            SELECTCOLUMNS('Dormidas mensais por segmento (0010735)', "Segmento", 'Dormidas mensais por segmento (0010735)'[segmento_alojamento]),
+				            SELECTCOLUMNS('Hóspedes mensais por segmento (0010736)', "Segmento", 'Hóspedes mensais por segmento (0010736)'[segmento_alojamento])
+				        )
+				)
+

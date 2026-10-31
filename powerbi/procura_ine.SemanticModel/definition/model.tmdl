@@ -1,0 +1,53 @@
+model Model
+	culture: pt-PT
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-PT
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup Parâmetros
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation PBI_QueryOrder = ["Superfície das unidades territoriais (0008350)","Dormidas por país de residência (0009183)","Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)","Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)","Estabelecimentos de alojamento turístico (0009873)","Quartos em alojamento turístico (0009874)","Hóspedes por tipo de alojamento (0009876)","Dormidas por tipo de alojamento (0009877)","Estada média por tipo de alojamento (0009880)","Rendimento médio por quarto (0009929)","Hóspedes por país de residência (0009930)","Dormidas mensais por segmento (0010735)","Hóspedes mensais por segmento (0010736)","Estada média por país de residência (0011140)","Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)","DSN","BaseDados","RegiaoNUTSII","Fonte","Dormidas por tipo de alojamento PT (9878)","Dormidas mensais por segmento PT (0010736)","Dormidas mensais por segmento PT (0010735)","Dormidas mensais por segmento (0010736)"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode","WebModelingEdit"]
+
+annotation __LastRPTime = 134377549986899289
+
+ref table 'Superfície das unidades territoriais (0008350)'
+ref table 'Dormidas por país de residência (0009183)'
+ref table 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'
+ref table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
+ref table 'Estabelecimentos de alojamento turístico (0009873)'
+ref table 'Quartos em alojamento turístico (0009874)'
+ref table 'Hóspedes por tipo de alojamento (0009876)'
+ref table 'Dormidas por tipo de alojamento (0009877)'
+ref table 'Estada média por tipo de alojamento (0009880)'
+ref table 'Rendimento médio por quarto (0009929)'
+ref table 'Hóspedes por país de residência (0009930)'
+ref table 'Dormidas mensais por segmento (0010735)'
+ref table 'Hóspedes mensais por segmento (0010736)'
+ref table 'Estada média por país de residência (0011140)'
+ref table 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'
+ref table Ano
+ref table Calendário
+ref table Geografia
+ref table 'Região NUTS II'
+ref table 'Tipo de alojamento'
+ref table Residência
+ref table 'Segmento de alojamento'
+ref table 'Município selecionado'
+ref table 'Métrica de pressão'
+ref table _Medidas
+ref table 'Sub-região em foco'
+ref table 'Dormidas por tipo de alojamento PT (9878)'
+ref table 'Dormidas mensais por segmento PT (0010736)'
+ref table 'Dormidas mensais por segmento PT (0010735)'
+ref table 'Dormidas mensais por segmento (0010736)'
+
+ref cultureInfo pt-PT
+

@@ -1,0 +1,152 @@
+table 'Dormidas por tipo de alojamento PT (9878)'
+	lineageTag: bed112f9-83b2-4361-a873-86dcc701faa0
+
+	column nuts_i
+		dataType: string
+		lineageTag: 1d2df9b5-a25f-4033-bfd2-db47b487e27b
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+		annotation SummarizationSetBy = Automatic
+
+	column nuts_ii
+		dataType: string
+		lineageTag: d9f91b14-51cc-4bc1-bc74-9740e1982b9d
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+		annotation SummarizationSetBy = Automatic
+
+	column nuts_iii
+		dataType: string
+		lineageTag: 434b6606-f1b3-4a33-b6ec-fd08a0fd3aa7
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+		annotation SummarizationSetBy = Automatic
+
+	column distrito
+		dataType: string
+		lineageTag: 5a1a9e28-b93e-4a07-96ff-29435d46ae4d
+		summarizeBy: none
+		sourceColumn: distrito
+
+		annotation SummarizationSetBy = Automatic
+
+	column municipio
+		dataType: string
+		lineageTag: a5dfe65e-e052-48d8-9dff-bfc85c4c6295
+		summarizeBy: none
+		sourceColumn: municipio
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: f6394be4-efb5-4426-84e8-b201c41ea97a
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 4526b40a-bb38-4f8a-9f34-fee7802015aa
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column classificacao
+		dataType: string
+		lineageTag: 98115b2e-b55a-41ae-aecb-933329e6004f
+		summarizeBy: none
+		sourceColumn: classificacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 3e078946-e3c8-4b71-8efc-46c3a4285fbb
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column dormidas
+		dataType: double
+		lineageTag: 0fc87734-b295-4496-abd9-a68c9b02ecf8
+		summarizeBy: sum
+		sourceColumn: dormidas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column create_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 253e5dba-764b-4a1e-9f75-d8bfef71cdab
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5672dbfc-7ad0-4ca5-93a9-13e0e34e6e3f
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		lineageTag: 54850a4a-6736-4016-af32-d412fd8b4be7
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column NutsIIKey
+		dataType: string
+		lineageTag: cdf2467b-021a-4d71-9ff1-4e9911fcc443
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dormidas por tipo de alojamento PT (9878)' = m
+		mode: import
+		source = ```
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0009877_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each true = true),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento", "classificacao"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total"),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text),
+				  ReplaceAlojamento = Table.ReplaceValue(
+				    #"NutsII",
+				    each [subtipo_alojamento],
+				    each if Text.Lower([tipo_alojamento]) = "alojamento local" then "Alojamento Local" 
+				         else if Text.Contains(Text.Lower([tipo_alojamento]), "rural") or Text.Contains(Text.Lower([tipo_alojamento]), "habitação") then "Turismo no Espaço Rural e de Habitação" 
+				         else [subtipo_alojamento],
+				    Replacer.ReplaceValue,
+				    {"subtipo_alojamento"}
+				)
+				in
+				    ReplaceAlojamento
+				```
+
+	annotation PBI_ResultType = Table
+

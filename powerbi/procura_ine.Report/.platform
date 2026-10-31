@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "procura_ine"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "74f0e655-ebf2-4743-9e93-055e5220a7a6"
+  }
+}

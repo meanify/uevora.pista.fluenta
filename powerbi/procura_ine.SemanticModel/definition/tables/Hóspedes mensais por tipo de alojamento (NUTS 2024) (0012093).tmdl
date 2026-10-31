@@ -1,0 +1,131 @@
+table 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'
+	lineageTag: 067a1908-14a5-58eb-a383-7ad2aded2935
+
+	measure 'Hóspedes mensais (tipo, NUTS 2024)' = SUM('Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[hospedes])
+		formatString: #,0
+		lineageTag: 560b6248-3a76-56f1-afcd-a3ff6eae92b1
+
+	/// Hóspedes mensais por tipo de alojamento (NUTS 2024) do ano anterior.
+	measure 'Hóspedes mensais (tipo, NUTS 2024, ano anterior)' = CALCULATE([Hóspedes mensais (tipo, NUTS 2024)], DATEADD('Calendário'[Date], -1, YEAR))
+		formatString: #,0
+		lineageTag: f6706ae3-12da-583c-a0f5-085c6364cee9
+
+	/// Variação homóloga de [Hóspedes mensais (tipo, NUTS 2024)]. Em branco sem ano anterior publicado.
+	measure 'Hóspedes mensais (tipo, NUTS 2024) YoY %' =
+			VAR Atual = [Hóspedes mensais (tipo, NUTS 2024)]
+			VAR Anterior = [Hóspedes mensais (tipo, NUTS 2024, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 3592c366-1faf-594e-a498-64e281768a45
+
+	column nuts_i
+		dataType: string
+		lineageTag: eb262fb7-9e0b-5247-be7c-f4d6bf6a07ed
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 033b5a61-0894-5905-9352-6759d198098b
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: 0f6256af-972c-59fc-bac4-7ac271f5cd7b
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 84fc6a9e-c3a5-5f59-8284-c84ef0cc0cb2
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 303a59a6-6686-596e-93ea-5a863ad957d6
+		summarizeBy: sum
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: string
+		lineageTag: 7401378f-568b-5e8d-b074-29be8ae54d10
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 510a4b82-dccc-53d8-b01b-1780c3d315b7
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hospedes
+		dataType: double
+		formatString: #,0
+		lineageTag: a6b3641e-194a-5c75-9a3f-f2a1aec2ec4f
+		summarizeBy: sum
+		sourceColumn: hospedes
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 6bc1987e-7dd6-5585-87b0-cc389d1b6310
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: d7f14e87-c0c9-5b4c-855c-30d2f8f44eeb
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: f7fd2f1e-9a00-5f3f-979f-e546b809c2ef
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)' = m
+		mode: import
+		source = ```
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0012093_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII and ([nuts_ii] <> "Total" and [tipo_alojamento] <> "Total" and [subtipo_alojamento] <> "Total")),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento]))),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text),
+				  #"Personalizado 1" = Table.ReplaceValue(
+				    #"GeoKey",
+				    each [subtipo_alojamento],
+				    each if Text.Lower([tipo_alojamento]) = "alojamento local" then "Alojamento Local" 
+				         else if Text.Contains(Text.Lower([tipo_alojamento]), "rural") or Text.Contains(Text.Lower([tipo_alojamento]), "habitação") then "Turismo no Espaço Rural e de Habitação" 
+				         else [subtipo_alojamento],
+				    Replacer.ReplaceValue,
+				    {"subtipo_alojamento"}
+				)
+				in
+				    #"Personalizado 1"
+				```
+
+	annotation PBI_ResultType = Table
+

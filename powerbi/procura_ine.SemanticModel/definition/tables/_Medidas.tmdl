@@ -1,0 +1,432 @@
+/// Medidas derivadas e comparações entre indicadores.
+table _Medidas
+	lineageTag: e5605908-5b6a-562f-9e25-209ca406dee6
+
+	/// Dormidas / hóspedes do mesmo grão. Preferir a esta medida a média simples do INE.
+	measure 'Estada média ponderada (tipo)' = DIVIDE([Dormidas (tipo)], [Hóspedes (tipo)])
+		formatString: #,0.00
+		lineageTag: 9dfadbc5-6d7f-5863-8e38-61253ae0e2ca
+
+	/// Dormidas / hóspedes por país de residência.
+	measure 'Estada média ponderada (residência)' = DIVIDE([Dormidas (residência)], [Hóspedes (residência)])
+		formatString: #,0.00
+		lineageTag: ddfaf998-52d5-5057-aee7-5ea8366483ea
+
+	measure 'Estada média mensal ponderada (segmento)' = DIVIDE([Dormidas mensais (segmento)], [Hóspedes mensais (segmento)])
+		formatString: #,0.00
+		lineageTag: 78b54416-8d19-5562-b74d-62f058b8104a
+
+	measure 'Quartos por estabelecimento' = DIVIDE([Quartos (tipo)], [Estabelecimentos])
+		formatString: #,0.00
+		lineageTag: a0ce9310-df2b-5ccc-915b-e1311766ae43
+
+	measure 'Dormidas mensais (mês anterior)' = CALCULATE([Dormidas mensais (segmento)], DATEADD('Calendário'[Date], -1, MONTH))
+		formatString: #,0
+		lineageTag: 7cf98932-3fa5-5a15-b338-b7ea3386d73b
+
+	measure 'Dormidas mensais MoM %' =
+			VAR Atual = [Dormidas mensais (segmento)]
+			VAR Anterior = [Dormidas mensais (mês anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 7a4fee93-4dc9-5d9e-9673-37d9b160290f
+
+	/// Capacidade anual: quartos × dias do ano, somada ano a ano para suportar várias seleções de ano.
+	measure 'Noites-quarto disponíveis' =
+			SUMX(
+			VALUES('Ano'[Ano]),
+			CALCULATE([Quartos (tipo)])
+			* (DATEDIFF(DATE('Ano'[Ano], 1, 1), DATE('Ano'[Ano], 12, 31), DAY) + 1)
+			)
+		formatString: #,0
+		lineageTag: c2b7a7f0-db22-5699-b13a-dc83f75f6347
+
+	/// Aproximação à ocupação: dormidas ÷ noites-quarto disponíveis. As dormidas do INE são noites de hóspede, não de quarto, pelo que um quarto partilhado conta mais do que uma vez e o valor pode passar os 100%. Serve para comparar municípios, não como taxa de ocupação oficial.
+	measure 'Ocupação estimada' = DIVIDE([Dormidas (tipo)], [Noites-quarto disponíveis])
+		formatString: 0.0%
+		lineageTag: c4f7a5d3-74b6-5275-ad3b-2cc5054f9838
+
+	/// Último ano com superfície publicada (2022 enquanto o INE não publicar a série NUTS-2024). É o ano que todas as medidas «por km²» usam.
+	measure 'Ano da superfície' =
+			MAXX(
+			    FILTER(
+			        CALCULATETABLE(VALUES('Ano'[Ano]), REMOVEFILTERS('Ano')),
+			        NOT ISBLANK([Superfície (km²)])
+			    ),
+			    'Ano'[Ano]
+			)
+		formatString: #,0
+		lineageTag: 616b1de6-1ea3-5f2f-abd3-99ff8673b8c3
+
+	/// Superfície do último ano publicado, independente do ano selecionado. Denominador de todas as medidas «por km²».
+	measure 'Superfície (km², último ano)' =
+			VAR AnoArea = [Ano da superfície]
+			RETURN
+			    CALCULATE(
+			        [Superfície (km²)],
+			        REMOVEFILTERS('Ano'),
+			        'Ano'[Ano] = AnoArea
+			    )
+		formatString: #,0.00
+		lineageTag: cb7cba61-57d1-50a0-b7c0-673c7fa492ba
+
+	/// Intensidade turística: dormidas anuais por quilómetro quadrado. A área é a do último ano publicado, não a do ano selecionado.
+	measure 'Dormidas por km²' = DIVIDE([Dormidas (tipo)], [Superfície (km², último ano)])
+		formatString: #,0.00
+		lineageTag: f890f8f2-b1fa-54d6-88a2-0ddd9fcbf120
+
+	measure 'Hóspedes por km²' = DIVIDE([Hóspedes (tipo)], [Superfície (km², último ano)])
+		formatString: #,0.00
+		lineageTag: af3c434d-fa94-5ea8-ba2c-7f96975087d6
+
+	/// Capacidade licenciada por quilómetro quadrado. Ler ao lado de [Dormidas por km²] para separar carga de capacidade.
+	measure 'Quartos por km²' = DIVIDE([Quartos (tipo)], [Superfície (km², último ano)])
+		formatString: #,0.00
+		lineageTag: d8d59c02-d6a9-5b1d-8ce0-0e73569ec30b
+
+	measure 'Estabelecimentos por km²' = DIVIDE([Estabelecimentos], [Superfície (km², último ano)])
+		formatString: #,0.00
+		lineageTag: 7ff64df2-e85a-57e7-b6e1-31ad345e902e
+
+	/// Quantos municípios do grupo de pares reportam ocupação no contexto atual. Mostrar sempre junto da posição: «5.º de 12», nunca «5.º» sozinho.
+	measure 'Pares com dados' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Ocupação estimada])))
+			RETURN COUNTROWS(ComDados)
+		formatString: #,0
+		lineageTag: 88569ab7-657a-5829-bffb-6af9c0cb95c3
+
+	/// Média da ocupação estimada no grupo de pares (mesma NUTS III), contando apenas os municípios que reportam.
+	measure 'Média de pares (ocupação)' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Ocupação estimada])))
+			RETURN AVERAGEX(ComDados, CALCULATE([Ocupação estimada]))
+		formatString: 0.0%
+		lineageTag: a06d7993-b6dc-58da-b068-0ea730ba1929
+
+	/// Posição do município em foco dentro do grupo de pares, por ocupação estimada. Em branco se o próprio município não reportar.
+	measure 'Posição no grupo de pares' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Ocupação estimada])))
+			VAR ValorSel =
+			    CALCULATE(
+			        [Ocupação estimada],
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(ValorSel),
+			        RANKX(ComDados, CALCULATE([Ocupação estimada]), ValorSel, DESC, DENSE)
+			    )
+		formatString: #,0
+		lineageTag: 74d11408-b1da-58c1-9b2b-012e9f68a27c
+
+	/// Posição relativa do município em foco na distribuição de dormidas por km² de todos os municípios que reportam.
+	measure 'Percentil de pressão' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR Todos =
+			    CALCULATETABLE(VALUES('Geografia'[Município]), REMOVEFILTERS('Geografia'))
+			VAR ComDados = FILTER(Todos, NOT ISBLANK(CALCULATE([Dormidas por km²])))
+			VAR ValorSel =
+			    CALCULATE(
+			        [Dormidas por km²],
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Abaixo =
+			    COUNTROWS(FILTER(ComDados, CALCULATE([Dormidas por km²]) < ValorSel))
+			RETURN
+			    IF(NOT ISBLANK(ValorSel), DIVIDE(Abaixo, COUNTROWS(ComDados)))
+		formatString: 0.0%
+		lineageTag: 264eeccd-5822-534c-9799-6a7b7057da02
+
+	/// Mês de pico a dividir pela média mensal, no último ano civil completo. Usa o último ano completo de propósito: um ano cortado a meio é todo pico e nenhum inverno, o que empolaria justamente o que a página mede.
+	measure 'Índice de sazonalidade' =
+			VAR AnoCompleto =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(VALUES('Calendário'[Ano]), REMOVEFILTERS('Calendário')),
+			            CALCULATE(
+			                COUNTROWS(
+			                    FILTER(
+			                        VALUES('Calendário'[Mês]),
+			                        NOT ISBLANK([Dormidas mensais (segmento)])
+			                    )
+			                )
+			            ) = 12
+			        ),
+			        'Calendário'[Ano]
+			    )
+			RETURN
+			    CALCULATE(
+			        VAR PorMes =
+			            ADDCOLUMNS(
+			                VALUES('Calendário'[Mês]),
+			                "V", CALCULATE([Dormidas mensais (segmento)])
+			            )
+			        RETURN DIVIDE(MAXX(PorMes, [V]), AVERAGEX(PorMes, [V])),
+			        REMOVEFILTERS('Calendário'),
+			        'Calendário'[Ano] = AnoCompleto
+			    )
+		formatString: #,0.00
+		lineageTag: 861ed44b-53ea-5219-af38-af5e00319245
+
+	/// O ano que o índice de sazonalidade usa. Mostrar no título do painel.
+	measure 'Ano completo mais recente' =
+			MAXX(
+			    FILTER(
+			        CALCULATETABLE(VALUES('Calendário'[Ano]), REMOVEFILTERS('Calendário')),
+			        CALCULATE(
+			            COUNTROWS(
+			                FILTER(
+			                    VALUES('Calendário'[Mês]),
+			                    NOT ISBLANK([Dormidas mensais (segmento)])
+			                )
+			            )
+			        ) = 12
+			    ),
+			    'Calendário'[Ano]
+			)
+		formatString: #,0
+		lineageTag: a2183068-8b20-51ed-860d-6e9bcab7ff67
+
+	/// Métrica do mapa de pressão, escolhida na tabela desligada.
+	measure 'Pressão (métrica selecionada)' =
+			SWITCH(
+			    SELECTEDVALUE('Métrica de pressão'[Métrica], "Dormidas por km²"),
+			    "Hóspedes por km²", [Hóspedes por km²],
+			    [Dormidas por km²]
+			)
+		formatString: #,0.00
+		lineageTag: aa1aeea4-3c12-5bb6-ad57-09b388111bcb
+
+	/// Quantos municípios do grupo de pares reportam dormidas por km². Denominador de [Posição no grupo de pares (pressão)].
+	measure 'Pares com dados (pressão)' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Dormidas por km²])))
+			RETURN COUNTROWS(ComDados)
+		formatString: #,0
+		lineageTag: 32ae59de-0dff-51e4-92e5-85ace2b5d73e
+
+	/// Posição do município em foco dentro do grupo de pares, por dormidas por km². Mostrar sempre com [Pares com dados (pressão)].
+	measure 'Posição no grupo de pares (pressão)' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Dormidas por km²])))
+			VAR ValorSel =
+			    CALCULATE(
+			        [Dormidas por km²],
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(ValorSel),
+			        RANKX(ComDados, CALCULATE([Dormidas por km²]), ValorSel, DESC, DENSE)
+			    )
+		formatString: #,0
+		lineageTag: 3ffd08a9-86e6-5c59-936a-62eca04218ae
+
+	/// Quantos municípios do grupo de pares reportam RevPAR. Denominador de [Posição no grupo de pares (RevPAR)].
+	measure 'Pares com dados (RevPAR)' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([RevPAR médio INE])))
+			RETURN COUNTROWS(ComDados)
+		formatString: #,0
+		lineageTag: 9856eba9-a94c-5c33-89bc-148c345fb723
+
+	/// Posição do município em foco dentro do grupo de pares, por RevPAR médio. Mostrar sempre com [Pares com dados (RevPAR)].
+	measure 'Posição no grupo de pares (RevPAR)' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([RevPAR médio INE])))
+			VAR ValorSel =
+			    CALCULATE(
+			        [RevPAR médio INE],
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(ValorSel),
+			        RANKX(ComDados, CALCULATE([RevPAR médio INE]), ValorSel, DESC, DENSE)
+			    )
+		formatString: #,0
+		lineageTag: 261f38a6-bf46-59a6-9c42-86053c39a1c6
+
+	/// Quantos municípios reportam dormidas por km² no contexto atual. É o denominador de [Percentil de pressão]: mostrar os dois juntos.
+	measure 'Municípios com dados de pressão' =
+			VAR Todos =
+			    CALCULATETABLE(VALUES('Geografia'[Município]), REMOVEFILTERS('Geografia'))
+			RETURN
+			    COUNTROWS(FILTER(Todos, NOT ISBLANK(CALCULATE([Dormidas por km²]))))
+		formatString: #,0
+		lineageTag: 70a67312-3fbb-580f-9da2-c43cb8ff6543
+
+	/// Dourado no município em foco, azul nos pares. Ligar ao «Field value» da cor das barras; exige 'Geografia'[Município] no eixo.
+	measure 'Cor do município em foco' =
+			IF(
+			    SELECTEDVALUE('Geografia'[Município])
+			        = SELECTEDVALUE('Município selecionado'[Município]),
+			    "#FFAD00",
+			    "#2066BC"
+			)
+		lineageTag: 6d385a78-6096-580c-b389-3e63bde005d6
+
+	/// Média da estada média ponderada no grupo de pares (mesma NUTS III), contando apenas os municípios que reportam.
+	measure 'Média de pares (estada média)' =
+			VAR Sel = SELECTEDVALUE('Município selecionado'[Município])
+			VAR NutsSel =
+			    CALCULATE(
+			        SELECTEDVALUE('Geografia'[NUTS III]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[Município] = Sel
+			    )
+			VAR Pares =
+			    CALCULATETABLE(
+			        VALUES('Geografia'[Município]),
+			        REMOVEFILTERS('Geografia'),
+			        'Geografia'[NUTS III] = NutsSel
+			    )
+			VAR ComDados = FILTER(Pares, NOT ISBLANK(CALCULATE([Estada média ponderada (tipo)])))
+			RETURN AVERAGEX(ComDados, CALCULATE([Estada média ponderada (tipo)]))
+		formatString: #,0.00
+		lineageTag: 0641cab5-64d2-5d93-9f62-e8f20e45a5d0
+
+	/// Região · município em foco · grupo de pares · ano, para o cabeçalho da página A.
+	measure 'Subtítulo · quadro comparativo' =
+			VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões"), ALL('Região NUTS II'))
+			VAR Mun = SELECTEDVALUE('Município selecionado'[Município], "município por escolher")
+			VAR Pares = SELECTEDVALUE('Geografia'[NUTS III], "todos os pares")
+			VAR AnoSel = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    Regiao & " · " & Mun & " · " & Pares & " · "
+			        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))
+		lineageTag: 037b2978-5352-5ab8-82f1-ac67720732e0
+
+	/// Região · métrica escolhida · ano, para o cabeçalho da página B.
+	measure 'Subtítulo · pressão turística' =
+			VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões"), ALL('Região NUTS II'))
+			VAR Metrica = SELECTEDVALUE('Métrica de pressão'[Métrica], "Dormidas por km²")
+			VAR AnoSel = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    Regiao & " · " & Metrica & " · "
+			        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))
+		lineageTag: b21ef53f-b556-557a-bad4-0767968d5a3a
+
+	/// Região · intervalo de anos publicado, para o cabeçalho da página C.
+	measure 'Subtítulo · sazonalidade' =
+			VAR Regiao = CALCULATE(SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões"), ALL('Região NUTS II'))
+			VAR AnoMin = MIN('Calendário'[Ano])
+			VAR AnoMax = MAX('Calendário'[Ano])
+			RETURN
+			    Regiao & " · Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")
+		lineageTag: ca876803-343c-5064-8e25-814676913fef
+
+	measure Transparente = "rgba(0,0,0,0)"
+		lineageTag: 169bceb7-9232-46bc-b225-007ca755a4df
+
+	/// Dourado na sub-região em foco, azul nas outras. Ligar ao «Field value» da cor das barras; exige 'Geografia'[NUTS III] no eixo.
+	measure 'Cor da sub-região em foco' =
+			IF(
+			    SELECTEDVALUE('Geografia'[NUTS III])
+			        = SELECTEDVALUE('Sub-região em foco'[NUTS III]),
+			    "#FFAD00",
+			    "#2066BC"
+			)
+		lineageTag: 2f7c56fc-904d-5d97-9c37-3460734c399d
+
+	column _
+		dataType: string
+		isHidden
+		lineageTag: dcd75bd5-a71a-5a21-9a73-3264a58f2abf
+		summarizeBy: none
+		sourceColumn: [_]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW("_", BLANK())
+

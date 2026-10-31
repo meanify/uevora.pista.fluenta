@@ -1,0 +1,35 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "sazonalidade",
+  "displayName": "Análise Picos",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "pageBinding": {
+    "name": "72df9ec7a157d3ab240d",
+    "type": "Default",
+    "parameters": []
+  },
+  "visualInteractions": [
+    {
+      "source": "slicerRegiao",
+      "target": "barDependenciaPico",
+      "type": "NoFilter"
+    },
+    {
+      "source": "slicerRegiao",
+      "target": "cardAnoCompleto",
+      "type": "NoFilter"
+    },
+    {
+      "source": "slicerRegiao",
+      "target": "notaPico",
+      "type": "NoFilter"
+    },
+    {
+      "source": "slicerRegiao",
+      "target": "rodapeC",
+      "type": "NoFilter"
+    }
+  ]
+}

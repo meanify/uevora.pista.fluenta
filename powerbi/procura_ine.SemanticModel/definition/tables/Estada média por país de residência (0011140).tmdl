@@ -1,0 +1,143 @@
+table 'Estada média por país de residência (0011140)'
+	lineageTag: b17baa61-67f5-532b-b7fa-2bbb14ebfa55
+
+	/// Média simples publicada pelo INE. Para um valor ponderado use as medidas equivalentes de '_Medidas'.
+	measure 'Estada média INE (residência)' = AVERAGE('Estada média por país de residência (0011140)'[estada_media])
+		formatString: #,0.00
+		lineageTag: 650f9b8f-106b-579f-88b6-4e601084fbc6
+
+	/// Estada média por país de residência do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Estada média INE (residência, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Estada média INE (residência)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: e921c615-1965-5380-a7a0-ca3737ddfdf6
+
+	/// Variação homóloga de [Estada média INE (residência)]. Em branco sem ano anterior publicado.
+	measure 'Estada média INE (residência) YoY %' =
+			VAR Atual = [Estada média INE (residência)]
+			VAR Anterior = [Estada média INE (residência, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: ec81fe1c-140b-50b2-9619-8c217d2c623f
+
+	column nuts_i
+		dataType: string
+		lineageTag: 92be124f-a794-5964-bb3a-1eb08ba98802
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: e98de66e-31e8-59c4-83bf-99872931ba6e
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: a7e17a98-6297-5454-b2f4-d449e1262766
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: f8f406b7-cf83-5c2b-9a98-e4255ea8bd31
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: 203ca53f-dcb5-5b18-8c1a-30a40843d49d
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column 'Local de Residência'
+		dataType: string
+		lineageTag: 1ab7e4d2-bcc6-5789-8a6f-0d4570191c00
+		summarizeBy: none
+		sourceColumn: Local de Residência
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 3c18cec1-e2ae-5189-919d-f96222f1990b
+		summarizeBy: none
+		sourceColumn: ano
+
+	column estada_media
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 2c0ed6ec-9f10-5c4e-9527-ba807161c82a
+		summarizeBy: sum
+		sourceColumn: estada_media
+
+		annotation SummarizationSetBy = Automatic
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: b0291920-dabf-5596-94ea-6f9420788987
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 6d4e2d50-c950-5f82-a0cd-7eea92fc3214
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: 2de67668-76e2-53f7-a507-5d4372dd1b2f
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: a5cd8585-3d2c-56b0-a965-6fc98371385c
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	column 'Tipo de Residente' = ```
+			
+			IF(
+			    [Local de Residência] = "Portugal", 
+			    "Residentes", 
+			    "Não Residentes"
+			)
+			```
+		lineageTag: 39d3cec8-085b-4520-b7c5-c6574c2d7725
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Estada média por país de residência (0011140)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0011140_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII ),
+				    ComPaises = not Table.IsEmpty(Table.SelectRows(Regiao, each not List.Contains({"Total", "Portugal", "Estrangeiro"}, [local_residencia]))),
+				    Folhas = Table.SelectRows(Regiao, each [local_residencia] <> "Total" and ([local_residencia] <> "Estrangeiro" or not ComPaises)),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text),
+				  #"Renamed Columns" = Table.RenameColumns(NutsII, {{"local_residencia", "Local de Residência"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,36 @@
+/// Dimensão NUTS II conforme aos indicadores municipais e aos indicadores só com NUTS I/II. Só contém a região do parâmetro RegiaoNUTSII.
+table 'Região NUTS II'
+	lineageTag: 223e02e7-cf51-513f-ab73-f90608e22217
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: d23bcaeb-65f1-5e5f-969f-2a09ecb1fa2e
+		summarizeBy: none
+		sourceColumn: [NutsIIKey]
+
+	column 'NUTS I'
+		dataType: string
+		lineageTag: a0f053ef-f612-5b9e-b620-71700f0395af
+		summarizeBy: none
+		sourceColumn: [NUTS I]
+
+	column 'NUTS II'
+		dataType: string
+		lineageTag: 381af8ad-713f-5c02-848a-93900c0bd601
+		summarizeBy: none
+		sourceColumn: [NUTS II]
+
+	partition 'Região NUTS II' = calculated
+		mode: import
+		source =
+				DISTINCT(
+				    UNION(
+				        SELECTCOLUMNS('Geografia', "NutsIIKey", 'Geografia'[NutsIIKey], "NUTS I", 'Geografia'[NUTS I], "NUTS II", 'Geografia'[NUTS II]),
+				        SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)', "NutsIIKey", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[NutsIIKey], "NUTS I", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[nuts_i], "NUTS II", 'Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808)'[nuts_ii]),
+				        SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)', "NutsIIKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[NutsIIKey], "NUTS I", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[nuts_i], "NUTS II", 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[nuts_ii]),
+				        SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)', "NutsIIKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[NutsIIKey], "NUTS I", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[nuts_i], "NUTS II", 'Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093)'[nuts_ii])
+				    )
+				)
+

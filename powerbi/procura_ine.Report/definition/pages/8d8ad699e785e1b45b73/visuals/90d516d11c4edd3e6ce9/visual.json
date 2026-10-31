@@ -1,0 +1,153 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "90d516d11c4edd3e6ce9",
+  "position": {
+    "x": 10.776426566884938,
+    "y": 190.38353601496726,
+    "z": 5000,
+    "height": 517.268475210477,
+    "width": 432.2544434050514,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dormidas por país de residência (0009183)"
+                    }
+                  },
+                  "Property": "municipio"
+                }
+              },
+              "queryRef": "Dormidas por país de residência (0009183).municipio",
+              "nativeQueryRef": "Municipio",
+              "displayName": "Municipio"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dormidas por país de residência (0009183)"
+                    }
+                  },
+                  "Property": "Dormidas (residência)"
+                }
+              },
+              "queryRef": "Dormidas por país de residência (0009183).Dormidas (residência)",
+              "nativeQueryRef": "Dormidas",
+              "displayName": "Dormidas"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dormidas por país de residência (0009183)"
+                    }
+                  },
+                  "Property": "Dormidas (residência) YoY %"
+                }
+              },
+              "queryRef": "Dormidas por país de residência (0009183).Dormidas (residência) YoY %",
+              "nativeQueryRef": "Variância YoY (%)",
+              "displayName": "Variância YoY (%)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Dormidas por país de residência (0009183)"
+                  }
+                },
+                "Property": "municipio"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnFormatting": [
+        {
+          "properties": {
+            "dataBars": {
+              "positiveColor": {
+                "solid": {
+                  "color": {
+                    "expr": {
+                      "Literal": {
+                        "Value": "'#ffbd33'"
+                      }
+                    }
+                  }
+                }
+              },
+              "negativeColor": {
+                "solid": {
+                  "color": {
+                    "expr": {
+                      "Literal": {
+                        "Value": "'#FAAFAF'"
+                      }
+                    }
+                  }
+                }
+              },
+              "axisColor": {
+                "solid": {
+                  "color": {
+                    "expr": {
+                      "Literal": {
+                        "Value": "'foreground'"
+                      }
+                    }
+                  }
+                }
+              },
+              "reverseDirection": {
+                "expr": {
+                  "Literal": {
+                    "Value": "true"
+                  }
+                }
+              },
+              "hideText": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              },
+              "totalMatchingOption": {
+                "expr": {
+                  "Literal": {
+                    "Value": "1L"
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Dormidas por país de residência (0009183).Dormidas (residência) YoY %"
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

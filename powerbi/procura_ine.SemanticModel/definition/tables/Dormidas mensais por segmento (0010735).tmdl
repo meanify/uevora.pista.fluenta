@@ -1,0 +1,213 @@
+table 'Dormidas mensais por segmento (0010735)'
+	lineageTag: a773dc4a-2f9a-5d80-bbab-0358bc7b86e2
+
+	measure 'Dormidas mensais (segmento)' = SUM('Dormidas mensais por segmento (0010735)'[dormidas])
+		formatString: #,0
+		lineageTag: a268ad13-78e4-5e06-9d9f-43b8fe8de328
+
+	/// Dormidas mensais por segmento do ano anterior.
+	measure 'Dormidas mensais (segmento, ano anterior)' = CALCULATE([Dormidas mensais (segmento)], DATEADD('Calendário'[Date], -1, YEAR))
+		formatString: #,0
+		lineageTag: 4b53c3f9-568f-556e-8f38-55230928a679
+
+	/// Variação homóloga de [Dormidas mensais (segmento)]. Em branco sem ano anterior publicado.
+	measure 'Dormidas mensais (segmento) YoY %' =
+			VAR Atual = [Dormidas mensais (segmento)]
+			VAR Anterior = [Dormidas mensais (segmento, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: 01381692-1c2a-5c98-886b-6235e808076c
+
+	measure 'Taxa Sazonalidade' = ```
+			
+			-- 1. Captura os anos selecionados na tabela de filtros exterior
+			VAR AnosSelecionados = VALUES(Ano[Ano])
+			
+			-- 2. Calcula o Total do Ano respeitando o filtro de Ano exterior e os filtros geográficos
+			VAR TotalAno = 
+			    CALCULATE(
+			        SUM('Dormidas mensais por segmento (0010735)'[dormidas]),
+			        ALL('Dormidas mensais por segmento (0010735)'[mes]),
+			        'Dormidas mensais por segmento (0010735)'[ano] IN AnosSelecionados
+			    )
+			
+			-- 3. Cria a tabela virtual para encontrar os 3 maiores meses considerando o ano filtrado
+			VAR TabelaTop3 = 
+			    TOPN(
+			        3,
+			        SUMMARIZE(
+			            ALL('Dormidas mensais por segmento (0010735)'[mes]),
+			            'Dormidas mensais por segmento (0010735)'[mes]
+			        ),
+			        CALCULATE(
+			            SUM('Dormidas mensais por segmento (0010735)'[dormidas]),
+			            'Dormidas mensais por segmento (0010735)'[ano] IN AnosSelecionados
+			        ),
+			        DESC
+			    )
+			
+			-- 4. Soma as dormidas desses 3 meses específicos do ano filtrado
+			VAR DormidasTop3 = 
+			    SUMX(
+			        TabelaTop3,
+			        CALCULATE(
+			            SUM('Dormidas mensais por segmento (0010735)'[dormidas]),
+			            'Dormidas mensais por segmento (0010735)'[ano] IN AnosSelecionados
+			        )
+			    )
+			
+			-- 5. Devolve o cálculo final da taxa
+			RETURN
+			    DIVIDE(DormidasTop3, TotalAno, 0)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d263dd8f-5807-4887-bf9d-b64a994ec80e
+
+	measure 'Indice Sazonalidade Mensal' = ```
+			
+			-- 1. Captura o valor de dormidas do mês específico que está a ser avaliado na linha do gráfico/tabela
+			VAR ValorMesAtual = SUM('Dormidas mensais por segmento (0010735)'[dormidas])
+			
+			-- 2. Calcula o Total do Ano mantendo os filtros geográficos e de segmento ativos
+			VAR TotalAno = 
+			    CALCULATE(
+			        SUM('Dormidas mensais por segmento (0010735)'[dormidas]),
+			        ALLEXCEPT(
+			            'Dormidas mensais por segmento (0010735)',
+			            'Dormidas mensais por segmento (0010735)'[ano],
+			            'Dormidas mensais por segmento (0010735)'[distrito],
+			            'Dormidas mensais por segmento (0010735)'[municipio],
+			            'Dormidas mensais por segmento (0010735)'[segmento_alojamento]
+			        )
+			    )
+			
+			-- 3. Divide o total do ano por 12 para encontrar a média mensal teórica
+			VAR MediaMensalIdeal = DIVIDE(TotalAno, 12, 0)
+			
+			-- 4. Divide o valor do mês real pela média ideal
+			RETURN
+			    DIVIDE(ValorMesAtual, MediaMensalIdeal, 0)
+			```
+		lineageTag: d815582b-9136-46cf-8e93-34d5d62343a4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column nuts_i
+		dataType: string
+		lineageTag: c81b458b-9c1b-5a13-bfde-c3e14a826853
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 20f971e0-7087-5134-96f0-57b2a8820693
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: a8694a6e-30c3-5bb8-9805-8cf56fd002a6
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: afd200f8-676a-53f6-a900-240656b9a355
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: cd2fbb17-342a-59fe-a805-eda4a89198b4
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column segmento_alojamento
+		dataType: string
+		lineageTag: d9b5db6f-c5b6-5dc5-a7c6-f59711de20a6
+		summarizeBy: none
+		sourceColumn: segmento_alojamento
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 1696dbe8-d59f-53dd-9d9e-96e432a4ee7c
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = User
+
+	column mes
+		dataType: string
+		lineageTag: d47506b7-d34a-5695-8905-0febd47a1e16
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: d4d8d850-29f6-5a88-b79d-32171edcfd39
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column dormidas
+		dataType: double
+		formatString: #,0
+		lineageTag: 4c355d5f-6f66-5338-ae02-11a8bc2a37fc
+		summarizeBy: sum
+		sourceColumn: dormidas
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 8d32b6bb-7b46-55a7-819b-a40f4b3e61b5
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 6d3f3bab-56c6-58b4-a900-86df84cde322
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: d4e11bd7-e630-5221-b6a3-c694465c8e8e
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: c0b49e8f-beb6-526b-9a31-bf6493550c19
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Dormidas mensais por segmento (0010735)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0010735_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII ),
+				    Folhas = Table.SelectRows(Regiao, each [segmento_alojamento] <> "Total"),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
+	annotation PBI_ResultType = Table
+

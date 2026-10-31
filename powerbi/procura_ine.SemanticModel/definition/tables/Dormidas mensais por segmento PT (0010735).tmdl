@@ -1,0 +1,217 @@
+table 'Dormidas mensais por segmento PT (0010735)'
+	lineageTag: 9438e4bd-9950-4566-a93c-eb917f282e67
+
+	measure 'Taxa de Sazonalidade' = ```
+			
+			-- 1. Captura os anos selecionados na tabela de filtros exterior
+			VAR AnosSelecionados = VALUES(Ano[Ano])
+			
+			-- 2. Calcula o Total do Ano respeitando o filtro de Ano exterior e os filtros geográficos
+			VAR TotalAno = 
+			    CALCULATE(
+			        SUM('Dormidas mensais por segmento PT (0010735)'[dormidas]),
+			        ALL('Dormidas mensais por segmento PT (0010735)'[mes]),
+			        'Dormidas mensais por segmento PT (0010735)'[ano] IN AnosSelecionados
+			    )
+			
+			-- 3. Cria a tabela virtual para encontrar os 3 maiores meses considerando o ano filtrado
+			VAR TabelaTop3 = 
+			    TOPN(
+			        3,
+			        SUMMARIZE(
+			            ALL('Dormidas mensais por segmento PT (0010735)'[mes]),
+			            'Dormidas mensais por segmento PT (0010735)'[mes]
+			        ),
+			        CALCULATE(
+			            SUM('Dormidas mensais por segmento PT (0010735)'[dormidas]),
+			            'Dormidas mensais por segmento PT (0010735)'[ano] IN AnosSelecionados
+			        ),
+			        DESC
+			    )
+			
+			-- 4. Soma as dormidas desses 3 meses específicos do ano filtrado
+			VAR DormidasTop3 = 
+			    SUMX(
+			        TabelaTop3,
+			        CALCULATE(
+			            SUM('Dormidas mensais por segmento PT (0010735)'[dormidas]),
+			            'Dormidas mensais por segmento PT (0010735)'[ano] IN AnosSelecionados
+			        )
+			    )
+			
+			-- 5. Devolve o cálculo final da taxa
+			RETURN
+			    DIVIDE(DormidasTop3, TotalAno, 0)
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 7ccdcf50-ee40-4357-a88a-bbd5375ed24b
+
+	measure 'Indice Sazonalidade Mensal PT' = ```
+			
+			-- 1. Captura o valor de dormidas do mês específico que está a ser avaliado na linha do gráfico/tabela
+			VAR ValorMesAtual = SUM('Dormidas mensais por segmento PT (0010735)'[dormidas])
+			
+			-- 2. Calcula o Total do Ano mantendo os filtros geográficos e de segmento ativos
+			VAR TotalAno = 
+			    CALCULATE(
+			        SUM('Dormidas mensais por segmento PT (0010735)'[dormidas]),
+			        ALLEXCEPT(
+			            'Dormidas mensais por segmento PT (0010735)',
+			            'Dormidas mensais por segmento PT (0010735)'[ano],
+			            'Dormidas mensais por segmento PT (0010735)'[distrito],
+			            'Dormidas mensais por segmento PT (0010735)'[municipio],
+			            'Dormidas mensais por segmento PT (0010735)'[segmento_alojamento]
+			        )
+			    )
+			
+			-- 3. Divide o total do ano por 12 para encontrar a média mensal teórica
+			VAR MediaMensalIdeal = DIVIDE(TotalAno, 12, 0)
+			
+			-- 4. Divide o valor do mês real pela média ideal
+			RETURN
+			    DIVIDE(ValorMesAtual, MediaMensalIdeal, 0)
+			```
+		lineageTag: 97a29621-5c70-4d71-9b32-9f273f92152a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column nuts_i
+		dataType: string
+		lineageTag: bc128bdd-96ac-4cbd-8691-d84549c5d59e
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+		annotation SummarizationSetBy = Automatic
+
+	column nuts_ii
+		dataType: string
+		lineageTag: e3895aed-8e7b-49ca-b305-048769576fde
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+		annotation SummarizationSetBy = Automatic
+
+	column nuts_iii
+		dataType: string
+		lineageTag: f193f874-67b7-4f45-9637-2c536b6a1bb2
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+		annotation SummarizationSetBy = Automatic
+
+	column distrito
+		dataType: string
+		lineageTag: dd47e9c6-10fa-47ef-bab5-ba8c3bf4e2b6
+		summarizeBy: none
+		sourceColumn: distrito
+
+		annotation SummarizationSetBy = Automatic
+
+	column municipio
+		dataType: string
+		lineageTag: 063df30a-656f-44cf-b19b-4124f87f6f81
+		summarizeBy: none
+		sourceColumn: municipio
+
+		annotation SummarizationSetBy = Automatic
+
+	column segmento_alojamento
+		dataType: string
+		lineageTag: d4d28a8b-9351-4867-9ef3-04728a6be2c3
+		summarizeBy: none
+		sourceColumn: segmento_alojamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: ebf14ac3-d817-4ad1-b414-5f0de0c69df4
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = User
+
+	column mes
+		dataType: string
+		lineageTag: c9861cee-7091-41e7-bb27-b44b92cff10f
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column dormidas
+		dataType: double
+		lineageTag: 4638c422-cce2-42fb-bb2b-0407c3536235
+		summarizeBy: sum
+		sourceColumn: dormidas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column create_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e19449ae-3026-4dc1-b233-2edaee0b2cb2
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9ea2f512-42f8-4d19-8773-ab988c5e97fe
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Data
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5722ba67-ff9f-41e3-ab69-26f0e4efb12f
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		lineageTag: 422f2374-9b04-49b1-90ec-c70d23c28f17
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column NutsIIKey
+		dataType: string
+		lineageTag: 498bdc5d-206d-48ae-bb8e-54b77c4f8beb
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dormidas mensais por segmento PT (0010735)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0010735_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each true = true ),
+				    Folhas = Table.SelectRows(Regiao, each [segmento_alojamento] <> "Total"),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
+	annotation PBI_ResultType = Table
+

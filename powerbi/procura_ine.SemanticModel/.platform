@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "procura_ine"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "13c553c0-ea02-4f99-9337-6056c3124e75"
+  }
+}

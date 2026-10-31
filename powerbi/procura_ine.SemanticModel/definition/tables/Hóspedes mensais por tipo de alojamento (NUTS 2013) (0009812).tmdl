@@ -1,0 +1,121 @@
+table 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'
+	lineageTag: 38b4dbac-4fbf-568f-8129-97ade2cb032e
+
+	measure 'Hóspedes mensais (tipo)' = SUM('Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)'[hospedes])
+		formatString: #,0
+		lineageTag: 3bfceae4-55c4-5020-bf4e-ee66f1023b53
+
+	/// Hóspedes mensais por tipo de alojamento (NUTS 2013) do ano anterior.
+	measure 'Hóspedes mensais (tipo, ano anterior)' = CALCULATE([Hóspedes mensais (tipo)], DATEADD('Calendário'[Date], -1, YEAR))
+		formatString: #,0
+		lineageTag: d5d4a792-72cb-543b-8d94-ddadf3c69bdd
+
+	/// Variação homóloga de [Hóspedes mensais (tipo)]. Em branco sem ano anterior publicado.
+	measure 'Hóspedes mensais (tipo) YoY %' =
+			VAR Atual = [Hóspedes mensais (tipo)]
+			VAR Anterior = [Hóspedes mensais (tipo, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: b704250f-344f-5cde-9861-787a5f58db5c
+
+	column nuts_i
+		dataType: string
+		lineageTag: 8b36968a-f5bc-5f24-b63c-72b5ad04a25a
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: f4a0f259-7ea9-5483-91a3-a78f467dfb77
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: f68c9505-6aa0-57ef-9555-1c6a10dd5d0d
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 02a1d54e-3f78-5883-84b1-d399aeb189d0
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: fbb6d52f-dd44-541c-a6d2-880c0811bd89
+		summarizeBy: sum
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: string
+		lineageTag: 869017a3-e4b2-5a68-8446-07707ae869c6
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 433dda5b-bc1f-5c9e-b40e-498e1c9a975e
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hospedes
+		dataType: double
+		formatString: #,0
+		lineageTag: 3c8b65bd-bb1e-57aa-93d7-4116185d084c
+		summarizeBy: sum
+		sourceColumn: hospedes
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 08f4b8c4-f981-5f35-8ec5-e3441359243e
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 8564fae7-9d70-53eb-9af0-4ab1fca4c5b8
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 0c95b4c4-d096-5652-8123-ebca0ab2b13e
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0009812_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII and [tipo_alojamento] <> "Total" and [nuts_ii] <> "Total") ,
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento]))),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    GeoKey
+
+	annotation PBI_ResultType = Table
+

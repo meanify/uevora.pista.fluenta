@@ -1,0 +1,143 @@
+table 'Estada média por tipo de alojamento (0009880)'
+	lineageTag: 407dc0e2-1a9b-5a9e-98bb-a33a8315d137
+
+	/// Média simples publicada pelo INE. Para um valor ponderado use as medidas equivalentes de '_Medidas'.
+	measure 'Estada média INE (tipo)' = AVERAGE('Estada média por tipo de alojamento (0009880)'[estada_media])
+		formatString: #,0.00
+		lineageTag: c33973fd-cb73-5b8e-8212-aa5eecd907b9
+
+	/// Estada média por tipo de alojamento do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'Estada média INE (tipo, ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([Estada média INE (tipo)], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: 8d1529bd-5d23-5f67-aac9-55cefdf8dab9
+
+	/// Variação homóloga de [Estada média INE (tipo)]. Em branco sem ano anterior publicado.
+	measure 'Estada média INE (tipo) YoY %' =
+			VAR Atual = [Estada média INE (tipo)]
+			VAR Anterior = [Estada média INE (tipo, ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: cfa93f04-21da-583b-8081-2c2f2f9e8721
+
+	column nuts_i
+		dataType: string
+		lineageTag: a955565a-177e-528c-9537-b661135b4e78
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: dabe6df3-8fca-5a71-9316-5fa70f3e5f00
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: 2c156d5e-7150-5ea4-99ad-0363066edf80
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: bb8c7929-975f-5e69-ae82-a68f94e15b32
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: ade679f0-5926-5812-be19-fc0f8b9517e8
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: 2fa9f970-ba58-5555-990c-ebf2971e29d9
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 73a93422-508e-54f1-b92e-2a94d91c0b94
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column classificacao
+		dataType: string
+		lineageTag: da874dfd-72c3-5283-aca5-6da7f0900c7d
+		summarizeBy: none
+		sourceColumn: classificacao
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 65659b05-f9f5-50d2-a8c5-7fe2bfaff4e8
+		summarizeBy: none
+		sourceColumn: ano
+
+	column estada_media
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 08e42d3d-7564-5e5b-a2be-c39ab2b3b505
+		summarizeBy: sum
+		sourceColumn: estada_media
+
+		annotation SummarizationSetBy = Automatic
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 42f7fcef-ed14-5c8e-a9ab-12bb6d8455ec
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 57879a7b-b207-54fb-bf69-ab0706d3cf5a
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: b0754ed9-2fd4-572a-9a20-89bd7d1eb35d
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 8e0feb59-b469-5920-be18-e745ea34ef12
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Estada média por tipo de alojamento (0009880)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0009880_ds"]}[Data],
+				    #"Regiao e Totais" = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII and ([nuts_ii] <> "Total" and [nuts_iii] <> "Total" and [municipio] <> "Total")),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(#"Regiao e Totais", {"tipo_alojamento", "subtipo_alojamento", "classificacao"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),
+				    Folhas = Table.SelectRows(#"Regiao e Totais", each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento])) and ([classificacao] <> "Total" or [subtipo_alojamento] = "Total" or not List.Contains(SubtiposComClasse, [subtipo_alojamento]))),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
+	annotation PBI_ResultType = Table
+

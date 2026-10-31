@@ -1,0 +1,65 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "5a2649ff426b1e63a80a",
+  "displayName": "Hóspedes",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "pageBinding": {
+    "name": "8103f4bc3aa7d06410bc",
+    "type": "Default",
+    "parameters": []
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "341L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "ec93e9325d9dda81ac56",
+      "target": "34fb1dea040970088573",
+      "type": "NoFilter"
+    },
+    {
+      "source": "34fb1dea040970088573",
+      "target": "79d05474285ac70000a9",
+      "type": "NoFilter"
+    },
+    {
+      "source": "640616b9dc44ca00e530",
+      "target": "71a84c8d755336adc803",
+      "type": "NoFilter"
+    },
+    {
+      "source": "640616b9dc44ca00e530",
+      "target": "c258d1976a4633772ab2",
+      "type": "NoFilter"
+    },
+    {
+      "source": "640616b9dc44ca00e530",
+      "target": "3f3ab33aeb5e207324c9",
+      "type": "NoFilter"
+    },
+    {
+      "source": "640616b9dc44ca00e530",
+      "target": "f4e3232287197851395a",
+      "type": "NoFilter"
+    },
+    {
+      "source": "640616b9dc44ca00e530",
+      "target": "b0a6231e79b902cd4b2c",
+      "type": "NoFilter"
+    }
+  ]
+}

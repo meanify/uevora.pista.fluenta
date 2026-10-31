@@ -1,0 +1,894 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "e18c7c7ca111aae77c94",
+  "position": {
+    "x": 14.545454545454545,
+    "y": 118.18181818181817,
+    "z": 7000,
+    "height": 455.45454545454544,
+    "width": 1053.6363636363635,
+    "tabOrder": 7000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Sobre o Dashboard/Relatório:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "12pt",
+                      "color": "#000000"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fonte de dados:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10pt"
+                    }
+                  },
+                  {
+                    "value": " INE - Instituto Naciaonl de Estatistica",
+                    "textStyle": {
+                      "fontSize": "10pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Propriedade:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10pt"
+                    }
+                  },
+                  {
+                    "value": " Universidade de Évora / ASTO",
+                    "textStyle": {
+                      "fontSize": "10pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Classificação da informação: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10pt"
+                    }
+                  },
+                  {
+                    "value": "Use Externo",
+                    "textStyle": {
+                      "fontSize": "10pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Períodicidade dos Dados: ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "10pt"
+                    }
+                  },
+                  {
+                    "value": "Anual e Mensal",
+                    "textStyle": {
+                      "fontSize": "10pt"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fontes de dados ",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Dormidas:",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Designação:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Dormidas (Nº) nos estabelecimentos de alojamento turístico",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Tema:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Alojamento",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Periodicidade:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Mensal",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fonte:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " INE - Instituto Nacional de Estatística",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Unidade de Medida:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Número(Nº)",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Estada Média",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "https://www.ine.pt/bddXplorer/htdocs/minfo.jsp?var_cd=0011140&lingua=PT",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#ffad00"
+                    },
+                    "url": "https://www.ine.pt/bddXplorer/htdocs/minfo.jsp?var_cd=0011140&lingua=PT"
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Hóspedes",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Designação:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Hóspedes (Nº) nos estabelecimentos de alojamento turístico",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Tema:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Alojamento",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Periodicidade:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Mensal",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fonte:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " INE - Instituto Nacional de Estatística",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Unidade de Medida:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Número(Nº)",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Taxa de Sazonalidade",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Designação:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Taxa de Sazonalidade",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Tema:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Sustentabilidade",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Periodicidade:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Anual",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fonte:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Unidade de Medida:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Precentagem (%)",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Informação Adicional:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Indicador que permite avaliar o peso relativo da procura turística nos meses de maior procura, relativamente ao total anual, medido através do número de dormidas nos meios de alojamento recenseados.",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Densidade Turística",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Designação:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Densidade Turística por mercado, nos estabelecimentos de alojamento turístico",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Tema:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Sustentabilidade",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Periodicidade:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Mensal",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fonte:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Unidade de Medida:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Dormidas/Km²",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Informação Adicional:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Indicador que permite avaliar a pressão turística sobre o território, através da relação entre o número de dormidas nos meios de alojamento recenseados e a área do território, medida em km².",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Intensidade Turística",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Designação:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Intensidade Turística por mercado, nos estabelecimentos de alojamento turístico",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Tema:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Sustentabilidade",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Periodicidade:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Mensal",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fonte:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Unidade de Medida:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Dormidas/Habitantes",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Informação Adicional:",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  },
+                  {
+                    "value": " Indicador que permite avaliar a relação entre turistas e população residente e os impactes que daí resultam, a partir do rácio entre o número de dormidas nos meios de alojamento recenseado e o número de residentes.",
+                    "textStyle": {
+                      "fontFamily": "Montserrat, Odoo Unicode Support Noto, sans-serif",
+                      "fontSize": "10pt",
+                      "color": "#212529"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

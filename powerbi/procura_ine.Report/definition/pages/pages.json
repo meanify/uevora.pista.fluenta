@@ -1,0 +1,16 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "page00000000000000001",
+    "8d8ad699e785e1b45b73",
+    "5a2649ff426b1e63a80a",
+    "4788840020930ab580cc",
+    "2ba0545738705bd372e1",
+    "quadroComparativo",
+    "pressaoTuristica",
+    "sazonalidade",
+    "5280e748d264496a0049"
+  ],
+  "activePageName": "page00000000000000001",
+  "landingPageName": "page00000000000000001"
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "4788840020930ab580cc",
+  "displayName": "Estada Média",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "pageBinding": {
+    "name": "b37d6d110b35258cb46b",
+    "type": "Default",
+    "parameters": []
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "341L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "467080b25d00e05cb942",
+      "target": "c316139ee9735199be93",
+      "type": "NoFilter"
+    },
+    {
+      "source": "c316139ee9735199be93",
+      "target": "3c965a3fe32d043d4d25",
+      "type": "NoFilter"
+    },
+    {
+      "source": "f6fd4691c6a31d15cd24",
+      "target": "adee15b19951840e61ac",
+      "type": "NoFilter"
+    },
+    {
+      "source": "f6fd4691c6a31d15cd24",
+      "target": "8db67abd8973e2babcdd",
+      "type": "NoFilter"
+    },
+    {
+      "source": "f6fd4691c6a31d15cd24",
+      "target": "8c680e4550082e00e81b",
+      "type": "NoFilter"
+    },
+    {
+      "source": "f6fd4691c6a31d15cd24",
+      "target": "63329ee93036b2d4ba56",
+      "type": "NoFilter"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+table 'Rendimento médio por quarto (0009929)'
+	lineageTag: 6f7405d9-984b-5d17-a204-db3ce3cc83c3
+
+	/// Média simples publicada pelo INE. Para um valor ponderado use as medidas equivalentes de '_Medidas'.
+	measure 'RevPAR médio INE' = AVERAGE('Rendimento médio por quarto (0009929)'[rendimento_medio_por_quarto])
+		formatString: #,0.00 "€"
+		lineageTag: 357e2400-316f-5b1a-90e5-5363a73d604a
+
+	/// RevPAR médio do ano anterior. Requer um único ano no contexto de filtro.
+	measure 'RevPAR médio (ano anterior)' =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    IF(
+			        NOT ISBLANK(AnoAtual),
+			        CALCULATE([RevPAR médio INE], REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoAtual - 1)
+			    )
+		formatString: #,0.00
+		lineageTag: 2fd064d8-82f3-55e9-91d4-825ea17f378d
+
+	measure 'RevPAR YoY %' =
+			VAR Atual = [RevPAR médio INE]
+			VAR Anterior = [RevPAR médio (ano anterior)]
+			RETURN DIVIDE(Atual - Anterior, Anterior)
+		formatString: 0.0%
+		lineageTag: b8f1cb37-ac73-573c-850a-2654a9ba30fe
+
+	column nuts_i
+		dataType: string
+		lineageTag: ade19fb2-f2cb-53aa-964b-a396ad7c9281
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 8d1c8e97-0e79-573d-ba11-55fbc6b1eacf
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column nuts_iii
+		dataType: string
+		lineageTag: 81555a62-a5e1-52c4-872d-aff2435b340c
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+	column distrito
+		dataType: string
+		lineageTag: 51624da5-1b9c-523e-9d0a-740e12ea001e
+		summarizeBy: none
+		sourceColumn: distrito
+
+	column municipio
+		dataType: string
+		lineageTag: dc3b5f93-f896-54f0-b432-044abe8ee3c4
+		summarizeBy: none
+		sourceColumn: municipio
+
+	column tipo_alojamento
+		dataType: string
+		lineageTag: 610acdac-ce52-52d1-b640-3b43d7746cff
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		lineageTag: 55081e99-8c4a-542e-a40f-e312d79b4d8e
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column classificacao
+		dataType: string
+		lineageTag: eb293c05-6318-5109-902a-9f6d18c13e2d
+		summarizeBy: none
+		sourceColumn: classificacao
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 380395a1-fa89-5339-8dab-0d2b35cbe144
+		summarizeBy: none
+		sourceColumn: ano
+
+	column rendimento_medio_por_quarto
+		dataType: double
+		formatString: #,0.00 "€"
+		lineageTag: 0d84e58e-bdc4-5a03-a488-dd6a4e337d59
+		summarizeBy: sum
+		sourceColumn: rendimento_medio_por_quarto
+
+		annotation SummarizationSetBy = Automatic
+
+	column create_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: ab3df7e9-f4dd-5b18-92f7-9de1f8685229
+		summarizeBy: none
+		sourceColumn: create_date
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: f8d7bf81-0a81-59f0-acf8-cee70da1c7f0
+		summarizeBy: none
+		sourceColumn: update_date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: ac81c2ad-88aa-5080-8cb8-d4b48e784542
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 94679f3e-54eb-5182-bfb0-c9561512e64a
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	partition 'Rendimento médio por quarto (0009929)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0009929_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII and ([nuts_ii] <> "Total" and [nuts_iii] <> "Total" and [municipio] <> "Total" and [tipo_alojamento] <> "Total")),
+				    Combinacoes = Table.Buffer(Table.Distinct(Table.SelectColumns(Regiao, {"tipo_alojamento", "subtipo_alojamento", "classificacao"}))),
+				    TiposComSubtipo = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [subtipo_alojamento] <> "Total")[tipo_alojamento])),
+				    SubtiposComClasse = List.Buffer(List.Distinct(Table.SelectRows(Combinacoes, each [classificacao] <> "Total")[subtipo_alojamento])),
+				    Folhas = Table.SelectRows(Regiao, each [tipo_alojamento] <> "Total" and ([subtipo_alojamento] <> "Total" or not List.Contains(TiposComSubtipo, [tipo_alojamento])) and ([classificacao] <> "Total" or [subtipo_alojamento] = "Total" or not List.Contains(SubtiposComClasse, [subtipo_alojamento]))),
+				    GeoKey = Table.AddColumn(Folhas, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
+	annotation PBI_ResultType = Table
+

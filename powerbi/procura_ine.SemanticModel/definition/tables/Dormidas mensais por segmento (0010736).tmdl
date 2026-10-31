@@ -1,0 +1,143 @@
+table 'Dormidas mensais por segmento (0010736)'
+	lineageTag: a18b0483-32b0-4f8d-9ea6-788f30c35a08
+
+	column nuts_i
+		dataType: string
+		lineageTag: 9a227da0-5eeb-48ac-bd81-282bdbe977c2
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+		annotation SummarizationSetBy = Automatic
+
+	column nuts_ii
+		dataType: string
+		lineageTag: 90465bfa-1487-4159-8dcd-3a903b5ea36d
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+		annotation SummarizationSetBy = Automatic
+
+	column nuts_iii
+		dataType: string
+		lineageTag: 80f6417d-8953-4d41-915d-7dce60e3a24c
+		summarizeBy: none
+		sourceColumn: nuts_iii
+
+		annotation SummarizationSetBy = Automatic
+
+	column distrito
+		dataType: string
+		lineageTag: e62c0671-7615-4357-9069-1c34b8f401d3
+		summarizeBy: none
+		sourceColumn: distrito
+
+		annotation SummarizationSetBy = Automatic
+
+	column municipio
+		dataType: string
+		lineageTag: dc3eb99d-f865-4c2c-883f-8f257d4c867a
+		summarizeBy: none
+		sourceColumn: municipio
+
+		annotation SummarizationSetBy = Automatic
+
+	column segmento_alojamento
+		dataType: string
+		lineageTag: 45a3d9e9-a50c-4429-8d85-ce8afc9fcfba
+		summarizeBy: none
+		sourceColumn: segmento_alojamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b9149e1-850e-455e-b01d-f8a619a0fe1e
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: string
+		lineageTag: fd9bc2fe-fc42-437e-a895-9348fea3884d
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column hospedes
+		dataType: double
+		lineageTag: fb1c2e32-b5fa-4dd7-90f4-2a65373427a2
+		summarizeBy: sum
+		sourceColumn: hospedes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column create_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 64bbb97f-4aa2-428d-8381-1c99628e59be
+		summarizeBy: none
+		sourceColumn: create_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column update_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9f64fcb1-6e7c-487b-9a06-b8919bb8fd4d
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Data
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3f1e8db0-4cb2-410a-b175-72bb58fbfea6
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		lineageTag: 745ce2e5-372a-41c6-abc6-b3d0d67587ab
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column NutsIIKey
+		dataType: string
+		lineageTag: 91f91c93-5fc9-4f8b-9dd0-ae42f69d91e8
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dormidas mensais por segmento (0010736)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database("pistadb.pistadigital.uevora.pt:30392", "pista"),
+				  Personalizado = Origem{[Schema = "public", Item = "ine_0010736_ds"]}[Data],
+				    Regiao = Table.SelectRows(Personalizado, each [nuts_ii] = RegiaoNUTSII ),
+				    Folhas = Table.SelectRows(Regiao, each [segmento_alojamento] <> "Total"),
+				    ComData = Table.AddColumn(Folhas, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    GeoKey = Table.AddColumn(ComData, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    NutsII = Table.AddColumn(GeoKey, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text)
+				in
+				    NutsII
+
+	annotation PBI_ResultType = Table
+

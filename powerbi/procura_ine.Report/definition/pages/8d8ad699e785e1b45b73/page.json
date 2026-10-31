@@ -1,0 +1,65 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "8d8ad699e785e1b45b73",
+  "displayName": "Dormidas",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "pageBinding": {
+    "name": "254995d5b9c2b1a01e10",
+    "type": "Default",
+    "parameters": []
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "341L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "facb0dd6c776aa49d318",
+      "target": "bd0b5c509a3a91e6da08",
+      "type": "NoFilter"
+    },
+    {
+      "source": "bd0b5c509a3a91e6da08",
+      "target": "fe91f9b09d5ec1081255",
+      "type": "NoFilter"
+    },
+    {
+      "source": "90d516d11c4edd3e6ce9",
+      "target": "0f5fcd43c800cb7e70a2",
+      "type": "NoFilter"
+    },
+    {
+      "source": "90d516d11c4edd3e6ce9",
+      "target": "3ac7796b10c0084e70cc",
+      "type": "NoFilter"
+    },
+    {
+      "source": "90d516d11c4edd3e6ce9",
+      "target": "9a50f2cfea8d1409bd83",
+      "type": "NoFilter"
+    },
+    {
+      "source": "90d516d11c4edd3e6ce9",
+      "target": "df4c8c29d953a2a028c1",
+      "type": "NoFilter"
+    },
+    {
+      "source": "90d516d11c4edd3e6ce9",
+      "target": "9919dc9447e7806a2965",
+      "type": "NoFilter"
+    }
+  ]
+}
