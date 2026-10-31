@@ -8,7 +8,7 @@ table 'Comparação entre pares'
 		/// Quantos municípios do grupo de pares publicam a medida.
 		calculationItem 'Pares com dados' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
 				    VAR NutsSel = LOOKUPVALUE('Geografia'[NUTS III], 'Geografia'[GeoKey], SelKey)
@@ -23,12 +23,12 @@ table 'Comparação entre pares'
 				    RETURN IF(NOT ISBLANK(SelKey), COUNTROWS(ComDados))
 				)
 			ordinal: 0
-			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]), SELECTEDMEASUREFORMATSTRING(), "#,0")
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "#,0")
 
 		/// Média simples do valor de cada par (não um rácio agregado).
 		calculationItem 'Média dos pares' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
 				    VAR NutsSel = LOOKUPVALUE('Geografia'[NUTS III], 'Geografia'[GeoKey], SelKey)
@@ -47,7 +47,7 @@ table 'Comparação entre pares'
 		/// Posição (densa, do maior para o menor) do município em foco; em branco se ele não publicar.
 		calculationItem 'Posição no grupo' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
 				    VAR NutsSel = LOOKUPVALUE('Geografia'[NUTS III], 'Geografia'[GeoKey], SelKey)
@@ -67,7 +67,7 @@ table 'Comparação entre pares'
 				        )
 				)
 			ordinal: 2
-			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]), SELECTEDMEASUREFORMATSTRING(), "#,0")
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "#,0")
 
 	column 'Cálculo entre pares'
 		dataType: string

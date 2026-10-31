@@ -12,7 +12,7 @@ table 'Comparação temporal'
 		/// A medida no ano base.
 		calculationItem 'Valor no ano base' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
 				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
@@ -25,7 +25,7 @@ table 'Comparação temporal'
 		/// Atual − ano base, nas unidades da medida (p.p. numa quota, noites na estada).
 		calculationItem 'Diferença face ao ano base' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
 				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
@@ -38,7 +38,7 @@ table 'Comparação temporal'
 		/// (Atual − ano base) ÷ ano base.
 		calculationItem 'Variação face ao ano base' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
 				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
@@ -47,12 +47,12 @@ table 'Comparação temporal'
 				    RETURN DIVIDE(ValorAtual - ValorBase, ValorBase)
 				)
 			ordinal: 3
-			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]), SELECTEDMEASUREFORMATSTRING(), "+0.0%;-0.0%;0.0%")
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "+0.0%;-0.0%;0.0%")
 
 		/// Atual ÷ ano base × 100.
 		calculationItem 'Índice (ano base = 100)' =
 				IF(
-				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]),
 				    SELECTEDMEASURE(),
 				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
 				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
@@ -61,7 +61,7 @@ table 'Comparação temporal'
 				    RETURN DIVIDE(ValorAtual, ValorBase) * 100
 				)
 			ordinal: 4
-			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]), SELECTEDMEASUREFORMATSTRING(), "#,0.0")
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas], [LeituraGapOfertaProcura]), SELECTEDMEASUREFORMATSTRING(), "#,0.0")
 
 	column 'Período de comparação'
 		dataType: string
