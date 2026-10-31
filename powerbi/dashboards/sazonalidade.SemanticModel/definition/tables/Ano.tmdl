@@ -1,0 +1,42 @@
+/// Dimensão de ano, conforme a todos os indicadores (anuais e mensais).
+table Ano
+	lineageTag: 86bd2577-c4bf-5879-8746-4b1350576a3f
+
+	column Ano
+		dataType: int64
+		isKey
+		lineageTag: 6b9138b4-e66e-5c1e-94ee-bac1ac005242
+		summarizeBy: none
+		sourceColumn: [Ano]
+
+	column Década
+		dataType: int64
+		lineageTag: 43afcda9-35e0-57f7-aedb-ff6de0307546
+		summarizeBy: none
+		sourceColumn: [Década]
+
+		annotation SummarizationSetBy = User
+
+	partition Ano = calculated
+		mode: import
+		source =
+				VAR Anos =
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Superfície das unidades territoriais', "Ano", 'Superfície das unidades territoriais'[ano]),
+				            SELECTCOLUMNS('Dormidas por país de residência', "Ano", 'Dormidas por país de residência'[ano]),
+				            SELECTCOLUMNS('Hóspedes por país de residência', "Ano", 'Hóspedes por país de residência'[ano]),
+				            SELECTCOLUMNS('Estabelecimentos de alojamento turístico', "Ano", 'Estabelecimentos de alojamento turístico'[ano]),
+				            SELECTCOLUMNS('Quartos em alojamento turístico', "Ano", 'Quartos em alojamento turístico'[ano]),
+				            SELECTCOLUMNS('Hóspedes por tipo de alojamento', "Ano", 'Hóspedes por tipo de alojamento'[ano]),
+				            SELECTCOLUMNS('Dormidas por tipo de alojamento', "Ano", 'Dormidas por tipo de alojamento'[ano]),
+				            SELECTCOLUMNS('Rendimento médio por quarto', "Ano", 'Rendimento médio por quarto'[ano]),
+				            SELECTCOLUMNS('Dormidas mensais por segmento', "Ano", 'Dormidas mensais por segmento'[ano]),
+				            SELECTCOLUMNS('Hóspedes mensais por segmento', "Ano", 'Hóspedes mensais por segmento'[ano]),
+				            SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013)', "Ano", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[ano]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013)', "Ano", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[ano]),
+				            SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024)', "Ano", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[ano])
+				        )
+				    )
+				RETURN
+				    ADDCOLUMNS(Anos, "Década", INT([Ano] / 10) * 10)

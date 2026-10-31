@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "cardPercentil",
   "position": {
-    "x": 683.60189573459718,
+    "x": 683.6018957345972,
     "y": 172.89099526066352,
     "z": 4000,
     "height": 127.39336492890996,
-    "width": 389.00473933649289,
+    "width": 389.0047393364929,
     "tabOrder": 4000
   },
   "visual": {
@@ -23,11 +23,12 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Percentil de pressão"
+                  "Property": "PercentilPressao"
                 }
               },
-              "queryRef": "_Medidas.Percentil de pressão",
-              "nativeQueryRef": "Percentil de pressão"
+              "queryRef": "_Medidas.PercentilPressao",
+              "nativeQueryRef": "PercentilPressao",
+              "displayName": "Percentil de pressão"
             }
           ]
         }

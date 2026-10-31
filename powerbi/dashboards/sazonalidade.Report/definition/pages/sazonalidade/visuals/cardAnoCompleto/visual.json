@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "cardAnoCompleto",
   "position": {
-    "x": 652.89099526066354,
-    "y": 429.95260663507111,
+    "x": 652.8909952606635,
+    "y": 429.9526066350711,
     "z": 5000,
     "height": 100.09478672985782,
-    "width": 419.71563981042652,
+    "width": 419.7156398104265,
     "tabOrder": 5000
   },
   "visual": {
@@ -23,12 +23,13 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Ano completo mais recente"
+                  "Property": "AnoCompletoMaisRecente"
                 }
               },
-              "queryRef": "_Medidas.Ano completo mais recente",
-              "nativeQueryRef": "Ano completo mais recente",
-              "format": "G"
+              "queryRef": "_Medidas.AnoCompletoMaisRecente",
+              "nativeQueryRef": "AnoCompletoMaisRecente",
+              "format": "G",
+              "displayName": "Ano completo mais recente"
             }
           ]
         }

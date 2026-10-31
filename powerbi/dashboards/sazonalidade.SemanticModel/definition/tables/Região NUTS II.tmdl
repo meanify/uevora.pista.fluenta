@@ -1,0 +1,45 @@
+/// Regiões NUTS II de todo o país, nas versões 2013 (indicadores municipais, 0009808, 0009812) e 2024 (0012093). «Alentejo» existe nas duas versões com territórios diferentes: filtrar 'Versão NUTS' quando se misturam.
+table 'Região NUTS II'
+	lineageTag: 223e02e7-cf51-513f-ab73-f90608e22217
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: d23bcaeb-65f1-5e5f-969f-2a09ecb1fa2e
+		summarizeBy: none
+		sourceColumn: [NutsIIKey]
+
+	column 'NUTS I'
+		dataType: string
+		lineageTag: a0f053ef-f612-5b9e-b620-71700f0395af
+		summarizeBy: none
+		sourceColumn: [NUTS I]
+
+	column 'NUTS II'
+		dataType: string
+		lineageTag: 381af8ad-713f-5c02-848a-93900c0bd601
+		summarizeBy: none
+		sourceColumn: [NUTS II]
+
+	/// 2013 ou 2024. A chave das regiões 2024 começa por «2024|».
+	column 'Versão NUTS'
+		dataType: string
+		lineageTag: 5195863e-0dba-45b5-9990-5d5b352e2ec7
+		summarizeBy: none
+		sourceColumn: [Versão NUTS]
+
+	partition 'Região NUTS II' = calculated
+		mode: import
+		source =
+				VAR Regioes =
+				    DISTINCT(
+				    UNION(
+				        SELECTCOLUMNS('Geografia', "NutsIIKey", 'Geografia'[NutsIIKey], "NUTS I", 'Geografia'[NUTS I], "NUTS II", 'Geografia'[NUTS II]),
+				        SELECTCOLUMNS('Dormidas mensais por tipo de alojamento (NUTS 2013)', "NutsIIKey", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[NutsIIKey], "NUTS I", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[nuts_i], "NUTS II", 'Dormidas mensais por tipo de alojamento (NUTS 2013)'[nuts_ii]),
+				        SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2013)', "NutsIIKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[NutsIIKey], "NUTS I", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[nuts_i], "NUTS II", 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'[nuts_ii]),
+				        SELECTCOLUMNS('Hóspedes mensais por tipo de alojamento (NUTS 2024)', "NutsIIKey", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[NutsIIKey], "NUTS I", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[nuts_i], "NUTS II", 'Hóspedes mensais por tipo de alojamento (NUTS 2024)'[nuts_ii])
+				    )
+				    )
+				RETURN
+				    ADDCOLUMNS(Regioes, "Versão NUTS", IF(LEFT([NutsIIKey], 5) = "2024|", "2024", "2013"))

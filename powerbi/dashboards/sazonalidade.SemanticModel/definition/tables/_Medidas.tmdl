@@ -1,0 +1,798 @@
+/// Todas as medidas do modelo, organizadas por pastas. As tabelas de factos ficam ocultas: filtrar sempre pelas dimensões.
+table _Medidas
+	lineageTag: e5605908-5b6a-562f-9e25-209ca406dee6
+
+	/// Superfície em km² (INE 0008350). Para rácios por km² use [SuperficieKm2UltimoAno].
+	measure SuperficieKm2 = SUM('Superfície das unidades territoriais'[superficie_unidades_territoriais])
+		formatString: #,0.00
+		displayFolder: Território
+		lineageTag: 9ad9132b-06b3-535f-9148-eb3343877832
+
+	/// Último ano com superfície publicada (2022 enquanto o INE não publicar a série NUTS-2024). É o ano que todas as medidas «por km²» usam.
+	measure AnoSuperficie =
+			MAXX(
+			    FILTER(
+			        CALCULATETABLE(VALUES('Ano'[Ano]), REMOVEFILTERS('Ano')),
+			        NOT ISBLANK([SuperficieKm2])
+			    ),
+			    'Ano'[Ano]
+			)
+		formatString: #,0
+		displayFolder: Território
+		lineageTag: 616b1de6-1ea3-5f2f-abd3-99ff8673b8c3
+
+	/// Superfície do último ano publicado, independente do ano selecionado. Denominador de todas as medidas «por km²».
+	measure SuperficieKm2UltimoAno =
+			VAR AnoArea = [AnoSuperficie]
+			RETURN
+			    CALCULATE(
+			        [SuperficieKm2],
+			        REMOVEFILTERS('Ano'),
+			        'Ano'[Ano] = AnoArea
+			    )
+		formatString: #,0.00
+		displayFolder: Território
+		lineageTag: cb7cba61-57d1-50a0-b7c0-673c7fa492ba
+
+	/// Estabelecimentos de alojamento turístico (INE 0009873). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure Estabelecimentos =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Estabelecimentos de alojamento turístico'[establecimento_de_alojamento_turistico]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Oferta
+		lineageTag: dc172d73-e587-5dee-982c-7f9d6d2c34f1
+
+	/// [Estabelecimentos] com o item «Variação face ao ano base» (ano anterior por omissão). Mantida por estar ligada a visuais; para novos visuais use o item diretamente.
+	measure EstabelecimentosYoY = CALCULATE([Estabelecimentos], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: 0.0%
+		displayFolder: Oferta
+		lineageTag: 527bbe52-7cfe-56d9-9260-606f7a1bc0b7
+
+	/// Quartos em alojamento turístico (INE 0009874). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure Quartos =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Quartos em alojamento turístico'[quartos]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Oferta
+		lineageTag: 3f891145-37cc-5377-8b64-7367c36567d4
+
+	/// Dimensão média dos estabelecimentos: quartos ÷ estabelecimentos.
+	measure QuartosPorEstabelecimento = DIVIDE([Quartos], [Estabelecimentos])
+		formatString: #,0.00
+		displayFolder: Oferta
+		lineageTag: a0ce9310-df2b-5ccc-915b-e1311766ae43
+
+	/// Capacidade anual: quartos × dias do ano, somada ano a ano para suportar várias seleções de ano.
+	measure NoitesQuartoDisponiveis =
+			SUMX(
+			VALUES('Ano'[Ano]),
+			CALCULATE([Quartos])
+			* (DATEDIFF(DATE('Ano'[Ano], 1, 1), DATE('Ano'[Ano], 12, 31), DAY) + 1)
+			)
+		formatString: #,0
+		displayFolder: Oferta
+		lineageTag: c2b7a7f0-db22-5699-b13a-dc83f75f6347
+
+	/// Dormidas mensais por segmento de alojamento (INE 0010735). Usa a linha agregada do INE quando visível (sem filtro de 'Segmento de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure DormidasMensaisSegmento =
+			VAR Nivel = MIN('Segmento de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Dormidas mensais por segmento'[dormidas]), KEEPFILTERS('Segmento de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Dormidas
+		lineageTag: a268ad13-78e4-5e06-9d9f-43b8fe8de328
+
+	/// Dormidas mensais por tipo de alojamento, ao nível NUTS II (INE 0009808, NUTS 2013). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure DormidasMensaisTipo =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Dormidas mensais por tipo de alojamento (NUTS 2013)'[dormidas]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Dormidas
+		lineageTag: d0057902-5608-50b1-94e0-481d88842526
+
+	/// Dormidas por país de residência (INE 0009183). Usa a linha agregada do INE quando visível (sem filtro de 'Residência': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure DormidasResidencia =
+			VAR Nivel = MIN('Residência'[Nível])
+			RETURN
+			    CALCULATE(SUM('Dormidas por país de residência'[dormidas]), KEEPFILTERS('Residência'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Dormidas
+		lineageTag: c4005a35-3408-5f11-b166-1ef125748a1e
+
+	/// [DormidasResidencia] com o item «Valor no ano base» (ano anterior por omissão). Mantida por estar ligada a visuais.
+	measure DormidasResidenciaAnoAnterior = CALCULATE([DormidasResidencia], 'Comparação temporal'[Período de comparação] = "Valor no ano base")
+		formatString: #,0
+		displayFolder: Procura\Dormidas
+		lineageTag: 43c2a091-5469-511c-9206-7c37718e0d46
+
+	/// [DormidasResidencia] com o item «Variação face ao ano base» (ano anterior por omissão). Mantida por estar ligada a visuais; para novos visuais use o item diretamente.
+	measure DormidasResidenciaYoY = CALCULATE([DormidasResidencia], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: 0.0%
+		displayFolder: Procura\Dormidas
+		lineageTag: bc7061e7-7b91-5bd3-897c-67c9e50c9906
+
+	/// Dormidas por tipo de alojamento (INE 0009877). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure DormidasTipo =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Dormidas por tipo de alojamento'[dormidas]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Dormidas
+		lineageTag: 7c358e0e-b7ef-548e-9018-8cb4a0df9d84
+
+	/// [DormidasTipo] com o item «Variação face ao ano base» (ano anterior por omissão). Mantida por estar ligada a visuais; para novos visuais use o item diretamente.
+	measure DormidasTipoYoY = CALCULATE([DormidasTipo], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: 0.0%
+		displayFolder: Procura\Dormidas
+		lineageTag: 5f334fff-3cc3-54c4-a0d8-1281fc66faaf
+
+	/// Hóspedes mensais por segmento de alojamento (INE 0010736). Usa a linha agregada do INE quando visível (sem filtro de 'Segmento de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure HospedesMensaisSegmento =
+			VAR Nivel = MIN('Segmento de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Hóspedes mensais por segmento'[hospedes]), KEEPFILTERS('Segmento de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Hóspedes
+		lineageTag: bb8c4665-bf05-5bf4-b2eb-8e37f334c32b
+
+	/// Hóspedes mensais por tipo de alojamento, ao nível NUTS II (INE 0009812, NUTS 2013). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure HospedesMensaisTipo =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Hóspedes mensais por tipo de alojamento (NUTS 2013)'[hospedes]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Hóspedes
+		lineageTag: 3bfceae4-55c4-5020-bf4e-ee66f1023b53
+
+	/// Hóspedes mensais por tipo de alojamento, ao nível NUTS II (INE 0012093, NUTS 2024). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure HospedesMensaisTipoNuts2024 =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Hóspedes mensais por tipo de alojamento (NUTS 2024)'[hospedes]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Hóspedes
+		lineageTag: 560b6248-3a76-56f1-afcd-a3ff6eae92b1
+
+	/// Hóspedes por país de residência (INE 0009930). Usa a linha agregada do INE quando visível (sem filtro de 'Residência': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure HospedesResidencia =
+			VAR Nivel = MIN('Residência'[Nível])
+			RETURN
+			    CALCULATE(SUM('Hóspedes por país de residência'[hospedes]), KEEPFILTERS('Residência'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Hóspedes
+		lineageTag: d2fe82ac-0194-5953-90a9-71d09de457b4
+
+	/// [HospedesResidencia] com o item «Valor no ano base» (ano anterior por omissão). Mantida por estar ligada a visuais.
+	measure HospedesResidenciaAnoAnterior = CALCULATE([HospedesResidencia], 'Comparação temporal'[Período de comparação] = "Valor no ano base")
+		formatString: #,0
+		displayFolder: Procura\Hóspedes
+		lineageTag: 41b1bf84-c0b2-5ea8-8ded-fb9c7607599f
+
+	/// [HospedesResidencia] com o item «Variação face ao ano base» (ano anterior por omissão). Mantida por estar ligada a visuais; para novos visuais use o item diretamente.
+	measure HospedesResidenciaYoY = CALCULATE([HospedesResidencia], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: 0.0%
+		displayFolder: Procura\Hóspedes
+		lineageTag: c5cfe5c4-e0d2-5e6b-8c97-84d21d6ccd9a
+
+	/// Hóspedes por tipo de alojamento (INE 0009876). Usa a linha agregada do INE quando visível (sem filtro de 'Tipo de alojamento': o Total publicado) e as categorias detalhadas quando filtradas.
+	measure HospedesTipo =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			RETURN
+			    CALCULATE(SUM('Hóspedes por tipo de alojamento'[hospedes]), KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel))
+		formatString: #,0
+		displayFolder: Procura\Hóspedes
+		lineageTag: 79025c97-231f-5060-9495-db51da0c57ea
+
+	/// Estada média por local de residência: dormidas ÷ hóspedes (0009183 ÷ 0009930), recalculada em qualquer agregação.
+	measure EstadaMediaResidencia = DIVIDE([DormidasResidencia], [HospedesResidencia])
+		formatString: #,0.00
+		displayFolder: Procura\Estada média
+		lineageTag: 650f9b8f-106b-579f-88b6-4e601084fbc6
+
+	/// [EstadaMediaResidencia] com o item «Valor no ano base» (ano anterior por omissão). Mantida por estar ligada a visuais.
+	measure EstadaMediaResidenciaAnoAnterior = CALCULATE([EstadaMediaResidencia], 'Comparação temporal'[Período de comparação] = "Valor no ano base")
+		formatString: #,0.00
+		displayFolder: Procura\Estada média
+		lineageTag: e921c615-1965-5380-a7a0-ca3737ddfdf6
+
+	/// [EstadaMediaResidencia] com o item «Variação face ao ano base» (ano anterior por omissão). Mantida por estar ligada a visuais; para novos visuais use o item diretamente.
+	measure EstadaMediaResidenciaYoY = CALCULATE([EstadaMediaResidencia], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: 0.0%
+		displayFolder: Procura\Estada média
+		lineageTag: ec81fe1c-140b-50b2-9619-8c217d2c623f
+
+	/// Estada média: dormidas ÷ hóspedes (0009877 ÷ 0009876), recalculada em qualquer agregação. Substitui a média da estada publicada.
+	measure EstadaMediaTipo = DIVIDE([DormidasTipo], [HospedesTipo])
+		formatString: #,0.00
+		displayFolder: Procura\Estada média
+		lineageTag: c33973fd-cb73-5b8e-8212-aa5eecd907b9
+
+	/// Dormidas mensais ÷ hóspedes mensais por segmento.
+	measure EstadaMediaMensalSegmento = DIVIDE([DormidasMensaisSegmento], [HospedesMensaisSegmento])
+		formatString: #,0.00
+		displayFolder: Procura\Estada média
+		lineageTag: 78b54416-8d19-5562-b74d-62f058b8104a
+
+	/// RevPAR (€) publicado pelo INE (0009929) por município e categoria. Acima do município é a média ponderada pelos quartos da mesma categoria e ano; os rácios nunca se somam.
+	measure RevPAR =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			VAR Linhas =
+			    CALCULATETABLE(
+			        SUMMARIZE('Rendimento médio por quarto', 'Geografia'[GeoKey], 'Tipo de alojamento'[TipoKey], 'Ano'[Ano]),
+			        KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel)
+			    )
+			VAR Pares =
+			    ADDCOLUMNS(
+			        Linhas,
+			        "@RevPAR", CALCULATE(SUM('Rendimento médio por quarto'[rendimento_medio_por_quarto])),
+			        "@Quartos", CALCULATE(SUM('Quartos em alojamento turístico'[quartos]))
+			    )
+			VAR Validos = FILTER(Pares, NOT ISBLANK([@RevPAR]) && [@Quartos] > 0)
+			RETURN DIVIDE(SUMX(Validos, [@RevPAR] * [@Quartos]), SUMX(Validos, [@Quartos]))
+		formatString: #,0.00 "€"
+		displayFolder: Desempenho
+		lineageTag: 357e2400-316f-5b1a-90e5-5363a73d604a
+
+	/// [RevPAR] com o item «Variação face ao ano base» (ano anterior por omissão). Mantida por estar ligada a visuais; para novos visuais use o item diretamente.
+	measure RevPARYoY = CALCULATE([RevPAR], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: 0.0%
+		displayFolder: Desempenho
+		lineageTag: b8f1cb37-ac73-573c-850a-2654a9ba30fe
+
+	/// Aproximação à ocupação: dormidas ÷ noites-quarto disponíveis. As dormidas do INE são noites de hóspede, não de quarto, pelo que um quarto partilhado conta mais do que uma vez e o valor pode passar os 100%. Serve para comparar municípios, não como taxa de ocupação oficial.
+	measure OcupacaoEstimada = DIVIDE([DormidasTipo], [NoitesQuartoDisponiveis])
+		formatString: 0.0%
+		displayFolder: Desempenho
+		lineageTag: c4f7a5d3-74b6-5275-ad3b-2cc5054f9838
+
+	/// Intensidade turística: dormidas anuais por quilómetro quadrado. A área é a do último ano publicado, não a do ano selecionado.
+	measure DormidasPorKm2 = DIVIDE([DormidasTipo], [SuperficieKm2UltimoAno])
+		formatString: #,0.00
+		displayFolder: Pressão turística
+		lineageTag: f890f8f2-b1fa-54d6-88a2-0ddd9fcbf120
+
+	/// Hóspedes anuais por km² (área do último ano publicado).
+	measure HospedesPorKm2 = DIVIDE([HospedesTipo], [SuperficieKm2UltimoAno])
+		formatString: #,0.00
+		displayFolder: Pressão turística
+		lineageTag: af3c434d-fa94-5ea8-ba2c-7f96975087d6
+
+	/// Capacidade licenciada por quilómetro quadrado. Ler ao lado de [DormidasPorKm2] para separar carga de capacidade.
+	measure QuartosPorKm2 = DIVIDE([Quartos], [SuperficieKm2UltimoAno])
+		formatString: #,0.00
+		displayFolder: Pressão turística
+		lineageTag: d8d59c02-d6a9-5b1d-8ce0-0e73569ec30b
+
+	/// Estabelecimentos por km² (área do último ano publicado).
+	measure EstabelecimentosPorKm2 = DIVIDE([Estabelecimentos], [SuperficieKm2UltimoAno])
+		formatString: #,0.00
+		displayFolder: Pressão turística
+		lineageTag: 7ff64df2-e85a-57e7-b6e1-31ad345e902e
+
+	/// Posição relativa do município em foco na distribuição de dormidas por km² dos municípios da região filtrada (página). Mostrar com [MunicipiosComDadosPressao].
+	measure PercentilPressao =
+			VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
+			VAR Valores =
+			    ADDCOLUMNS(
+			        CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia')),
+			        "@Valor",
+			            VAR Chave = 'Geografia'[GeoKey]
+			            RETURN CALCULATE([DormidasPorKm2], REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave)
+			    )
+			VAR ComDados = FILTER(Valores, NOT ISBLANK([@Valor]))
+			VAR ValorSel = MAXX(FILTER(ComDados, 'Geografia'[GeoKey] = SelKey), [@Valor])
+			RETURN IF(NOT ISBLANK(ValorSel), DIVIDE(COUNTROWS(FILTER(ComDados, [@Valor] < ValorSel)), COUNTROWS(ComDados)))
+		formatString: 0.0%
+		displayFolder: Pressão turística
+		lineageTag: 264eeccd-5822-534c-9799-6a7b7057da02
+
+	/// Métrica do mapa de pressão, escolhida na tabela desligada.
+	measure PressaoMetricaSelecionada =
+			SWITCH(
+			    SELECTEDVALUE('Métrica de pressão'[Métrica], "Dormidas por km²"),
+			    "Hóspedes por km²", [HospedesPorKm2],
+			    [DormidasPorKm2]
+			)
+		formatString: #,0.00
+		displayFolder: Pressão turística
+		lineageTag: aa1aeea4-3c12-5bb6-ad57-09b388111bcb
+
+	/// Quantos municípios da região filtrada publicam dormidas por km². Denominador de [PercentilPressao].
+	measure MunicipiosComDadosPressao =
+			VAR Municipios = CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia'))
+			RETURN
+			    COUNTROWS(
+			        FILTER(
+			            Municipios,
+			            VAR Chave = 'Geografia'[GeoKey]
+			            RETURN NOT ISBLANK(CALCULATE([DormidasPorKm2], REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave))
+			        )
+			    )
+		formatString: #,0
+		displayFolder: Pressão turística
+		lineageTag: 70a67312-3fbb-580f-9da2-c43cb8ff6543
+
+	/// Peso dos três meses com mais dormidas no total anual dos anos selecionados (0–100%). Mantém os filtros de geografia e segmento.
+	measure TaxaSazonalidade =
+			VAR AnosSelecionados = VALUES('Ano'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        AnosSelecionados
+			    )
+			VAR TotalAno = SUMX(PorMes, [@Dormidas])
+			VAR Top3Meses = SUMX(TOPN(3, PorMes, [@Dormidas], DESC), [@Dormidas])
+			RETURN DIVIDE(Top3Meses, TotalAno)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Sazonalidade
+		lineageTag: d263dd8f-5807-4887-bf9d-b64a994ec80e
+
+	/// Dormidas do mês em índice, mês máximo do ano = 100 (calendário de pressão). Usar com 'Calendário'[Mês] e 'Ano'[Ano] numa matriz.
+	measure IndiceSazonalidadeMensal =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			RETURN DIVIDE([DormidasMensaisSegmento], MAXX(Meses, [@Dormidas])) * 100
+		displayFolder: Sazonalidade
+		formatString: #,0
+		lineageTag: d815582b-9136-46cf-8e93-34d5d62343a4
+
+	/// [TaxaSazonalidade] para todo o país. Equivale ao item «Portugal» de 'Comparação territorial'; mantém-se porque os cartões da página Sazonalidade a usam.
+	measure TaxaSazonalidadePortugal = CALCULATE([TaxaSazonalidade], REMOVEFILTERS('Geografia'), REMOVEFILTERS('Região NUTS II'))
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Sazonalidade
+		lineageTag: 7ccdcf50-ee40-4357-a88a-bbd5375ed24b
+
+	/// Mês de pico ÷ média mensal no último ano civil completo ([AnoCompletoMaisRecente]); um ano cortado a meio empolaria o pico.
+	measure IndiceSazonalidadePico =
+			VAR AnoCompleto = [AnoCompletoMaisRecente]
+			RETURN
+			    CALCULATE(
+			        VAR PorMes = ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento])
+			        RETURN DIVIDE(MAXX(PorMes, [@Dormidas]), AVERAGEX(PorMes, [@Dormidas])),
+			        REMOVEFILTERS('Calendário'),
+			        'Calendário'[Ano] = AnoCompleto
+			    )
+		formatString: #,0.00
+		displayFolder: Sazonalidade
+		lineageTag: 861ed44b-53ea-5219-af38-af5e00319245
+
+	/// O ano que o índice de sazonalidade usa. Mostrar no título do painel.
+	measure AnoCompletoMaisRecente =
+			MAXX(
+			    FILTER(
+			        CALCULATETABLE(VALUES('Calendário'[Ano]), REMOVEFILTERS('Calendário')),
+			        CALCULATE(
+			            COUNTROWS(
+			                FILTER(
+			                    VALUES('Calendário'[Mês]),
+			                    NOT ISBLANK([DormidasMensaisSegmento])
+			                )
+			            )
+			        ) = 12
+			    ),
+			    'Calendário'[Ano]
+			)
+		formatString: #,0
+		displayFolder: Sazonalidade
+		lineageTag: a2183068-8b20-51ed-860d-6e9bcab7ff67
+
+	/// [OcupacaoEstimada] com o item «Pares com dados» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure ParesComDadosOcupacao = CALCULATE([OcupacaoEstimada], 'Comparação entre pares'[Cálculo entre pares] = "Pares com dados")
+		formatString: #,0
+		displayFolder: Comparação entre pares
+		lineageTag: 88569ab7-657a-5829-bffb-6af9c0cb95c3
+
+	/// [OcupacaoEstimada] com o item «Média dos pares» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure MediaParesOcupacao = CALCULATE([OcupacaoEstimada], 'Comparação entre pares'[Cálculo entre pares] = "Média dos pares")
+		formatString: 0.0%
+		displayFolder: Comparação entre pares
+		lineageTag: a06d7993-b6dc-58da-b068-0ea730ba1929
+
+	/// [OcupacaoEstimada] com o item «Posição no grupo» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure PosicaoParesOcupacao = CALCULATE([OcupacaoEstimada], 'Comparação entre pares'[Cálculo entre pares] = "Posição no grupo")
+		formatString: #,0
+		displayFolder: Comparação entre pares
+		lineageTag: 74d11408-b1da-58c1-9b2b-012e9f68a27c
+
+	/// [DormidasPorKm2] com o item «Pares com dados» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure ParesComDadosPressao = CALCULATE([DormidasPorKm2], 'Comparação entre pares'[Cálculo entre pares] = "Pares com dados")
+		formatString: #,0
+		displayFolder: Comparação entre pares
+		lineageTag: 32ae59de-0dff-51e4-92e5-85ace2b5d73e
+
+	/// [DormidasPorKm2] com o item «Posição no grupo» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure PosicaoParesPressao = CALCULATE([DormidasPorKm2], 'Comparação entre pares'[Cálculo entre pares] = "Posição no grupo")
+		formatString: #,0
+		displayFolder: Comparação entre pares
+		lineageTag: 3ffd08a9-86e6-5c59-936a-62eca04218ae
+
+	/// [RevPAR] com o item «Pares com dados» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure ParesComDadosRevPAR = CALCULATE([RevPAR], 'Comparação entre pares'[Cálculo entre pares] = "Pares com dados")
+		formatString: #,0
+		displayFolder: Comparação entre pares
+		lineageTag: 9856eba9-a94c-5c33-89bc-148c345fb723
+
+	/// [RevPAR] com o item «Posição no grupo» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure PosicaoParesRevPAR = CALCULATE([RevPAR], 'Comparação entre pares'[Cálculo entre pares] = "Posição no grupo")
+		formatString: #,0
+		displayFolder: Comparação entre pares
+		lineageTag: 261f38a6-bf46-59a6-9c42-86053c39a1c6
+
+	/// [EstadaMediaTipo] com o item «Média dos pares» de 'Comparação entre pares'. Mantida por estar ligada a visuais.
+	measure MediaParesEstadaMedia = CALCULATE([EstadaMediaTipo], 'Comparação entre pares'[Cálculo entre pares] = "Média dos pares")
+		formatString: #,0.00
+		displayFolder: Comparação entre pares
+		lineageTag: 0641cab5-64d2-5d93-9f62-e8f20e45a5d0
+
+	/// Dourado no município em foco, azul nos pares. Ligar ao «Field value» da cor das barras; exige 'Geografia'[Município] no eixo.
+	measure CorMunicipioEmFoco =
+			IF(
+			    SELECTEDVALUE('Geografia'[GeoKey]) = SELECTEDVALUE('Município selecionado'[GeoKey]),
+			    "#FFAD00",
+			    "#2066BC"
+			)
+		displayFolder: Formatação\Cores
+		lineageTag: 6d385a78-6096-580c-b389-3e63bde005d6
+
+	/// Cor totalmente transparente, para fundos e contornos condicionais.
+	measure CorTransparente = "rgba(0,0,0,0)"
+		displayFolder: Formatação\Cores
+		lineageTag: 169bceb7-9232-46bc-b225-007ca755a4df
+
+	/// Dourado na sub-região em foco, azul nas outras. Ligar ao «Field value» da cor das barras; exige 'Geografia'[NUTS III] no eixo.
+	measure CorSubRegiaoEmFoco =
+			IF(
+			    SELECTEDVALUE('Geografia'[NUTS III])
+			        = SELECTEDVALUE('Sub-região em foco'[NUTS III]),
+			    "#FFAD00",
+			    "#2066BC"
+			)
+		displayFolder: Formatação\Cores
+		lineageTag: 2f7c56fc-904d-5d97-9c37-3460734c399d
+
+	/// Região · município em foco · grupo de pares · ano, para o cabeçalho da página A.
+	measure SubtituloQuadroComparativo =
+			VAR Regiao = SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões")
+			VAR Mun = SELECTEDVALUE('Município selecionado'[Município], "município por escolher")
+			VAR Pares = SELECTEDVALUE('Geografia'[NUTS III], "todos os pares")
+			VAR AnoSel = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    Regiao & " · " & Mun & " · " & Pares & " · "
+			        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))
+		displayFolder: Formatação\Subtítulos
+		lineageTag: 037b2978-5352-5ab8-82f1-ac67720732e0
+
+	/// Região · métrica escolhida · ano, para o cabeçalho da página B.
+	measure SubtituloPressaoTuristica =
+			VAR Regiao = SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões")
+			VAR Metrica = SELECTEDVALUE('Métrica de pressão'[Métrica], "Dormidas por km²")
+			VAR AnoSel = SELECTEDVALUE('Ano'[Ano])
+			RETURN
+			    Regiao & " · " & Metrica & " · "
+			        & IF(ISBLANK(AnoSel), "todos os anos", FORMAT(AnoSel, "0"))
+		displayFolder: Formatação\Subtítulos
+		lineageTag: b21ef53f-b556-557a-bad4-0767968d5a3a
+
+	/// Região · intervalo de anos publicado, para o cabeçalho da página C.
+	measure SubtituloSazonalidade =
+			VAR Regiao = SELECTEDVALUE('Região NUTS II'[NUTS II], "várias regiões")
+			VAR AnoMin = MIN('Calendário'[Ano])
+			VAR AnoMax = MAX('Calendário'[Ano])
+			RETURN
+			    Regiao & " · Dormidas mensais · " & FORMAT(AnoMin, "0") & " – " & FORMAT(AnoMax, "0")
+		displayFolder: Formatação\Subtítulos
+		lineageTag: ca876803-343c-5064-8e25-814676913fef
+
+	/// Dormidas ÷ hóspedes mensais por NUTS II (0009808 ÷ 0009812). Posicionamento entre regiões.
+	measure EstadaMediaMensalTipo = DIVIDE([DormidasMensaisTipo], [HospedesMensaisTipo])
+		formatString: #,0.00
+		displayFolder: Procura\Estada média
+		lineageTag: db1f4f0f-0c7f-4fc4-9c7d-a77c2e01a610
+
+	/// Peso do tipo de alojamento filtrado nas dormidas totais (Total INE).
+	measure QuotaDormidasTipo = DIVIDE([DormidasTipo], CALCULATE([DormidasTipo], REMOVEFILTERS('Tipo de alojamento'), REMOVEFILTERS('Segmento de alojamento')))
+		formatString: 0.0%
+		displayFolder: Procura\Dormidas
+		lineageTag: f4d812c8-4844-4657-8b3a-c487735ef0c3
+
+	/// Peso do tipo de alojamento filtrado nos quartos totais (Total INE): peso do AL, do TER, mix de tipologias.
+	measure QuotaQuartosTipo = DIVIDE([Quartos], CALCULATE([Quartos], REMOVEFILTERS('Tipo de alojamento'), REMOVEFILTERS('Segmento de alojamento')))
+		formatString: 0.0%
+		displayFolder: Oferta
+		lineageTag: 27b0f55c-ce0b-45a5-af4f-aec99a727edd
+
+	/// Hóspedes ÷ estabelecimentos.
+	measure HospedesPorEstabelecimento = DIVIDE([HospedesTipo], [Estabelecimentos])
+		formatString: #,0
+		displayFolder: Oferta
+		lineageTag: 954757b8-1b28-43ef-8191-0e9a4e26b32d
+
+	/// Indicador de referência: dormidas ÷ quartos, por ano. Mede o uso da capacidade; não é a taxa de ocupação oficial.
+	measure NoitesPorQuarto = DIVIDE([DormidasTipo], [Quartos])
+		formatString: #,0.0
+		displayFolder: Oferta e procura
+		lineageTag: f22b62d7-5ebb-4d27-a033-4a764d2dc9f3
+
+	/// Crescimento das dormidas menos crescimento dos quartos desde o 'Ano base', em p.p. Em branco com menos de 20 quartos no ano base (taxas instáveis).
+	measure GapOfertaProcura =
+			VAR CrescDormidas = CALCULATE([DormidasTipo], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+			VAR CrescQuartos = CALCULATE([Quartos], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+			VAR QuartosBase = CALCULATE([Quartos], 'Comparação temporal'[Período de comparação] = "Valor no ano base")
+			RETURN
+			    IF(
+			        QuartosBase >= 20 && NOT ISBLANK(CrescDormidas) && NOT ISBLANK(CrescQuartos),
+			        (CrescDormidas - CrescQuartos) * 100
+			    )
+		formatString: +#,0.0;-#,0.0;0.0
+		displayFolder: Oferta e procura
+		lineageTag: 1117e921-1871-4cc6-a80f-0d684e894aa9
+
+	/// Estimativa: RevPAR × quartos × 365, somada por município e categoria. Assume RevPAR diário por quarto disponível; cobre só os municípios com RevPAR publicado.
+	measure ReceitaEstimadaAlojamento =
+			VAR Nivel = MIN('Tipo de alojamento'[Nível])
+			VAR Linhas =
+			    CALCULATETABLE(
+			        SUMMARIZE('Rendimento médio por quarto', 'Geografia'[GeoKey], 'Tipo de alojamento'[TipoKey], 'Ano'[Ano]),
+			        KEEPFILTERS('Tipo de alojamento'[Nível] = Nivel)
+			    )
+			RETURN
+			    SUMX(
+			        Linhas,
+			        VAR RevPARLinha = CALCULATE(SUM('Rendimento médio por quarto'[rendimento_medio_por_quarto]))
+			        VAR QuartosLinha = CALCULATE(SUM('Quartos em alojamento turístico'[quartos]))
+			        RETURN IF(NOT ISBLANK(RevPARLinha) && QuartosLinha > 0, RevPARLinha * QuartosLinha * 365)
+			    )
+		formatString: #,0 €
+		displayFolder: Desempenho
+		lineageTag: 026d6077-cbe3-4f1c-9346-90f59534d73c
+
+	/// Peso do local de residência filtrado nas dormidas totais. Com 'Tipo de residente' = Residentes é o peso do mercado interno; = Não Residentes é a quota internacional.
+	measure QuotaDormidasResidencia = DIVIDE([DormidasResidencia], CALCULATE([DormidasResidencia], REMOVEFILTERS('Residência')))
+		formatString: 0.0%
+		displayFolder: Mercados
+		lineageTag: 164fa8a2-a327-442c-a32e-0ba19a6b9fa1
+
+	/// Peso do local de residência filtrado nos hóspedes totais. Base da especialização face a Portugal e da diferença face à região.
+	measure QuotaHospedesResidencia = DIVIDE([HospedesResidencia], CALCULATE([HospedesResidencia], REMOVEFILTERS('Residência')))
+		formatString: 0.0%
+		displayFolder: Mercados
+		lineageTag: abf2f9d9-3bcf-4d2e-8b20-f38d79392cfc
+
+	/// Peso do mercado nas dormidas de não residentes (principais mercados estrangeiros).
+	measure QuotaDormidasMercadoEstrangeiro =
+			DIVIDE(
+			    [DormidasResidencia],
+			    CALCULATE([DormidasResidencia], REMOVEFILTERS('Residência'), 'Residência'[Tipo de residente] = "Não Residentes")
+			)
+		formatString: 0.0%
+		displayFolder: Mercados
+		lineageTag: eeafe40e-ddc9-4c12-962e-3d0fd06208fd
+
+	/// Concentração dos hóspedes estrangeiros por país (Herfindahl-Hirschman, 0–10 000; abaixo de 1 500 = pouco concentrado).
+	measure HHIMercados =
+			VAR Mercados = CALCULATETABLE(VALUES('Residência'[Local de residência]), 'Residência'[Mercado individual] = TRUE())
+			VAR PorMercado = ADDCOLUMNS(Mercados, "@Hospedes", [HospedesResidencia])
+			VAR Total = SUMX(PorMercado, [@Hospedes])
+			RETURN IF(Total > 0, SUMX(PorMercado, POWER(DIVIDE([@Hospedes], Total) * 100, 2)))
+		formatString: #,0
+		displayFolder: Mercados
+		lineageTag: 2e152e4d-81ec-4236-b13d-b7ae005c3e42
+
+	/// Peso dos três maiores mercados estrangeiros nos hóspedes não residentes.
+	measure PesoTop3Mercados =
+			VAR Mercados = CALCULATETABLE(VALUES('Residência'[Local de residência]), 'Residência'[Mercado individual] = TRUE())
+			VAR PorMercado = ADDCOLUMNS(Mercados, "@Hospedes", [HospedesResidencia])
+			VAR Top3 = SUMX(TOPN(3, PorMercado, [@Hospedes], DESC), [@Hospedes])
+			VAR Estrangeiros = CALCULATE([HospedesResidencia], REMOVEFILTERS('Residência'), 'Residência'[Tipo de residente] = "Não Residentes")
+			RETURN DIVIDE(Top3, Estrangeiros)
+		formatString: 0%
+		displayFolder: Mercados
+		lineageTag: 407b4c80-6590-4b40-99fc-0778ba19ba57
+
+	/// Variação dos hóspedes face ao 'Ano base' (ano anterior por omissão). Eixo X da matriz de mercados.
+	measure CrescimentoHospedesMercado = CALCULATE([HospedesResidencia], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Mercados
+		lineageTag: 0a74eabe-3122-4381-908e-f258b73ed859
+
+	/// Quantos dos 8 maiores mercados estrangeiros (por hóspedes) crescem face ao 'Ano base'. Mostrar como «N de 8».
+	measure MercadosEmCrescimento =
+			VAR Mercados = CALCULATETABLE(VALUES('Residência'[Local de residência]), 'Residência'[Mercado individual] = TRUE())
+			VAR PorMercado = FILTER(ADDCOLUMNS(Mercados, "@Hospedes", [HospedesResidencia]), NOT ISBLANK([@Hospedes]))
+			VAR Top8 = TOPN(8, PorMercado, [@Hospedes], DESC)
+			RETURN COUNTROWS(FILTER(Top8, CALCULATE([CrescimentoHospedesMercado]) > 0)) + 0
+		formatString: #,0
+		displayFolder: Mercados
+		lineageTag: fd1305ba-104a-4b91-8e26-1d52681e4f38
+
+	/// Crescimento de todos os hóspedes do território (linha de referência vertical da matriz de mercados).
+	measure ReferenciaCrescimentoHospedes = CALCULATE([CrescimentoHospedesMercado], REMOVEFILTERS('Residência'))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Mercados
+		lineageTag: 04746037-4762-48f3-b4ea-22cb3685e417
+
+	/// Estada média de todos os hóspedes do território (linha de referência horizontal da matriz de mercados).
+	measure ReferenciaEstadaMedia = CALCULATE([EstadaMediaResidencia], REMOVEFILTERS('Residência'))
+		formatString: #,0.00
+		displayFolder: Mercados
+		lineageTag: 86219205-b806-49f8-b8b0-e20f6f81c131
+
+	/// Estrelas, De passagem, Fiéis ou A rever: crescimento e estada do mercado face às referências do território.
+	measure QuadranteMercado =
+			VAR Crescimento = [CrescimentoHospedesMercado]
+			VAR Estada = [EstadaMediaResidencia]
+			VAR RefCrescimento = [ReferenciaCrescimentoHospedes]
+			VAR RefEstada = [ReferenciaEstadaMedia]
+			RETURN
+			    IF(
+			        NOT ISBLANK(Crescimento) && NOT ISBLANK(Estada) && NOT ISBLANK(RefCrescimento) && NOT ISBLANK(RefEstada),
+			        IF(
+			            Crescimento >= RefCrescimento,
+			            IF(Estada >= RefEstada, "Estrelas", "De passagem"),
+			            IF(Estada >= RefEstada, "Fiéis", "A rever")
+			        )
+			    )
+		displayFolder: Mercados
+		lineageTag: 1e981679-afe8-484d-8ad2-22771137279a
+
+	/// Peso do mês nas dormidas do seu ano (perfil mensal). Com 'Comparação territorial' compara concelho, região e Portugal.
+	measure QuotaMesDormidas = DIVIDE([DormidasMensaisSegmento], CALCULATE([DormidasMensaisSegmento], REMOVEFILTERS('Calendário'), VALUES('Calendário'[Ano])))
+		formatString: 0.0%
+		displayFolder: Sazonalidade
+		lineageTag: 5f5d6273-7d78-420a-b6a9-36d1dfafac84
+
+	/// Dormidas do mês com mais dormidas nos anos do contexto.
+	measure DormidasMesPico =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			RETURN MAXX(Meses, [@Dormidas])
+		formatString: #,0
+		displayFolder: Sazonalidade
+		lineageTag: a4bee835-8306-4924-b07a-8a496c1bba29
+
+	/// Nome do mês com mais dormidas nos anos do contexto.
+	measure MesPicoDormidas =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			VAR Pico = TOPN(1, Meses, [@Dormidas], DESC)
+			RETURN IF(NOT ISEMPTY(Meses), FORMAT(DATE(2000, MAXX(Pico, 'Calendário'[Mês]), 1), "mmmm"))
+		displayFolder: Sazonalidade
+		lineageTag: 239082f4-c235-4cbf-b007-4ba9166fa20a
+
+	/// Nome do mês com menos dormidas; só num ano com os 12 meses publicados.
+	measure MesMaisFracoDormidas =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			VAR Vale = TOPN(1, Meses, [@Dormidas], ASC)
+			RETURN IF(COUNTROWS(Meses) = 12, FORMAT(DATE(2000, MAXX(Vale, 'Calendário'[Mês]), 1), "mmmm"))
+		displayFolder: Sazonalidade
+		lineageTag: 151bd549-e0be-4253-ab9c-c316e14ffbea
+
+	/// Mês máximo ÷ mês mínimo do ano (só com os 12 meses). Menor = menos sazonal.
+	measure RacioPicoVale =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			RETURN IF(COUNTROWS(Meses) = 12, DIVIDE(MAXX(Meses, [@Dormidas]), MINX(Meses, [@Dormidas])))
+		formatString: #,0.0
+		displayFolder: Sazonalidade
+		lineageTag: 8dad3f06-472d-4a6e-80de-cdc4ccf53d0c
+
+	/// Peso de junho a setembro nas dormidas do ano (só com os 12 meses).
+	measure QuotaDormidasJunSet =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			RETURN IF(COUNTROWS(Meses) = 12, DIVIDE(SUMX(FILTER(Meses, 'Calendário'[Mês] >= 6 && 'Calendário'[Mês] <= 9), [@Dormidas]), SUMX(Meses, [@Dormidas])))
+		formatString: 0%
+		displayFolder: Sazonalidade
+		lineageTag: 1d70da30-c870-42e5-a8be-6750de93344b
+
+	/// Peso de julho a setembro nas dormidas do ano (só com os 12 meses).
+	measure QuotaDormidasJulSet =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			RETURN IF(COUNTROWS(Meses) = 12, DIVIDE(SUMX(FILTER(Meses, 'Calendário'[Mês] >= 7 && 'Calendário'[Mês] <= 9), [@Dormidas]), SUMX(Meses, [@Dormidas])))
+		formatString: 0%
+		displayFolder: Sazonalidade
+		lineageTag: dcd35c2e-72a4-4028-9c40-1552b8912481
+
+	/// Coeficiente de Gini das dormidas pelos 12 meses (0 = distribuição igual). Só com os 12 meses.
+	measure GiniMensal =
+			VAR Anos = VALUES('Calendário'[Ano])
+			VAR PorMes =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Calendário'[Mês]), "@Dormidas", [DormidasMensaisSegmento]),
+			        REMOVEFILTERS('Calendário'),
+			        Anos
+			    )
+			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
+			VAR N = COUNTROWS(Meses)
+			VAR Total = SUMX(Meses, [@Dormidas])
+			VAR Diferencas = SUMX(Meses, VAR Valor = [@Dormidas] RETURN SUMX(Meses, ABS(Valor - [@Dormidas])))
+			RETURN IF(N = 12 && Total > 0, DIVIDE(Diferencas, 2 * N * Total))
+		formatString: 0.00
+		displayFolder: Sazonalidade
+		lineageTag: cb1d1d7a-e11b-43b6-91e0-1df195fd1900
+
+	/// Ano de comparação em vigor: o escolhido em 'Ano base' ou o ano anterior ao selecionado (um único ano). Para títulos («2019 = 100»).
+	measure AnoBase =
+			VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+			RETURN IF(NOT ISBLANK(AnoAtual), COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1))
+		formatString: 0
+		displayFolder: Formatação\Subtítulos
+		lineageTag: bd069441-bb31-40cc-836a-9d9b79ccbfec
+
+	/// Data da última atualização dos dados INE carregados (rodapé de metadados).
+	measure DataAtualizacaoDados =
+			CALCULATE(
+			    MAXX(
+			        {
+			            MAX('Dormidas por tipo de alojamento'[update_date]),
+			            MAX('Quartos em alojamento turístico'[update_date]),
+			            MAX('Hóspedes por país de residência'[update_date]),
+			            MAX('Dormidas mensais por segmento'[update_date]),
+			            MAX('Dormidas mensais por tipo de alojamento (NUTS 2013)'[update_date])
+			        },
+			        [Value]
+			    ),
+			    REMOVEFILTERS()
+			)
+		formatString: dd/mm/yyyy
+		displayFolder: Formatação\Metadados
+		lineageTag: 7ec65ff6-4e07-47a9-984a-4213747f35b7
+
+	column _
+		dataType: string
+		isHidden
+		lineageTag: dcd75bd5-a71a-5a21-9a73-3264a58f2abf
+		summarizeBy: none
+		sourceColumn: [_]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW("_", BLANK())

@@ -1,0 +1,52 @@
+/// Local de residência dos hóspedes, com as linhas agregadas do INE: Total (nível 1), Estrangeiro (nível 2) e Portugal e cada país estrangeiro (nível 3, sem desagregação). As medidas base usam o nível mais agregado visível.
+table Residência
+	lineageTag: 7348e7bd-1af5-5666-85ae-1cb5380c2d52
+
+	column 'Local de residência'
+		dataType: string
+		isKey
+		lineageTag: 34b595b8-d25b-514f-bb85-5cd14d00c048
+		summarizeBy: none
+		sourceColumn: [Local de residência]
+		sortByColumn: Nível
+
+	/// Residentes (Portugal), Não Residentes (Estrangeiro e países) ou Total.
+	column 'Tipo de residente'
+		dataType: string
+		lineageTag: 968d8037-668a-4765-9c4e-2be34b4db7e6
+		summarizeBy: none
+		sourceColumn: [Tipo de residente]
+
+	/// 1 = Total, 2 = Estrangeiro, 3 = Portugal ou país estrangeiro.
+	column Nível
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a5ea649f-433d-4a2e-a732-3d65f8ed5ae5
+		summarizeBy: none
+		sourceColumn: [Nível]
+
+	/// Verdadeiro para cada país estrangeiro individual (exclui Total, Portugal, Estrangeiro e «Outros»). Universo do HHI, do top 3 e dos mercados em crescimento.
+	column 'Mercado individual'
+		dataType: boolean
+		lineageTag: 27867b93-8fb4-448a-80c5-90730806bf8e
+		summarizeBy: none
+		sourceColumn: [Mercado individual]
+
+	partition Residência = calculated
+		mode: import
+		source =
+				VAR Locais =
+				    DISTINCT(
+				        UNION(
+				            SELECTCOLUMNS('Dormidas por país de residência', "Local de residência", 'Dormidas por país de residência'[local_residencia]),
+				            SELECTCOLUMNS('Hóspedes por país de residência', "Local de residência", 'Hóspedes por país de residência'[local_residencia])
+				        )
+				    )
+				RETURN
+				    ADDCOLUMNS(
+				        Locais,
+				        "Nível", SWITCH(TRUE(), [Local de residência] = "Total", 1, [Local de residência] = "Estrangeiro", 2, 3),
+				        "Tipo de residente", SWITCH(TRUE(), [Local de residência] = "Total", "Total", [Local de residência] = "Portugal", "Residentes", "Não Residentes"),
+				        "Mercado individual", NOT ([Local de residência] IN {"Total", "Portugal", "Estrangeiro"}) && LEFT([Local de residência], 6) <> "Outros"
+				    )

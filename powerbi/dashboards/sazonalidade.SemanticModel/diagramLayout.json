@@ -1,0 +1,334 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 945.2050900641207,
+        "y": 16.14480740638132
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 2908.3940280302304,
+            "y": 826.6369173241914
+          },
+          "nodeIndex": "_Medidas",
+          "nodeLineageTag": "e5605908-5b6a-562f-9e25-209ca406dee6",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 1922.7297720827091,
+            "y": 1077.635204894491
+          },
+          "nodeIndex": "Ano",
+          "nodeLineageTag": "86bd2577-c4bf-5879-8746-4b1350576a3f",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 26
+        },
+        {
+          "location": {
+            "x": 822.0126160803447,
+            "y": 1006.5560551368693
+          },
+          "nodeIndex": "Calendário",
+          "nodeLineageTag": "c48fc1a2-12f5-53e2-a34a-d1803450195f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 1342.1349186172656,
+            "y": 1343.8928960335593
+          },
+          "nodeIndex": "Dormidas mensais por segmento",
+          "nodeLineageTag": "a773dc4a-2f9a-5d80-bbab-0358bc7b86e2",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 147.30396691574106,
+            "y": 286.28907137398505
+          },
+          "nodeIndex": "Dormidas mensais por tipo de alojamento (NUTS 2013)",
+          "nodeLineageTag": "dacc25b2-ca32-559c-aac0-548070b07e49",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 2257.0811772202633,
+            "y": 310.7334133761658
+          },
+          "nodeIndex": "Dormidas por país de residência",
+          "nodeLineageTag": "6da3215c-ad39-5d8d-8fb9-28725914478a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 1743.39075488578,
+            "y": 1585.5262301700989
+          },
+          "nodeIndex": "Dormidas por tipo de alojamento",
+          "nodeLineageTag": "61103199-5bf8-5e88-8bae-91c9d8e4413e",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 1527.4801399498444,
+            "y": 539.512824717983
+          },
+          "nodeIndex": "Estabelecimentos de alojamento turístico",
+          "nodeLineageTag": "d836bc9d-8f5d-5095-b2a4-e4573a041faf",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1630.808168311855,
+            "y": 1259.7408497675683
+          },
+          "nodeIndex": "Geografia",
+          "nodeLineageTag": "22e3060e-59a1-5408-95ce-73dd707a0728",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 10
+        },
+        {
+          "location": {
+            "x": 1056.2783702998486,
+            "y": 1290.1921269535628
+          },
+          "nodeIndex": "Hóspedes mensais por segmento",
+          "nodeLineageTag": "c2dbe319-32ae-501c-bab6-54860950d5c5",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 11
+        },
+        {
+          "location": {
+            "x": 266.5297083948419,
+            "y": 1007.8163056916458
+          },
+          "nodeIndex": "Hóspedes mensais por tipo de alojamento (NUTS 2013)",
+          "nodeLineageTag": "38b4dbac-4fbf-568f-8129-97ade2cb032e",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 12
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 647.0920409288731
+          },
+          "nodeIndex": "Hóspedes mensais por tipo de alojamento (NUTS 2024)",
+          "nodeLineageTag": "067a1908-14a5-58eb-a383-7ad2aded2935",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 13
+        },
+        {
+          "location": {
+            "x": 2507.374879284438,
+            "y": 671.4591726259084
+          },
+          "nodeIndex": "Hóspedes por país de residência",
+          "nodeLineageTag": "e25484da-670c-5a13-bc0e-9b4b45d8bb3b",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 14
+        },
+        {
+          "location": {
+            "x": 1503.4797714557426,
+            "y": 33.11620068070397
+          },
+          "nodeIndex": "Hóspedes por tipo de alojamento",
+          "nodeLineageTag": "f256b1f1-1268-5212-a401-7bc5061acbf1",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 15
+        },
+        {
+          "location": {
+            "x": 3192.3940280302304,
+            "y": 876.6369173241914
+          },
+          "nodeIndex": "Métrica de pressão",
+          "nodeLineageTag": "c4b948a1-2367-5218-b1df-98fe42d619ca",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 16
+        },
+        {
+          "location": {
+            "x": 3476.3940280302304,
+            "y": 876.6369173241914
+          },
+          "nodeIndex": "Município selecionado",
+          "nodeLineageTag": "cfe807e0-516b-596f-8845-0add2d0fa9f1",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 17
+        },
+        {
+          "location": {
+            "x": 2321.2075354087337,
+            "y": 1032.2502423308138
+          },
+          "nodeIndex": "Quartos em alojamento turístico",
+          "nodeLineageTag": "d3b82074-0a55-51aa-aaeb-dc894b34dae3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 18
+        },
+        {
+          "location": {
+            "x": 3760.3940280302304,
+            "y": 876.6369173241914
+          },
+          "nodeIndex": "Sub-região em foco",
+          "nodeLineageTag": "cecd3675-49ff-5578-8f15-757bfcd3b71c",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 19
+        },
+        {
+          "location": {
+            "x": 537.7624556990595,
+            "y": 797.2622643190232
+          },
+          "nodeIndex": "Região NUTS II",
+          "nodeLineageTag": "223e02e7-cf51-513f-ab73-f90608e22217",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 20
+        },
+        {
+          "location": {
+            "x": 1382.9318094267792,
+            "y": 900.2904239255112
+          },
+          "nodeIndex": "Rendimento médio por quarto",
+          "nodeLineageTag": "6f7405d9-984b-5d17-a204-db3ce3cc83c3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 21
+        },
+        {
+          "location": {
+            "x": 2674.394028030231,
+            "y": 412.10527225344526
+          },
+          "nodeIndex": "Residência",
+          "nodeLineageTag": "7348e7bd-1af5-5666-85ae-1cb5380c2d52",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 22
+        },
+        {
+          "location": {
+            "x": 1406.2488708016765,
+            "y": 1703.273834648383
+          },
+          "nodeIndex": "Segmento de alojamento",
+          "nodeLineageTag": "505239d2-8406-5536-abd8-3ecb475d22d0",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 23
+        },
+        {
+          "location": {
+            "x": 2028.4776110114133,
+            "y": 1308.5905955848978
+          },
+          "nodeIndex": "Superfície das unidades territoriais",
+          "nodeLineageTag": "9e429e81-ccc7-53da-9c2b-92876bc80bdf",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 24
+        },
+        {
+          "location": {
+            "x": 4044.3940280302304,
+            "y": 900.6369173241914
+          },
+          "nodeIndex": "Tipo de alojamento",
+          "nodeLineageTag": "1b60c5a8-9358-5269-b6ef-747499b81d1b",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 25
+        }
+      ],
+      "name": "Todas as tabelas",
+      "zoomValue": 45.42224201064494,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas as tabelas",
+  "defaultDiagram": "Todas as tabelas"
+}

@@ -9,47 +9,38 @@ over the INE indicators produced by [flows-code](../flows-code/README.md).
 1. Power BI Desktop → Options → Preview features → enable **Power BI Project (.pbip) save option**
    and **Store reports using enhanced metadata format (PBIR)**.
 2. Open `PistaDigital.pbip`.
-3. Make sure the `Pista Digital` ODBC DSN exists (see Connection), then sign in with the database user.
+3. Sign in to PostgreSQL with the database user when prompted (see Connection).
 
 ## Connection
 
-The model reads the PostgreSQL database the flows write to through an ODBC
-DSN, and is refreshed in the Power BI Service through the on-premises data
-gateway cluster `pistadigital`. Two Power Query parameters hold the target, and
-credentials are supplied by Power BI itself — never stored in these files:
+Every table reads the PostgreSQL database the flows write to with Power BI's
+built-in **PostgreSQL connector** (`PostgreSQL.Database(Servidor, BaseDados)`), and
+the model is refreshed in the Power BI Service through the on-premises data
+gateway cluster `pistadigital`. Two Power Query parameters hold the target;
+credentials are supplied by Power BI itself and never stored in these files:
 
 | Parameter | Matches | Example |
 |---|---|---|
-| `DSN` | System DSN pointing at `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `Pista Digital` |
+| `Servidor` | `PISTA_DB_HOSTNAME`:`PISTA_DB_PORTNUMBER` | `pistadb.pistadigital.uevora.pt:30392` |
 | `BaseDados` | `PISTA_DB_NAME` | `pista` |
 
-A third parameter, `RegiaoNUTSII` (default `Alentejo`), scopes the model to one
-NUTS II region. Every fact query filters `nuts_ii` on it straight after `Fonte`,
-so the filter folds into the ODBC query and only that region is imported; the
-calculated dimensions (`Geografia`, `Região NUTS II`, …) follow. The municipal
-indicators use NUTS 2013, where Alentejo still includes Lezíria do Tejo; 0012093
-uses NUTS 2024, where it does not.
+- **Power BI Desktop:** nothing to install; sign in with the database user when
+  prompted (*Database* authentication).
+- **Power BI Service:** in the `pistadigital` gateway cluster, add a **PostgreSQL**
+  connection with server = `Servidor`, database = `BaseDados` and the database
+  credentials. Then, in the semantic model settings → *Gateway and cloud
+  connections*, map the PostgreSQL data source to it. An ODBC connection does not
+  match this source and the refresh fails.
 
-The flows store every level of INE's breakdowns, with `Total` for the levels a
-row does not reach, while the base measures `SUM`. So each query also keeps only
-the most detailed row of each branch: municipalities (no NUTS II / NUTS III
-totals), and the leaves of the accommodation, residence and segment breakdowns.
-A parent is dropped only when the table has children under it, so a branch INE
-does not break down further (Alojamento local, Pousadas) keeps its own row — that
-row still reads `Total` in the columns it does not reach. `Estrangeiro` is dropped
-in favour of the countries. Averaged indicators (`Estada média INE`, `RevPAR médio
-INE`) therefore average the leaves, not INE's published total; use the weighted
-measures in `_Medidas` for an overall figure.
+The model imports **all of Portugal**. The territory is chosen in the report: the
+existing pages carry a page filter `'Região NUTS II'[NUTS II] = "Alentejo"`, and
+Portugal is the same measure with the geography filters removed (see
+*Comparação territorial*). The municipal indicators use NUTS 2013, where Alentejo
+still includes Lezíria do Tejo; `Geografia[NUTS II (2024)]` gives the current
+delimitation. 0012093 is published in NUTS 2024.
 
-All tables load through the shared `Fonte` query, so the connection is defined once.
-
-- **Power BI Desktop:** create a 64-bit System DSN named `Pista Digital` (PostgreSQL
-  Unicode driver) on the authoring machine.
-- **Power BI Service:** every machine in the `pistadigital` gateway cluster needs
-  the same `Pista Digital` System DSN. In the gateway cluster, add an ODBC connection
-  with connection string `dsn=Pista Digital` and the database credentials. Then, in the
-  semantic model settings → *Gateway and cloud connections*, map the data source
-  to that connection.
+What the flows store, and what the queries keep, is described in *INE totals and
+detail* below.
 
 ## Publish to web
 
@@ -68,7 +59,7 @@ Nothing in this project blocks it. Checked against the documented blockers:
 | R, Python, ArcGIS, Q&A visuals | None — only `textbox`, `pageNavigator`, `slicer`, `card`, `barChart`, `scatterChart`, `map`, `pivotTable` |
 | Custom (AppSource) visuals | None — `PistaDigitalTheme.json` is a theme, not a visual |
 
-The ODBC/gateway connection above is not a blocker: the model is import mode, so
+The PostgreSQL/gateway connection above is not a blocker: the model is import mode, so
 the `pistadigital` gateway serves only scheduled refresh. Only DirectQuery with
 single sign-on is unsupported.
 
@@ -87,167 +78,198 @@ cannot create embed codes.
 
 ## Semantic model
 
-One fact table per INE indicator, named `<descrição> (<varcd>)`, reading
-`public.ine_<varcd>_ds`. Each carries a single base measure.
+The model lives in `dashboards/sazonalidade.SemanticModel` and is a star schema:
+hidden fact tables, conformed dimensions, every measure in `_Medidas`, and two
+calculation groups for comparisons (territory, time, peers). It is built to serve the seven dashboards in
+[`mockups/`](mockups/README.md) (see *Mockup coverage*).
 
-| Indicador | Grão | Medida base |
+### Conventions
+
+- **Measures** are PascalCase without accents (`DormidasPorKm2`,
+  `EstadaMediaTipo`); domain acronyms stay as written (`RevPAR`, `YoY`,
+  `MoM`, `HHI`). Visuals keep a readable label through each field's display name.
+- **Tables and dimension columns** keep readable Portuguese names.
+- **Fact tables** are named after the indicator; the INE code and source table are
+  in the description. Every fact column is hidden (`summarizeBy: none`): visuals
+  slice by dimensions and aggregate through measures. The model has
+  *discourage implicit measures* on (required by the calculation groups).
+- **Display folders** in `_Medidas`: Território, Oferta, Procura\Dormidas,
+  Procura\Hóspedes, Procura\Estada média, Desempenho, Oferta e procura, Mercados,
+  Pressão turística, Sazonalidade, Comparação entre pares, Formatação\….
+
+### INE totals and detail
+
+The flows keep, for every breakdown, INE's published **total row** and the most
+detailed categories (README of the repository, *Accommodation flows*). Because INE
+suppresses many municipal values, the detail does **not** add up to the total.
+The queries therefore keep both, and each dimension carries a hidden `Nível`:
+
+| Dimension | Nível 1 | Nível 2 | Nível 3 |
+|---|---|---|---|
+| `Tipo de alojamento` | Total | categoria detalhada | — |
+| `Segmento de alojamento` | Total | segmento | — |
+| `Residência` | Total | Estrangeiro | Portugal, cada país estrangeiro |
+
+Every base measure sums only the **most aggregate level visible** in the filter
+context (`MIN([Nível])`): with no filter on the dimension it returns the published
+Total; filtered to Hotelaria it sums the Hotelaria categories; `Tipo de residente =
+Não Residentes` reads the `Estrangeiro` row, not the sum of the countries. Above the
+municipality, totals are sums of the published municipal values (lower bounds where
+INE suppressed a value). Ratios are never summed: estada média is dormidas ÷
+hóspedes (the published estada média tables 0009880 and 0011140 are not loaded:
+they are the same ratio and cannot be aggregated), and `RevPAR` is the
+room-weighted mean of the published municipal values.
+
+Geographic aggregate rows are dropped (`municipio <> "Total"`, `nuts_ii <> "Total"`),
+so no sum counts a night once per level. Municipal facts keep only their keys,
+categories and values: the geography columns live in `Geografia` alone. Portugal in the NUTS II monthly tables is
+the sum of the regions.
+
+### Fact tables
+
+| Tabela | INE | Grão | Medida base |
+|---|---|---|---|
+| Superfície das unidades territoriais | 0008350 | Município / ano | `SuperficieKm2` |
+| Dormidas por país de residência | 0009183 | Município / ano / residência | `DormidasResidencia` |
+| Hóspedes por país de residência | 0009930 | Município / ano / residência | `HospedesResidencia` |
+| Estabelecimentos de alojamento turístico | 0009873 | Município / ano / tipo | `Estabelecimentos` |
+| Quartos em alojamento turístico | 0009874 | Município / ano / tipo | `Quartos` |
+| Hóspedes por tipo de alojamento | 0009876 | Município / ano / tipo | `HospedesTipo` |
+| Dormidas por tipo de alojamento | 0009877 | Município / ano / tipo | `DormidasTipo` |
+| Rendimento médio por quarto | 0009929 | Município / ano / tipo | `RevPAR` |
+| Dormidas mensais por segmento | 0010735 | Município / mês / segmento | `DormidasMensaisSegmento` |
+| Hóspedes mensais por segmento | 0010736 | Município / mês / segmento | `HospedesMensaisSegmento` |
+| Dormidas mensais por tipo de alojamento (NUTS 2013) | 0009808 | NUTS II / mês / tipo | `DormidasMensaisTipo` |
+| Hóspedes mensais por tipo de alojamento (NUTS 2013) | 0009812 | NUTS II / mês / tipo | `HospedesMensaisTipo` |
+| Hóspedes mensais por tipo de alojamento (NUTS 2024) | 0012093 | NUTS II / mês / tipo | `HospedesMensaisTipoNuts2024` |
+
+### Dimensions
+
+- **Ano** and **Calendário** (daily `Data`, marked as date table; `Ano` filters it).
+- **Geografia** — loaded in Power Query from the distinct geography of the
+  municipal INE tables (not a DAX copy of the facts). Município grain, all of Portugal: `NUTS I | NUTS II | NUTS III |
+  Distrito | Município`, plus `NUTS II (2024)` (Lezíria do Tejo, Oeste and Médio
+  Tejo → Oeste e Vale do Tejo; AML → Grande Lisboa / Península de Setúbal),
+  `Território turístico` (Alqueva, Costa Vicentina, Comporta, Património UNESCO,
+  Serra de São Mamede — edit the `TerritoriosTuristicos` query; the Lisbon split
+  is the `PeninsulaSetubal` list) and `Litoral ou interior` (Alentejo only). Hierarchy NUTS II
+  › NUTS III › Município. The NUTS 2024 Alentejo is `Geografia[NUTS II (2024)] =
+  "Alentejo"`; the NUTS II monthly tables (0009808/0009812) only exist in NUTS 2013,
+  so for NUTS 2024 monthly nights use the municipal `DormidasMensaisSegmento`.
+- **Região NUTS II** — all NUTS II regions with a `Versão NUTS` column (2013 for
+  `Geografia`, 0009808 and 0009812; 2024 for 0012093, whose keys start `2024|`).
+  «Alentejo» exists in both versions with different territories: filter
+  `Versão NUTS` when a visual mixes them. The NUTS II monthly tables hang off this
+  dimension only, so município or NUTS III slicers do not filter them.
+- **Tipo de alojamento** — tipo › subtipo › classificação (stars), keyed by
+  `TipoKey`, across the nine indicators that publish them; the NUTS II monthly
+  tables have no classificação and read «Total».
+- **Segmento de alojamento** — Total, Hotelaria, Alojamento local, TER e habitação.
+  It filters the monthly segment tables directly and the annual ones through
+  `Tipo de alojamento` (snowflake), so one slicer drives both.
+- **Residência** — local de residência, `Tipo de residente` (Residentes / Não
+  Residentes / Total) and `Mercado individual` (named foreign countries: the
+  universe of HHI, top 3 and growing markets). Portugal has no breakdown, so it
+  sits at the country level: «Portugal + Espanha» sums both.
+
+### Comparisons: calculation groups and `Ano base`
+
+Instead of a «Portugal», «região», «índice» or «pares» copy of each measure, three
+calculation groups apply to any measure (put the column on a slicer, legend,
+matrix columns or a visual filter). They modify every measure in the visual, so in
+a scatter they apply to both axes.
+
+| `Comparação territorial` (20) | `Comparação temporal` (10) | `Comparação entre pares` (5) |
 |---|---|---|
-| Superfície das unidades territoriais (0008350) | Município / ano | Superfície (km²) |
-| Dormidas por país de residência (0009183) | Município / ano / residência | Dormidas (residência) |
-| Dormidas mensais por tipo de alojamento (NUTS 2013) (0009808) | NUTS II / mês / tipo | Dormidas mensais (tipo) |
-| Hóspedes mensais por tipo de alojamento (NUTS 2013) (0009812) | NUTS II / mês / tipo | Hóspedes mensais (tipo) |
-| Estabelecimentos de alojamento turístico (0009873) | Município / ano / tipo | Estabelecimentos |
-| Quartos em alojamento turístico (0009874) | Município / ano / tipo | Quartos (tipo) |
-| Hóspedes por tipo de alojamento (0009876) | Município / ano / tipo | Hóspedes (tipo) |
-| Dormidas por tipo de alojamento (0009877) | Município / ano / tipo | Dormidas (tipo) |
-| Estada média por tipo de alojamento (0009880) | Município / ano / tipo | Estada média INE (tipo) |
-| Rendimento médio por quarto (0009929) | Município / ano / tipo | RevPAR médio INE |
-| Hóspedes por país de residência (0009930) | Município / ano / residência | Hóspedes (residência) |
-| Dormidas mensais por segmento (0010735) | Município / mês / segmento | Dormidas mensais (segmento) |
-| Hóspedes mensais por segmento (0010736) | Município / mês / segmento | Hóspedes mensais (segmento) |
-| Estada média por país de residência (0011140) | Município / ano / residência | Estada média INE (residência) |
-| Hóspedes mensais por tipo de alojamento (NUTS 2024) (0012093) | NUTS II / mês / tipo | Hóspedes mensais (tipo, NUTS 2024) |
+| Seleção · Sub-região · Região · Portugal | Valor · Valor no ano base | Pares com dados |
+| Peso na região · Peso em Portugal | Diferença face ao ano base | Média dos pares |
+| Diferença face à região / a Portugal | Variação face ao ano base | Posição no grupo |
+| Especialização face a Portugal | Índice (ano base = 100) | |
 
-### Shared dimensions
+Two rules make them safe on any measure:
 
-Built as DAX calculated tables from the union of the indicators that publish each
-attribute, so every key is guaranteed to match.
+- Each item evaluates the measure inside `CALCULATE(…, REMOVEFILTERS(<own group>))`,
+  so the item is applied once, to the measure as a whole: a ratio such as
+  `NoitesPorQuarto` is compared as a ratio, never rebuilt from shifted parts.
+- Text measures (`Cor…`, `Subtitulo…`, `MesPicoDormidas`, `MesMaisFracoDormidas`,
+  `QuadranteMercado`) pass through unchanged, and keep their own format string.
 
-- **Ano** — conforme a todos os 15 indicadores. Filter here to slice annual and
-  monthly indicators together.
-- **Calendário** — daily, marked as the date table, derived from the monthly
-  indicators. Monthly facts join on the first day of each month. `Ano` filters
-  `Calendário`, so a year selection reaches the monthly facts too; selecting a
-  *month* does not filter annual indicators, which have no month.
-- **Geografia** — município grain (`NUTS I | NUTS II | NUTS III | Distrito | Município`),
-  joined to the 12 municipality-grain indicators.
-- **Região NUTS II** — joined to `Geografia` and to the three NUTS II-only
-  indicators, so a NUTS II selection filters both families. With `RegiaoNUTSII`
-  set it holds a single row.
-- **Tipo de alojamento** — tipo + subtipo, across the nine indicators that publish them.
-- **Residência**, **Segmento de alojamento** — single-attribute dimensions.
+`Ano base` is a disconnected table: «Ano anterior» (also when nothing is selected)
+or a fixed year. Time items need a single year in context and return blank
+otherwise. Peer items need a single `Município selecionado` and compare it with the
+municipalities of its NUTS III that publish the measure.
 
-`classificacao` (stars) stays local to each indicator: its domain differs per
-indicator, so a shared dimension would be wrong.
+Measures already bound to report visuals (`DormidasResidenciaYoY`,
+`HospedesResidenciaAnoAnterior`, `PosicaoParesRevPAR`, …) are one-line wrappers,
+`CALCULATE([Base], <group>[<column>] = "<item>")`, so each comparison is defined once.
+For new visuals use the items directly.
 
-### `_Medidas`
+### `_Medidas` highlights
 
-Derived measures that span indicators: weighted average stay (dormidas ÷
-hóspedes, preferable to the INE simple average), rooms per establishment,
-month-on-month variation, and tourism intensity per km².
+| Need | Measures |
+|---|---|
+| Oferta | `Estabelecimentos`, `Quartos`, `QuartosPorEstabelecimento`, `HospedesPorEstabelecimento`, `QuotaQuartosTipo` (peso AL/TER, mix) |
+| Procura | `DormidasTipo`, `HospedesTipo`, `EstadaMediaTipo`, `QuotaDormidasTipo`, `EstadaMediaMensalTipo` (NUTS II) |
+| Oferta e procura | `NoitesPorQuarto` (indicador de referência), `GapOfertaProcura` (p.p. desde o ano base; ≥ 20 quartos) |
+| Desempenho | `RevPAR` (ponderado por quartos), `ReceitaEstimadaAlojamento` (RevPAR × quartos × 365), `OcupacaoEstimada` |
+| Mercados | `QuotaDormidasResidencia` / `QuotaHospedesResidencia` (peso interno, quota internacional), `QuotaDormidasMercadoEstrangeiro`, `HHIMercados`, `PesoTop3Mercados`, `CrescimentoHospedesMercado`, `MercadosEmCrescimento`, `QuadranteMercado` + `ReferenciaCrescimentoHospedes` / `ReferenciaEstadaMedia` |
+| Sazonalidade | `QuotaMesDormidas` (perfil mensal), `IndiceSazonalidadeMensal` (mês máximo = 100), `MesPicoDormidas`, `MesMaisFracoDormidas`, `DormidasMesPico`, `RacioPicoVale`, `QuotaDormidasJunSet`, `QuotaDormidasJulSet`, `GiniMensal`, `TaxaSazonalidade`, `IndiceSazonalidadePico` |
+| Pressão e pares | `DormidasPorKm2`, `QuartosPorKm2`, `PercentilPressao`, peers through *Comparação entre pares* (same NUTS III) |
+| Metadados | `DataAtualizacaoDados`, `AnoBase`, `Subtitulo…`, `Cor…` |
 
-#### Year-on-year
+Seasonality measures read the municipal 0010735, so they work for a concelho, a
+region in either NUTS version, and Portugal; they need the 12 months where stated.
 
-Every one of the 15 indicators has a pair — a prior-year value and a variance —
-generated from its base measure, so the names follow from it: `Hóspedes (tipo)`
-gives `Hóspedes (tipo, ano anterior)` and `Hóspedes (tipo) YoY %`. The pair sits
-on the indicator's own table, next to its base measure, rather than on `_Medidas`.
+### Mockup coverage
 
-Two patterns, because the families hang off different dimensions:
-
-| Family | Previous year read by | Why |
+| Dashboard | Visual | Model |
 |---|---|---|
-| Annual (10 indicators, joined to `Ano`) | swapping the year filter (`REMOVEFILTERS('Ano')`) | no month to preserve; needs a single year in context |
-| Monthly (5 indicators, joined to `Calendário`) | `DATEADD('Calendário'[Date], -1, YEAR)` | composes at both grains — the same measure answers "this month vs the same month last year" and "this year vs last year", which the `Ano` pattern cannot once a month is selected |
+| 01 Pulso | KPIs vs Portugal | base measures + *Portugal*; quota nacional = *Peso em Portugal*; variação = *Variação face ao ano base*; p.p. = *Diferença face ao ano base* |
+| | Sazonalidade mensal vs 2019, mês × ano | `DormidasMensaisSegmento` / `DormidasMensaisTipo` by `Calendário[Mês]`, `Ano` |
+| | Variação por NUTS III, territórios-chave | *Variação face ao ano base* on `DormidasTipo` by `Geografia[NUTS III]` / `[Território turístico]` |
+| | Índice 2019 = 100, posicionamento NUTS II | *Índice (ano base = 100)* with `Ano base` = 2019; *Variação face ao ano base* on `DormidasMensaisTipo` × `EstadaMediaMensalTipo` by `Região NUTS II` |
+| | Mix de tipologias, indicadores de sazonalidade | `QuotaQuartosTipo` by segmento × *Seleção/Portugal*; `RacioPicoVale`, `QuotaDormidasJulSet`, `QuotaDormidasJunSet`, `GiniMensal` |
+| 02 Raio-X | KPIs, pares, calendário, mercados, evolução | `DormidasPorKm2`, `QuartosPorKm2`, `QuotaQuartosTipo` (AL), `MesPicoDormidas`; `IndiceSazonalidadeMensal`; `QuotaHospedesResidencia` × *Diferença face à região*; *Índice* × *Seleção/Região* |
+| 03 Radar | KPIs, matriz, principais mercados, onde dorme, especialização, quadrantes | `QuotaDormidasResidencia`, `HHIMercados`, `PesoTop3Mercados`, `MercadosEmCrescimento`; `CrescimentoHospedesMercado` × `EstadaMediaResidencia` × `DormidasResidencia`; `QuotaDormidasMercadoEstrangeiro`; `QuotaHospedesResidencia` × *Especialização face a Portugal*; `QuadranteMercado` |
+| 04 Oportunidades | KPIs, gap, quotas, índice 2015, RevPAR por classificação, dimensão × utilização | `NoitesPorQuarto`, `QuartosPorEstabelecimento`, `RevPAR` by `Classificação`, `ReceitaEstimadaAlojamento`; `GapOfertaProcura`; `QuotaQuartosTipo` / `QuotaDormidasTipo`; *Índice* with `Ano base` = 2015 |
+| 05 Em números | capítulos, mapa, tabela | *Índice*, *Peso em Portugal*, `QuotaMesDormidas` by `Litoral ou interior`, `QuotaDormidasResidencia`; `DormidasPorKm2`; matrix of base measures by município |
+| 06 Barómetro | KPIs do mês, perfil, YoY por mês, calendário, margem | `DormidasMensaisSegmento`, `EstadaMediaMensalSegmento`, *Peso na região*, `MesMaisFracoDormidas`; `QuotaMesDormidas` × *Seleção/Região/Portugal*; *Variação face ao ano base* on `DormidasMensaisSegmento`; matrix `QuotaMesDormidas` × *Seleção · Região · Diferença face à região* |
+| 07 Noites e Quartos | procura, oferta, equilíbrio | base measures by `Segmento`, `Classificação`, `NUTS III`; `NoitesPorQuarto`, `GapOfertaProcura`, `HospedesPorEstabelecimento`; *Índice* (2015) on dormidas and quartos; *Variação face ao ano base* on the concelho scatter |
 
-Two exceptions to the naming, both predating the rest: `Dormidas (tipo)` keeps
-`Dormidas (ano anterior)` / `Dormidas YoY %`, and `RevPAR médio INE` keeps
-`RevPAR médio (ano anterior)` / `RevPAR YoY %`. Renaming them would break the
-report bindings that already point at them.
-
-`Superfície (km²) YoY %` exists for completeness and is almost always blank or
-zero — municipality boundaries rarely move, and everything that divides by area
-uses `Superfície (km², último ano)` rather than the selected year's value.
-
-The comparison pages add a peer-group family. Each is built from the focus
-município in the disconnected `Município selecionado`, over the peers in the same
-NUTS III, counting only those that actually report the metric:
-
-| Metric | Rank | Denominator |
-|---|---|---|
-| `Ocupação estimada` | `Posição no grupo de pares` | `Pares com dados` |
-| `Dormidas por km²` | `Posição no grupo de pares (pressão)` | `Pares com dados (pressão)` |
-| `RevPAR médio INE` | `Posição no grupo de pares (RevPAR)` | `Pares com dados (RevPAR)` |
-
-Each metric needs its own denominator: a município that reports ocupação may not
-report RevPAR, so a shared count would print «3.º de 14» against 11 peers. Always
-show a rank next to its denominator — never the rank alone.
-
-`Média de pares (ocupação)` and `Média de pares (estada média)` are the peer
-comparators the KPI tiles read against. Both average each peer's own value rather
-than pooling the group's numerators and denominators: a pooled ratio is dominated
-by the largest município, which is not what "face aos pares" means.
-
-`Percentil de pressão` ranks across every imported município instead (the whole
-`RegiaoNUTSII` region), and `Municípios com dados de pressão` is its denominator
-(«12, entre 58 municípios»).
-
-`Cor do município em foco` returns a hex string (`#FFAD00` for the focus
-município, `#2066BC` for the peers) rather than a 0/1 flag, because *Field value*
-conditional formatting reads the measure straight into the fill. It needs
-`Geografia[Município]` on the axis to resolve. `Cor da sub-região em foco` is the
-same idea one level up, over the disconnected `Sub-região em foco`, and needs
-`Geografia[NUTS III]` on the axis.
-
-Each page's header sub-title is a card over a string measure (`Subtítulo · …`),
-so the band echoes the current selection instead of repeating a fixed sentence.
+Not in the INE tables (dashed panels in the mockups): proveitos, ADR, ocupação-cama/
+quarto, população residente, RNT/RNAL, SIBS, reputação online. «conf.» for
+confidential values is a visual setting: measures return blank, never zero.
 
 ### Disconnected tables
 
-`Município selecionado`, `Sub-região em foco` and `Métrica de pressão` have no
-relationships on purpose. The first two carry *which* territory is highlighted
-without filtering it — a slicer that filtered would remove the very peers the
-comparison is against — and the third drives `Pressão (métrica selecionada)`.
-Anything reading them resolves to blank until a selection is made.
+`Município selecionado`, `Sub-região em foco`, `Métrica de pressão` and `Ano base`
+have no relationships on purpose. The focus tables carry `NUTS II` so their slicers
+can be limited to a region (the existing ones are, to Alentejo). `Município
+selecionado` is keyed by `GeoKey`, and repeated names (INE has two «Lagoa») carry
+their NUTS III in parentheses.
 
 ### Text handling
 
 The source columns are `bpchar`/`CHAR`, which PostgreSQL blank-pads. Every text
 column is trimmed in Power Query, otherwise the dimension keys would not match.
 
-### Regenerating
+### Validating
 
-`tools/generate_semantic_model.py` holds the indicator definitions mirroring
-`flows-code/pistadigital/flows/ine_*_flow.py`. After adding an indicator or
-changing a schema:
+The TMDL is maintained directly (in Desktop or by hand). After a change:
 
 ```bash
-python3 powerbi/tools/generate_semantic_model.py && python3 powerbi/tools/validate_semantic_model.py
+python3 powerbi/tools/validate_semantic_model.py
 ```
 
 The validator checks that every relationship, column and measure reference
-resolves, and that DAX and M expressions are balanced. It does not replace
-opening the model in Power BI Desktop.
+resolves, that every table is referenced from `model.tmdl`, and that DAX and M
+expressions are balanced. It does not replace opening the model in Power BI Desktop.
 
-Running it against the committed model is a **byte-for-byte no-op**, so the
-generator is safe to run at any time and a non-empty `git diff` afterwards is a
-real change, not formatting noise. Keeping it that way means matching how Power
-BI Desktop re-saves TMDL:
-
-- **Identifiers** are written bare when they can be (`table Ano`, `column Ano-Mês`)
-  and quoted only when they cannot (`table 'Região NUTS II'`). `q()` applies the
-  rule: bare when the name matches `[^\W\d][\w-]*`.
-- **`compatibilityLevel: 1606`**, `dataAccessOptions` (`legacyRedirects`,
-  `returnErrorValuesAsNull`), and the `PBI_QueryGroupOrder` / `PBI_ProTooling`
-  annotations are Desktop's and must be emitted.
-- **`annotation SummarizationSetBy = Automatic`** marks a column whose
-  summarization Desktop chose: the monthly indicators' `ano`, and the value
-  column of each averaged indicator. Both read `summarizeBy: sum` as a result —
-  see the caveat below.
-- **`annotation UnderlyingDateTimeDataType = Date`** goes on every imported
-  `dateTime` column, but not on `Calendário[Date]`, which is calculated.
-
-> **`tag()` is a positional counter.** Inserting an entity shifts the
-> `lineageTag` of everything generated after it, including the relationships at
-> the end. Anything added after the model was first generated passes an explicit
-> `tag_key=` so the sequence stays put — follow that for new measures rather than
-> relying on where they sit in the list.
-
-Two summarization defaults are Desktop's, not deliberate: `ano` on the five
-monthly indicators, and `estada_media` / `rendimento_medio_por_quarto`, all read
-`summarizeBy: sum`. Summing a year or an average is meaningless, so the base
-measures aggregate explicitly (`AVERAGE(...)`) and never rely on the column
-default; only an ad-hoc drag of those columns onto a visual would hit it.
+Without Power BI Desktop the model is checked only structurally: the validator,
+plus the reference checks run when editing it. DAX and M are not executed, and the
+calculation-group TMDL (`ordinal`, `formatStringDefinition`, no partition) follows
+Microsoft's TMDL conventions but has not been loaded by Desktop or by Microsoft's
+`TmdlSerializer`. Open and save the project in Desktop before the first publish.
 
 ## Layout (1280 × 720)
 

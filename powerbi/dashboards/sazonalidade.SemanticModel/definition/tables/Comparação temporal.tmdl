@@ -1,0 +1,83 @@
+/// Compara qualquer medida com o ano base de 'Ano base' (ano anterior por omissão). Precisa de um único ano no contexto (slicer ou 'Ano'[Ano] no eixo); com vários anos devolve em branco. Os rácios comparam-se como rácio e as medidas de texto passam sem alteração.
+table 'Comparação temporal'
+	lineageTag: 54a7f528-376e-49c0-9088-86ab7a7f4b16
+
+	calculationGroup
+		precedence: 10
+
+		/// Sem comparação.
+		calculationItem Valor = SELECTEDMEASURE()
+			ordinal: 0
+
+		/// A medida no ano base.
+		calculationItem 'Valor no ano base' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    SELECTEDMEASURE(),
+				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
+				    VAR ValorAtual = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal')))
+				    VAR ValorBase = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal'), REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoBase))
+				    RETURN ValorBase
+				)
+			ordinal: 1
+
+		/// Atual − ano base, nas unidades da medida (p.p. numa quota, noites na estada).
+		calculationItem 'Diferença face ao ano base' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    SELECTEDMEASURE(),
+				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
+				    VAR ValorAtual = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal')))
+				    VAR ValorBase = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal'), REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoBase))
+				    RETURN IF(NOT ISBLANK(ValorBase), ValorAtual - ValorBase)
+				)
+			ordinal: 2
+
+		/// (Atual − ano base) ÷ ano base.
+		calculationItem 'Variação face ao ano base' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    SELECTEDMEASURE(),
+				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
+				    VAR ValorAtual = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal')))
+				    VAR ValorBase = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal'), REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoBase))
+				    RETURN DIVIDE(ValorAtual - ValorBase, ValorBase)
+				)
+			ordinal: 3
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]), SELECTEDMEASUREFORMATSTRING(), "+0.0%;-0.0%;0.0%")
+
+		/// Atual ÷ ano base × 100.
+		calculationItem 'Índice (ano base = 100)' =
+				IF(
+				    ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]),
+				    SELECTEDMEASURE(),
+				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
+				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
+				    VAR ValorAtual = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal')))
+				    VAR ValorBase = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal'), REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoBase))
+				    RETURN DIVIDE(ValorAtual, ValorBase) * 100
+				)
+			ordinal: 4
+			formatStringDefinition = IF(ISSELECTEDMEASURE([CorMunicipioEmFoco], [CorTransparente], [CorSubRegiaoEmFoco], [SubtituloQuadroComparativo], [SubtituloPressaoTuristica], [SubtituloSazonalidade], [QuadranteMercado], [MesPicoDormidas], [MesMaisFracoDormidas]), SELECTEDMEASUREFORMATSTRING(), "#,0.0")
+
+	column 'Período de comparação'
+		dataType: string
+		lineageTag: ad0dfd63-0979-4c77-bb5a-dfbfaa5ecee6
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2e29056c-c09d-4559-acd2-130708d17b2e
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic

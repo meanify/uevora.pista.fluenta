@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noites e Quartos · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cal:#FAFAF7;--surface:#FFFFFF;--line:#E3E4DE;--ink:#1B2230;--ink-2:#545F6E;--ink-3:#858E9B;
+--anil:#1F4FA3;--anil-soft:#E3EBF8;--ocre:#C9960F;--ocre-soft:#F7EDCF;--oliva:#5F6F2E;--neg:#B3412E;--neg-soft:#F6E1DC;--grid:#ECECE7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--cal:#11151C;--surface:#181E27;--line:#2A313C;--ink:#EDEFF2;--ink-2:#B3BBC6;--ink-3:#7D8694;
+--anil:#7FA6EC;--anil-soft:#1C2942;--ocre:#E2B53D;--ocre-soft:#382F17;--oliva:#A3B661;--neg:#E5846F;--neg-soft:#3A231F;--grid:#252B35;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--cal);color:var(--ink);font-family:"Public Sans",system-ui,sans-serif;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums}
+a{color:var(--anil)}
+:focus-visible{outline:2px solid var(--anil);outline-offset:2px}
+header.top{background:var(--surface);border-bottom:6px solid var(--anil)}
+.top-in{max-width:1280px;margin:0 auto;padding:14px 24px 12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.brand small{display:block;font-weight:400;color:var(--ink-3);font-size:12px}
+nav.pages{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav.pages a{padding:6px 8px;border-radius:6px;text-decoration:none;color:var(--ink-2);font-size:12.5px}
+nav.pages a:hover{background:var(--anil-soft);color:var(--anil)}
+nav.pages a[aria-current]{background:var(--anil);color:var(--surface)}
+main{max-width:1280px;margin:0 auto;padding:20px 24px 32px}
+.head{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em;margin:0}
+.aud{color:var(--ink-2);margin:4px 0 0;max-width:62ch}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.filters label{font-size:12px;color:var(--ink-3)}
+select,.tog button{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+.tog{display:inline-flex}
+.tog button{cursor:pointer;border-radius:0}
+.tog button:first-child{border-radius:6px 0 0 6px}.tog button:last-child{border-radius:0 6px 6px 0;border-left:0}
+.tog button[aria-pressed=true]{background:var(--anil);color:var(--surface);border-color:var(--anil)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.panel h2{font-size:14px;font-weight:600;margin:0 0 2px}
+.panel .sub{font-size:12px;color:var(--ink-3);margin:0 0 10px}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.kpis{grid-column:span 12;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .l{font-size:12px;color:var(--ink-2);margin:0}
+.kpi .v{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:2px 0 0}
+.hero{grid-column:span 4;background:var(--anil);color:var(--surface);border-radius:10px;padding:18px 20px}
+.hero p{margin:0}.hero .v{font-size:64px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.kpi .d{font-size:12px;margin:0;color:var(--ink-3)}
+.up{color:var(--oliva)!important}.dn{color:var(--neg)!important}
+.chart{position:relative}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin:0 0 6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.sw.dash{height:0;border-top:2px dashed var(--ink-3);border-radius:0;vertical-align:3px;width:14px}
+.ph{border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--ink-3);font-size:13px;padding:16px;min-height:180px}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;border-bottom:1px solid var(--line);padding:6px 8px}
+table.t td{padding:6px 8px;border-bottom:1px solid var(--line)}
+table.t td.n,table.t th.n{text-align:right}
+.note{font-size:12px;color:var(--ink-3);margin-top:18px}
+.sec{grid-column:span 12;font-size:13px;font-weight:600;color:var(--anil);margin:10px 0 -4px;padding-left:10px;border-left:4px solid var(--anil)}
+.kpi.new,.panel.new{border-style:dashed;background:transparent}
+.kpi.new .v{color:var(--ink-3)}
+.nf{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:var(--ocre-soft);color:var(--ink);margin-top:4px}
+.cmp{font-size:12px;color:var(--ink-3);margin:0}
+footer.meta{max-width:1280px;margin:0 auto;padding:12px 24px 28px;display:flex;gap:8px 22px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line)}
+footer.meta strong{color:var(--ink-2);font-weight:600}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--ocre-soft);color:var(--ink)}
+@media (min-width:1100px){.top-in{flex-wrap:nowrap}nav.pages{flex-wrap:nowrap;white-space:nowrap}}
+@media (max-width:900px){.s3,.s4,.s5,.s6,.s7,.s8{grid-column:span 12}nav.pages{margin-left:0}.filters{margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header class="top"><div class="top-in"><div class="brand">Turismo no Alentejo<small>Pista Digital, Universidade de Évora</small></div><nav class="pages" aria-label="Dashboards"><a href="index.html">Início</a><a href="01_pulso_alentejo.html">Pulso</a><a href="02_raio_x_concelho.html">Raio-X</a><a href="03_radar_mercados.html">Mercados</a><a href="04_mapa_oportunidades.html">Oportunidades</a><a href="05_alentejo_em_numeros.html">Em números</a><a href="06_barometro_empresario.html">Barómetro</a><a href="07_noites_e_quartos.html" aria-current="page">Noites e Quartos</a></nav></div></header>
+<main><div class="head"><div><h1>Noites e Quartos</h1><p class="aud">Oferta e procura de alojamento no Alentejo, ligadas por um indicador de referência: as noites por quarto.</p></div><div class="filters"><div class="tog" role="group" aria-label="Página"><button aria-pressed="true" data-p="pq">Procura</button><button aria-pressed="false" data-p="po">Oferta</button><button aria-pressed="false" data-p="pe">Equilíbrio</button></div>
+<label for="ano">Ano</label><select id="ano"><option>2025</option></select>
+<label for="tipo">Alojamento</label><select id="tipo"><option>Todos</option><option>Hotelaria</option><option>Alojamento local</option><option>TER e habitação</option></select></div></div>
+
+<div class="grid" id="pq">
+<h2 class="sec">Página 1: procura</h2>
+<div class="kpis">
+<div class="kpi"><p class="l">Dormidas</p><p class="v">3,42 M</p><p class="d up">+6,1% homólogo</p><p class="cmp">Portugal: +4,2%</p></div>
+<div class="kpi"><p class="l">Hóspedes</p><p class="v">1,88 M</p><p class="d up">+4,8%</p><p class="cmp">Portugal: +3,6%</p></div>
+<div class="kpi"><p class="l">Estada média</p><p class="v">1,82</p><p class="d up">+0,02 noites</p><p class="cmp">Portugal: 2,55</p></div>
+<div class="kpi"><p class="l">Quota internacional</p><p class="v">38%</p><p class="d">das dormidas</p></div>
+<div class="kpi"><p class="l">Dormidas em agosto</p><p class="v">510 mil</p><p class="d">15% do ano</p></div>
+</div>
+<section class="panel s8"><h2>Hóspedes e dormidas por mês</h2><p class="sub">Milhares · ine_0009808_ds + ine_0009812_ds</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Dormidas</span><span><span class="sw" style="background:var(--ocre)"></span>Hóspedes</span></div>
+<div class="chart" style="height:240px"><canvas id="q1" role="img" aria-label="Hóspedes e dormidas mensais"></canvas></div></section>
+<section class="panel s4"><h2>Dormidas por NUTS III</h2><p class="sub">Milhares · ine_0009877_ds</p>
+<div class="chart" style="height:262px"><canvas id="q2" role="img" aria-label="Dormidas por sub-região"></canvas></div></section>
+<section class="panel s4"><h2>Dormidas por tipo de alojamento</h2><p class="sub">Milhares, 2024 vs 2025</p>
+<div class="legend"><span><span class="sw" style="background:var(--ink-3)"></span>2024</span><span><span class="sw" style="background:var(--anil)"></span>2025</span></div>
+<div class="chart" style="height:230px"><canvas id="q3" role="img" aria-label="Dormidas por tipo de alojamento em 2024 e 2025"></canvas></div></section>
+<section class="panel s4"><h2>Estada média por tipo</h2><p class="sub">Noites por hóspede, recalculada (dormidas ÷ hóspedes)</p>
+<div class="chart" style="height:252px"><canvas id="q4" role="img" aria-label="Estada média por tipo de alojamento"></canvas></div></section>
+<section class="panel s4"><h2>Os 8 concelhos com mais dormidas</h2><p class="sub">Milhares · ine_0009877_ds</p>
+<div class="chart" style="height:252px"><canvas id="q5" role="img" aria-label="Concelhos com mais dormidas"></canvas></div></section>
+</div>
+
+<div class="grid" id="po" hidden>
+<h2 class="sec">Página 2: oferta</h2>
+<div class="kpis">
+<div class="kpi"><p class="l">Estabelecimentos</p><p class="v">2 040</p><p class="d up">+3,2% homólogo</p></div>
+<div class="kpi"><p class="l">Quartos</p><p class="v">29 000</p><p class="d up">+2,4%</p></div>
+<div class="kpi"><p class="l">Quartos por estabelecimento</p><p class="v">14,2</p><p class="d">Portugal: 22,5</p></div>
+<div class="kpi"><p class="l">Quartos por km²</p><p class="v">1,1</p><p class="d">ine_0009874 ÷ ine_0008350</p></div>
+<div class="kpi"><p class="l">Peso do TER e habitação</p><p class="v">24%</p><p class="d">dos quartos; Portugal: 6%</p></div>
+</div>
+<section class="panel s8"><h2>Quartos por tipo de alojamento, 2015–2025</h2><p class="sub">Milhares de quartos · ine_0009874_ds</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Hotelaria</span><span><span class="sw" style="background:var(--ocre)"></span>Alojamento local</span><span><span class="sw dash"></span>TER e habitação</span></div>
+<div class="chart" style="height:240px"><canvas id="o1" role="img" aria-label="Evolução dos quartos por tipo"></canvas></div></section>
+<section class="panel s4"><h2>Quartos por NUTS III</h2><p class="sub">Milhares de quartos</p>
+<div class="chart" style="height:262px"><canvas id="o2" role="img" aria-label="Quartos por sub-região"></canvas></div></section>
+<section class="panel s4"><h2>Estabelecimentos por tipo</h2><p class="sub">Número, 2019 vs 2025 · ine_0009873_ds</p>
+<div class="legend"><span><span class="sw" style="background:var(--ink-3)"></span>2019</span><span><span class="sw" style="background:var(--ocre)"></span>2025</span></div>
+<div class="chart" style="height:230px"><canvas id="o3" role="img" aria-label="Estabelecimentos por tipo em 2019 e 2025"></canvas></div></section>
+<section class="panel s4"><h2>Hotelaria por classificação</h2><p class="sub">Quartos · campo classificacao</p>
+<div class="chart" style="height:252px"><canvas id="o4" role="img" aria-label="Quartos de hotelaria por classificação"></canvas></div></section>
+<section class="panel s4"><h2>Dimensão média por tipo</h2><p class="sub">Quartos por estabelecimento</p>
+<div class="chart" style="height:252px"><canvas id="o5" role="img" aria-label="Quartos por estabelecimento por tipo"></canvas></div></section>
+</div>
+
+<div class="grid" id="pe" hidden>
+<h2 class="sec">Página 3: equilíbrio entre oferta e procura</h2>
+<div class="hero"><p style="font-size:13px;opacity:.85">Indicador de referência</p><p class="v">118</p><p style="font-size:16px;font-weight:600;margin-top:6px">noites por quarto, por ano</p>
+<p style="font-size:13px;margin-top:10px;opacity:.9">Dormidas ÷ quartos. Mede quanto da capacidade instalada é usada pela procura. Mais 4 noites do que em 2024.</p></div>
+<div class="kpi s4" style="grid-column:span 4"><p class="l">Gap oferta-procura desde 2019</p><p class="v">+7 p.p.</p><p class="d up">a procura cresce mais do que a oferta</p><p class="cmp">dormidas +32%, quartos +25%</p></div>
+<div class="kpi s4" style="grid-column:span 4"><p class="l">Hóspedes por estabelecimento</p><p class="v">922</p><p class="d up">+1,6%</p><p class="cmp">Portugal: 1 560</p></div>
+<section class="panel s7"><h2>Procura e oferta em índice (2015 = 100)</h2><p class="sub">Dormidas vs quartos · ine_0009877 + ine_0009874</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Dormidas</span><span><span class="sw dash"></span>Quartos</span></div>
+<div class="chart" style="height:260px"><canvas id="e1" role="img" aria-label="Índice das dormidas e dos quartos"></canvas></div></section>
+<section class="panel s5"><h2>Noites por quarto, por tipo</h2><p class="sub">2025 vs 2019</p>
+<div class="legend"><span><span class="sw" style="background:var(--ink-3)"></span>2019</span><span><span class="sw" style="background:var(--anil)"></span>2025</span></div>
+<div class="chart" style="height:252px"><canvas id="e2" role="img" aria-label="Noites por quarto por tipo de alojamento"></canvas></div></section>
+<section class="panel s7"><h2>Como crescem oferta e procura em cada concelho</h2><p class="sub">Variação 2020–2025 de quartos (X) e de dormidas (Y); a diagonal marca crescimento igual</p>
+<div class="chart" style="height:320px"><canvas id="e3" role="img" aria-label="Dispersão de concelhos por crescimento de quartos e de dormidas"></canvas></div></section>
+<section class="panel s5"><h2>Concelhos com maior desequilíbrio</h2><p class="sub">Noites por quarto e gap de crescimento</p>
+<table class="t"><thead><tr><th>Concelho</th><th class="n">Noites/quarto</th><th class="n">Gap</th><th>Leitura</th></tr></thead><tbody id="tb"></tbody></table>
+<p class="sub" style="margin-top:10px">Gap = crescimento das dormidas menos crescimento dos quartos, em p.p.</p></section>
+</div>
+</main><footer class="meta"><span><strong>Fonte</strong> INE, alojamento turístico (tabelas Pista Digital)</span><span><strong>Atualizado</strong> 31/10/2026</span><span><strong>Estado</strong> 2025 provisório, anos anteriores definitivos</span><span><strong>Território</strong> Alentejo NUTS II 2024, salvo indicação</span><span><strong>Mockup</strong> valores ilustrativos</span></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script>
+const V=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={anil:V('--anil'),ocre:V('--ocre'),oliva:V('--oliva'),neg:V('--neg'),ink2:V('--ink-2'),ink3:V('--ink-3'),grid:V('--grid'),surface:V('--surface'),soft:V('--anil-soft')};
+Chart.defaults.color=C.ink3;Chart.defaults.font.family='"Public Sans",system-ui,sans-serif';Chart.defaults.font.size=11;
+Chart.defaults.plugins.legend.display=false;Chart.defaults.maintainAspectRatio=false;Chart.defaults.responsive=true;
+Chart.defaults.animation={duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:400};
+const AX=(o={})=>({x:{grid:{display:false},ticks:{autoSkip:false},...(o.x||{})},y:{grid:{color:C.grid},border:{display:false},...(o.y||{})}});
+const HAX=(o={})=>({x:{grid:{color:C.grid},border:{display:false},...(o.x||{})},y:{grid:{display:false},...(o.y||{})}});
+const pct=v=>v+'%';const fmt=(v,d=0)=>Number(v).toLocaleString('pt-PT',{minimumFractionDigits:d,maximumFractionDigits:d});
+function heat(el,cols,rows,max,lw){let h='<div style="display:grid;grid-template-columns:'+(lw||110)+'px repeat('+cols.length+',minmax(0,1fr));gap:3px;font-size:11px">';
+h+='<div></div>'+cols.map(m=>'<div style="text-align:center;color:var(--ink-3)">'+m+'</div>').join('');
+rows.forEach(r=>{h+='<div style="color:var(--ink-2);align-self:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r[0]+'</div>'+r[1].map(v=>{const p=Math.round(v/max*100);return '<div style="height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--anil) '+p+'%,var(--anil-soft));color:'+(p>55?'var(--surface)':'var(--ink)')+'">'+fmt(v)+'</div>'}).join('')});
+document.getElementById(el).innerHTML=h+'</div>'}
+function alpha(hex,a){const h=hex.replace('#','');const n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+
+const M=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const DM=[150,175,230,300,320,360,420,510,380,290,170,155];
+const CH={};
+CH.q1=()=>new Chart(document.getElementById('q1'),{type:'line',data:{labels:M,datasets:[{data:DM,borderColor:C.anil,backgroundColor:alpha(C.anil,.1),fill:true,borderWidth:2,pointRadius:0,tension:.3},{data:DM.map((v,i)=>Math.round(v/(1.62+.4*Math.sin((i-1)/11*Math.PI)))),borderColor:C.ocre,borderWidth:2,pointRadius:0,tension:.3}]},options:{scales:AX()}});
+const N3=['Alentejo Central','Alentejo Litoral','Alto Alentejo','Baixo Alentejo'];
+CH.q2=()=>new Chart(document.getElementById('q2'),{type:'bar',data:{labels:N3,datasets:[{data:[1290,1120,560,450],backgroundColor:C.anil,borderRadius:4,barThickness:20}]},options:{indexAxis:'y',scales:HAX()}});
+const T=['Hotelaria','Alojamento local','TER e habitação'];
+CH.q3=()=>new Chart(document.getElementById('q3'),{type:'bar',data:{labels:T,datasets:[{data:[2050,690,480],backgroundColor:alpha(C.ink3,.6),borderRadius:4,barThickness:22},{data:[2150,720,550],backgroundColor:C.anil,borderRadius:4,barThickness:22}]},options:{scales:AX()}});
+CH.q4=()=>new Chart(document.getElementById('q4'),{type:'bar',data:{labels:T,datasets:[{data:[1.72,2.05,2.10],backgroundColor:C.anil,borderRadius:4,barThickness:28}]},options:{scales:AX({y:{grid:{color:C.grid},ticks:{callback:v=>fmt(Math.abs(v)<1e-9?0:v,1)}}})}});
+const TOP=[['Évora',620],['Odemira',370],['Grândola',215],['Elvas',97],['Beja',110],['Reguengos de Monsaraz',96],['Sines',88],['Santiago do Cacém',74]].sort((a,b)=>b[1]-a[1]);
+CH.q5=()=>new Chart(document.getElementById('q5'),{type:'bar',data:{labels:TOP.map(r=>r[0]),datasets:[{data:TOP.map(r=>r[1]),backgroundColor:C.anil,borderRadius:4,barThickness:16}]},options:{indexAxis:'y',scales:HAX()}});
+const YR=['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'];
+CH.o1=()=>new Chart(document.getElementById('o1'),{type:'line',data:{labels:YR,datasets:[{data:[13.2,13.5,13.9,14.2,14.6,14.7,14.8,14.9,15.0,15.0,15.1],borderColor:C.anil,borderWidth:2,pointRadius:0,tension:.25},
+{data:[3.1,3.6,4.2,4.8,5.4,5.7,5.9,6.3,6.6,6.8,7.0],borderColor:C.ocre,borderWidth:2,pointRadius:0,tension:.25},{data:[5.1,5.3,5.6,5.9,6.1,6.2,6.3,6.5,6.7,6.8,6.9],borderColor:C.ink3,borderDash:[5,4],borderWidth:2,pointRadius:0,tension:.25}]},options:{scales:AX()}});
+CH.o2=()=>new Chart(document.getElementById('o2'),{type:'bar',data:{labels:N3,datasets:[{data:[10.6,9.4,5.0,4.0],backgroundColor:C.ocre,borderRadius:4,barThickness:20}]},options:{indexAxis:'y',scales:HAX()}});
+CH.o3=()=>new Chart(document.getElementById('o3'),{type:'bar',data:{labels:T,datasets:[{data:[290,820,560],backgroundColor:alpha(C.ink3,.6),borderRadius:4,barThickness:22},{data:[315,1050,675],backgroundColor:C.ocre,borderRadius:4,barThickness:22}]},options:{scales:AX()}});
+const CL=[['5★',1450],['4★',6900],['3★',4100],['1–2★',1350],['Outros hotelaria',1300]];
+CH.o4=()=>new Chart(document.getElementById('o4'),{type:'bar',data:{labels:CL.map(r=>r[0]),datasets:[{data:CL.map(r=>r[1]),backgroundColor:C.ocre,borderRadius:4,barThickness:18}]},options:{indexAxis:'y',scales:HAX()}});
+CH.o5=()=>new Chart(document.getElementById('o5'),{type:'bar',data:{labels:T,datasets:[{data:[48,6.7,10.2],backgroundColor:C.ocre,borderRadius:4,barThickness:28}]},options:{scales:AX()}});
+CH.e1=()=>new Chart(document.getElementById('e1'),{type:'line',data:{labels:YR,datasets:[{data:[100,108,118,126,135,62,88,128,150,165,178],borderColor:C.anil,borderWidth:2,pointRadius:0,tension:.25},{data:[100,104,110,117,124,128,133,139,146,151,155],borderColor:C.ink3,borderDash:[5,4],borderWidth:2,pointRadius:0,tension:.25}]},options:{scales:AX()}});
+CH.e2=()=>new Chart(document.getElementById('e2'),{type:'bar',data:{labels:T,datasets:[{data:[134,96,74],backgroundColor:alpha(C.ink3,.6),borderRadius:4,barThickness:22},{data:[143,103,80],backgroundColor:C.anil,borderRadius:4,barThickness:22}]},options:{scales:AX()}});
+const P=[['Reguengos',6,24],['Vila Viçosa',3,17],['Mértola',7,18],['Alcácer',10,19],['Elvas',5,11],['Beja',4,7],['Évora',14,12],['Grândola',22,16],['Sines',18,9],['Odemira',12,14],['Marvão',2,6],['Estremoz',7,5]];
+CH.e3=()=>new Chart(document.getElementById('e3'),{type:'scatter',data:{datasets:[{data:P.map(p=>({x:p[1],y:p[2],n:p[0]})),pointRadius:7,backgroundColor:P.map(p=>p[2]-p[1]<0?C.neg:C.anil),borderColor:C.surface,borderWidth:2}]},
+plugins:[{id:'diag',beforeDatasetsDraw(c){const{ctx:x,scales:s}=c;x.save();x.setLineDash([4,4]);x.strokeStyle=C.ink3;x.beginPath();x.moveTo(s.x.getPixelForValue(0),s.y.getPixelForValue(0));x.lineTo(s.x.getPixelForValue(26),s.y.getPixelForValue(26));x.stroke();x.setLineDash([]);
+x.fillStyle=C.ink3;x.font='11px "Public Sans",sans-serif';const a=c.chartArea;x.fillText('Procura a pressionar a oferta',a.left+8,a.top+14);x.fillText('Oferta a crescer mais do que a procura',a.right-205,a.bottom-8);x.restore()},
+afterDatasetsDraw(c){const x=c.ctx;x.save();x.font='11px "Public Sans",sans-serif';x.fillStyle=C.ink2;c.getDatasetMeta(0).data.forEach((p,i)=>x.fillText(P[i][0],p.x+9,p.y+4));x.restore()}}],
+options:{layout:{padding:{right:50}},scales:{x:{min:0,max:26,title:{display:true,text:'Crescimento dos quartos (%)'},grid:{color:C.grid}},y:{min:0,max:26,title:{display:true,text:'Crescimento das dormidas (%)'},grid:{color:C.grid}}}}});
+const TB=[['Reguengos de Monsaraz',152,18,'Procura a pressionar'],['Vila Viçosa',139,14,'Procura a pressionar'],['Mértola',96,11,'Espaço para crescer'],['Évora',150,-2,'Equilibrado'],['Grândola',120,-6,'Oferta em expansão'],['Sines',90,-9,'Oferta em excesso']];
+document.getElementById('tb').innerHTML=TB.map(r=>'<tr><td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td class="n '+(r[2]<0?'dn':'up')+'">'+(r[2]>0?'+':'')+r[2]+'</td><td>'+r[3]+'</td></tr>').join('');
+const PG={pq:['q1','q2','q3','q4','q5'],po:['o1','o2','o3','o4','o5'],pe:['e1','e2','e3']},made={};
+function show(id){Object.keys(PG).forEach(k=>document.getElementById(k).hidden=k!==id);document.querySelectorAll('.tog button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===id));
+PG[id].forEach(c=>{if(!made[c])made[c]=CH[c]()})}
+document.querySelectorAll('.tog button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.p)));show(location.hash.slice(1)||'pq');
+</script></body></html>

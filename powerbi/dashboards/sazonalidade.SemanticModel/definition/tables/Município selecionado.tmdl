@@ -1,0 +1,45 @@
+/// Tabela desligada que guarda o município em foco. Não filtra o modelo: serve para realçar um território entre os pares. Chave GeoKey; o nome leva a NUTS III entre parênteses quando se repete no país (Lagoa, Calheta…).
+table 'Município selecionado'
+	lineageTag: cfe807e0-516b-596f-8845-0add2d0fa9f1
+
+	column GeoKey
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: b321f879-144e-4085-9315-40af74499c20
+		summarizeBy: none
+		sourceColumn: [GeoKey]
+
+	column Município
+		dataType: string
+		lineageTag: 3a516c8f-da01-5347-8810-fa27535439a9
+		summarizeBy: none
+		sourceColumn: [Município]
+
+	column 'NUTS III'
+		dataType: string
+		lineageTag: de1ef748-8643-4ad5-8987-e4c85a84d3f2
+		summarizeBy: none
+		sourceColumn: [NUTS III]
+
+	column 'NUTS II'
+		dataType: string
+		lineageTag: 43ca8769-2557-4547-8bf0-a1a1f91651c6
+		summarizeBy: none
+		sourceColumn: [NUTS II]
+
+	partition 'Município selecionado' = calculated
+		mode: import
+		source =
+				VAR Municipios =
+				    SELECTCOLUMNS('Geografia', "GeoKey", 'Geografia'[GeoKey], "Nome", 'Geografia'[Município], "NUTS III", 'Geografia'[NUTS III], "NUTS II", 'Geografia'[NUTS II])
+				RETURN
+				    SELECTCOLUMNS(
+				        ADDCOLUMNS(
+				            Municipios,
+				            "Rotulo",
+				                VAR Nome = [Nome]
+				                RETURN IF(COUNTROWS(FILTER(Municipios, [Nome] = Nome)) > 1, Nome & " (" & [NUTS III] & ")", Nome)
+				        ),
+				        "GeoKey", [GeoKey], "Município", [Rotulo], "NUTS III", [NUTS III], "NUTS II", [NUTS II]
+				    )

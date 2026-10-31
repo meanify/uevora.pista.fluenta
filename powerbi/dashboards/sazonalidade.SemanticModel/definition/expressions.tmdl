@@ -1,0 +1,50 @@
+/// Servidor PostgreSQL (PISTA_DB_HOSTNAME:PISTA_DB_PORTNUMBER). Todas as tabelas de factos usam PostgreSQL.Database(Servidor, BaseDados).
+expression Servidor = "pistadb.pistadigital.uevora.pt:30392" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: e5fcb056-24eb-4b2c-b7d9-57dc963b4720
+	queryGroup: Parâmetros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+/// Nome da base de dados (PISTA_DB_NAME).
+expression BaseDados = "pista" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: c295f7f3-7809-5d91-82c7-6e2a80ad7c6f
+	queryGroup: Parâmetros
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+/// Agrupamento próprio de concelhos em territórios turísticos (dashboards Pulso e Raio-X). Editar aqui: uma linha por concelho, com a NUTS II para evitar homónimos.
+expression TerritoriosTuristicos =
+		#table(
+			type table [nuts_ii = text, municipio = text, territorio = text],
+			{
+				{"Alentejo", "Reguengos de Monsaraz", "Alqueva"},
+				{"Alentejo", "Mourão", "Alqueva"},
+				{"Alentejo", "Moura", "Alqueva"},
+				{"Alentejo", "Portel", "Alqueva"},
+				{"Alentejo", "Alandroal", "Alqueva"},
+				{"Alentejo", "Odemira", "Costa Vicentina"},
+				{"Alentejo", "Grândola", "Comporta"},
+				{"Alentejo", "Alcácer do Sal", "Comporta"},
+				{"Alentejo", "Évora", "Património UNESCO"},
+				{"Alentejo", "Elvas", "Património UNESCO"},
+				{"Alentejo", "Castelo de Vide", "Serra de São Mamede"},
+				{"Alentejo", "Marvão", "Serra de São Mamede"},
+				{"Alentejo", "Portalegre", "Serra de São Mamede"},
+				{"Alentejo", "Arronches", "Serra de São Mamede"}
+			}
+		)
+	lineageTag: 13613a77-b020-4ba9-8e40-6027f651fab5
+	queryGroup: Mapeamentos
+
+	annotation PBI_ResultType = Table
+
+/// Municípios da AML que passam à NUTS II Península de Setúbal na versão 2024; os restantes passam a Grande Lisboa.
+expression PeninsulaSetubal = {"Alcochete", "Almada", "Barreiro", "Moita", "Montijo", "Palmela", "Seixal", "Sesimbra", "Setúbal"}
+	lineageTag: 4c61ae5b-64bc-40ec-85b5-52c8a6cd2560
+	queryGroup: Mapeamentos
+
+	annotation PBI_ResultType = List

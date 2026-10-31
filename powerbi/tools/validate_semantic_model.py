@@ -1,8 +1,13 @@
-"""Structural checks on the generated TMDL: references, balance, duplicates."""
+"""Structural checks on a semantic model's TMDL: references, balance, duplicates.
+
+Usage: python3 powerbi/tools/validate_semantic_model.py [path/to/X.SemanticModel]
+Defaults to the sazonalidade dashboard model.
+"""
 import glob, os, re, sys
 
-DEF = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                   "PistaDigital.SemanticModel", "definition")
+MODEL = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dashboards", "sazonalidade.SemanticModel")
+DEF = os.path.join(MODEL, "definition")
 errs, warns = [], []
 
 tables = {}      # table -> set(columns)
@@ -117,7 +122,7 @@ def check_refs(txt, label, home=None):
         if nm in measures or (home and nm in tables.get(home, ())):
             continue
         # column names introduced by SELECTCOLUMNS/ADDCOLUMNS/CALENDAR inside the same expression
-        if f'"{nm}"' in txt or nm in ("Date",):
+        if f'"{nm}"' in txt or nm in ("Date", "Value"):
             continue
         errs.append(f"{label}: unresolved reference [{nm}]")
 

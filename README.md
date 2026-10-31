@@ -7,12 +7,14 @@ This project has multiple components:
 - **Airflow**: scheduling and deployment configuration in [k8s/airflow](k8s/airflow).
 - **Flows Code**: Python ETL modules, command-line tools, and DAGs in [flows-code](flows-code).
 - **Power BI**: report and semantic model definitions in [powerbi](powerbi).
+- **Standalone dashboards**: HTML dashboards over the INE tables in [standalone-dashboard](standalone-dashboard).
 
 ## Contents
 
 - [Quick start](#quick-start)
 - [Supported indicators](#supported-indicators)
 - [INE command-line interface](#ine-command-line-interface)
+- [HTML dashboards](#html-dashboards)
 - [Configuration and Airflow](#configuration)
 - [Deploying to Airflow](#deploying-to-airflow)
 - [INE troubleshooting](#ine-troubleshooting)
@@ -548,6 +550,53 @@ suite on pushes and pull requests using Python 3.13 and `requirements.txt`.
 It does not require service credentials or an Airflow installation. The
 workflow runs when these files are published to the owning GitHub
 repository with GitHub Actions enabled.
+
+## HTML dashboards
+
+Five tourism dashboards for the Alentejo, built from the `mockupsv1` HTML
+mockups and fed by live, read-only queries over the INE tables.
+Everything lives in the self-contained folder
+[`standalone-dashboard`](standalone-dashboard) at the workspace root
+(`backend/`, `frontend/`, `tests/`), which does not import the flows package;
+its [README](standalone-dashboard/README.md) has the full instructions. With
+the [database variables](#environment-variables) set, run it from that folder:
+
+```bash
+cd standalone-dashboard && ../.venv/bin/python dashboards.py --port 8050
+```
+
+Open <http://127.0.0.1:8050/>. Options: `--host` (default `127.0.0.1`),
+`--port` (default `8050`), `--ttl` (seconds before the tables are read again;
+default `1800`). Add `refresh=1` to any `/api/...` URL to reload immediately.
+The pages load Chart.js and the Public Sans font from public CDNs, so the
+browser needs internet access.
+
+| Page | API | Main tables |
+|---|---|---|
+| `01_pulso_alentejo.html` | `/api/pulso?ano=&terr=` | 0009877, 0009876, 0009183, 0009929, 0009808, 0009812, 0010735 |
+| `02_raio_x_concelho.html` | `/api/raio-x?municipio=&ano=` | 0009877, 0009874, 0008350, 0010735, 0009930 |
+| `03_radar_mercados.html` | `/api/radar?ano=&base=anterior\|2019&terr=` | 0009930, 0009183 |
+| `04_mapa_oportunidades.html` | `/api/oportunidades?inicio=&fim=&seg=&terr=` | 0009873, 0009874, 0009877, 0009929 |
+| `05_alentejo_em_numeros.html` | `/api/numeros?ano=&terr=` | 0009877, 0009876, 0008350, 0009929, 0010735, 0009930 |
+
+`terr=2024` (default) is the Alentejo NUTS 2024, the stored NUTS 2013 region
+without Lezíria do Tejo; `terr=2013` includes it. Data rules applied:
+
+- Totals use the INE total rows (`tipo_alojamento = 'Total'`,
+  `local_residencia = 'Total'`), never sums of detail rows. Regional values by
+  market are sums of municipalities with published values (lower bounds).
+- `ine_0010735_ds` aggregate rows (`municipio = 'Total'`) are ignored; they
+  exist only for some years.
+- Monthly Alentejo nights come from `ine_0009808_ds` for NUTS 2013 and from the
+  municipal sum of `ine_0010735_ds` (since 2020) for NUTS 2024.
+- INE publishes RevPAR only per municipality. Regional RevPAR is the mean
+  weighted by rooms of the same category, and all categories in a chart share
+  one year. The revenue estimate assumes a daily RevPAR per available room.
+- When an indicator has no data for the selected year, the latest earlier year
+  is used and shown on the page (for example, rooms when 2025 is not loaded).
+- NULL values appear as "conf." and are never treated as zero.
+
+Tests (not part of the flows suite): `cd standalone-dashboard && ../.venv/bin/python -m unittest discover -s tests`.
 
 ## Configuration
 

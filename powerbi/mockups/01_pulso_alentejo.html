@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pulso do Alentejo · Turismo no Alentejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cal:#FAFAF7;--surface:#FFFFFF;--line:#E3E4DE;--ink:#1B2230;--ink-2:#545F6E;--ink-3:#858E9B;
+--anil:#1F4FA3;--anil-soft:#E3EBF8;--ocre:#C9960F;--ocre-soft:#F7EDCF;--oliva:#5F6F2E;--neg:#B3412E;--neg-soft:#F6E1DC;--grid:#ECECE7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--cal:#11151C;--surface:#181E27;--line:#2A313C;--ink:#EDEFF2;--ink-2:#B3BBC6;--ink-3:#7D8694;
+--anil:#7FA6EC;--anil-soft:#1C2942;--ocre:#E2B53D;--ocre-soft:#382F17;--oliva:#A3B661;--neg:#E5846F;--neg-soft:#3A231F;--grid:#252B35;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--cal);color:var(--ink);font-family:"Public Sans",system-ui,sans-serif;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums}
+a{color:var(--anil)}
+:focus-visible{outline:2px solid var(--anil);outline-offset:2px}
+header.top{background:var(--surface);border-bottom:6px solid var(--anil)}
+.top-in{max-width:1280px;margin:0 auto;padding:14px 24px 12px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.brand small{display:block;font-weight:400;color:var(--ink-3);font-size:12px}
+nav.pages{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav.pages a{padding:6px 8px;border-radius:6px;text-decoration:none;color:var(--ink-2);font-size:12.5px}
+nav.pages a:hover{background:var(--anil-soft);color:var(--anil)}
+nav.pages a[aria-current]{background:var(--anil);color:var(--surface)}
+main{max-width:1280px;margin:0 auto;padding:20px 24px 32px}
+.head{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em;margin:0}
+.aud{color:var(--ink-2);margin:4px 0 0;max-width:62ch}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.filters label{font-size:12px;color:var(--ink-3)}
+select,.tog button{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+.tog{display:inline-flex}
+.tog button{cursor:pointer;border-radius:0}
+.tog button:first-child{border-radius:6px 0 0 6px}.tog button:last-child{border-radius:0 6px 6px 0;border-left:0}
+.tog button[aria-pressed=true]{background:var(--anil);color:var(--surface);border-color:var(--anil)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.panel h2{font-size:14px;font-weight:600;margin:0 0 2px}
+.panel .sub{font-size:12px;color:var(--ink-3);margin:0 0 10px}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.kpis{grid-column:span 12;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .l{font-size:12px;color:var(--ink-2);margin:0}
+.kpi .v{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:2px 0 0}
+.hero{grid-column:span 4;background:var(--anil);color:var(--surface);border-radius:10px;padding:18px 20px}
+.hero p{margin:0}.hero .v{font-size:64px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.kpi .d{font-size:12px;margin:0;color:var(--ink-3)}
+.up{color:var(--oliva)!important}.dn{color:var(--neg)!important}
+.chart{position:relative}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin:0 0 6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.sw.dash{height:0;border-top:2px dashed var(--ink-3);border-radius:0;vertical-align:3px;width:14px}
+.ph{border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--ink-3);font-size:13px;padding:16px;min-height:180px}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;border-bottom:1px solid var(--line);padding:6px 8px}
+table.t td{padding:6px 8px;border-bottom:1px solid var(--line)}
+table.t td.n,table.t th.n{text-align:right}
+.note{font-size:12px;color:var(--ink-3);margin-top:18px}
+.sec{grid-column:span 12;font-size:13px;font-weight:600;color:var(--anil);margin:10px 0 -4px;padding-left:10px;border-left:4px solid var(--anil)}
+.kpi.new,.panel.new{border-style:dashed;background:transparent}
+.kpi.new .v{color:var(--ink-3)}
+.nf{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:var(--ocre-soft);color:var(--ink);margin-top:4px}
+.cmp{font-size:12px;color:var(--ink-3);margin:0}
+footer.meta{max-width:1280px;margin:0 auto;padding:12px 24px 28px;display:flex;gap:8px 22px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line)}
+footer.meta strong{color:var(--ink-2);font-weight:600}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--ocre-soft);color:var(--ink)}
+@media (min-width:1100px){.top-in{flex-wrap:nowrap}nav.pages{flex-wrap:nowrap;white-space:nowrap}}
+@media (max-width:900px){.s3,.s4,.s5,.s6,.s7,.s8{grid-column:span 12}nav.pages{margin-left:0}.filters{margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header class="top"><div class="top-in"><div class="brand">Turismo no Alentejo<small>Pista Digital, Universidade de Évora</small></div><nav class="pages" aria-label="Dashboards"><a href="index.html">Início</a><a href="01_pulso_alentejo.html" aria-current="page">Pulso</a><a href="02_raio_x_concelho.html">Raio-X</a><a href="03_radar_mercados.html">Mercados</a><a href="04_mapa_oportunidades.html">Oportunidades</a><a href="05_alentejo_em_numeros.html">Em números</a><a href="06_barometro_empresario.html">Barómetro</a><a href="07_noites_e_quartos.html">Noites e Quartos</a></nav></div></header>
+<main><div class="head"><div><h1>Pulso do Alentejo</h1><p class="aud">Para decisores políticos, CCDR e Turismo do Alentejo: volume, sazonalidade e peso da região no país.</p></div><div class="filters"><label for="ano">Ano</label><select id="ano"><option>2025</option><option>2024</option><option>2023</option></select>
+<div class="tog" role="group" aria-label="Definição territorial"><button aria-pressed="true" data-t="2024">Alentejo NUTS 2024</button><button aria-pressed="false" data-t="2013">NUTS 2013 (com Lezíria)</button></div></div></div>
+<div class="grid">
+<h2 class="sec">Página 1: visão geral</h2>
+<div class="kpis">
+<div class="kpi"><p class="l">Dormidas</p><p class="v" id="k_dorm">3,42 M</p><p class="d up">+6,1% homólogo</p><p class="cmp">Portugal: +4,2%</p></div>
+<div class="kpi"><p class="l">Hóspedes</p><p class="v" id="k_hosp">1,88 M</p><p class="d up">+4,8%</p><p class="cmp">Portugal: +3,6%</p></div>
+<div class="kpi"><p class="l">Estada média</p><p class="v">1,82</p><p class="d up">+0,02 noites</p><p class="cmp">Portugal: 2,55</p></div>
+<div class="kpi"><p class="l">Quota nacional das dormidas</p><p class="v">4,1%</p><p class="d up">+0,1 p.p.</p><p class="cmp">a ganhar peso</p></div>
+<div class="kpi"><p class="l">Peso do mercado interno</p><p class="v">62%</p><p class="d">das dormidas</p><p class="cmp">Portugal: 30%</p></div>
+<div class="kpi"><p class="l">RevPAR</p><p class="v">51 €</p><p class="d up">+3,9%</p><p class="cmp">Portugal: 74 €</p></div>
+<div class="kpi new"><p class="l">Proveitos totais</p><p class="v">–</p><span class="nf">Nova fonte: INE proveitos</span></div>
+</div>
+<section class="panel s8"><h2>Sazonalidade mensal das dormidas</h2><p class="sub">Milhares de dormidas · ine_0009808_ds</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Ano selecionado</span><span><span class="sw dash"></span>2019</span></div>
+<div class="chart" style="height:240px"><canvas id="saz" role="img" aria-label="Dormidas mensais do ano selecionado face a 2019"></canvas></div></section>
+<section class="panel s4"><h2>Variação homóloga por NUTS III</h2><p class="sub">Dormidas · ine_0009877_ds</p>
+<div class="chart" style="height:262px"><canvas id="nuts3" role="img" aria-label="Crescimento das dormidas por sub-região"></canvas></div></section>
+<section class="panel s7"><h2>Sazonalidade mês × ano</h2><p class="sub">Milhares de dormidas; a cor mostra a intensidade · ine_0009808_ds</p><div id="hm"></div></section>
+<section class="panel s5"><h2>Territórios-chave</h2><p class="sub">Crescimento das dormidas; agrupamento próprio de concelhos</p>
+<div class="chart" style="height:200px"><canvas id="terr" role="img" aria-label="Crescimento das dormidas por território turístico"></canvas></div>
+<p class="sub" style="margin:8px 0 0">Alqueva: Reguengos, Mourão, Moura, Portel, Alandroal. Costa Vicentina: Odemira. Comporta: Grândola, Alcácer. Património UNESCO: Évora, Elvas.</p></section>
+<h2 class="sec">Página 2: Alentejo e Portugal</h2>
+<section class="panel s7"><h2>Evolução em índice (2019 = 100)</h2><p class="sub">Dormidas · ine_0009808_ds, soma das NUTS II para Portugal</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Alentejo</span><span><span class="sw dash"></span>Portugal</span><span><span class="sw" style="background:var(--ocre)"></span>Centro (região par)</span></div>
+<div class="chart" style="height:250px"><canvas id="b100" role="img" aria-label="Índice das dormidas do Alentejo, Portugal e Centro com base 2019"></canvas></div></section>
+<section class="panel s5"><h2>Posicionamento entre regiões</h2><p class="sub">Crescimento das dormidas vs estada média, NUTS II</p>
+<div class="chart" style="height:270px"><canvas id="pos" role="img" aria-label="Dispersão das regiões NUTS II com o Alentejo destacado"></canvas></div></section>
+<section class="panel s6"><h2>Mix de tipologias</h2><p class="sub">Quota dos quartos por tipo de alojamento · ine_0009874_ds</p>
+<div class="legend"><span><span class="sw" style="background:var(--anil)"></span>Alentejo</span><span><span class="sw" style="background:var(--ink-3)"></span>Portugal</span></div>
+<div class="chart" style="height:220px"><canvas id="mix" role="img" aria-label="Quota de quartos por tipologia no Alentejo e em Portugal"></canvas></div></section>
+<section class="panel s6"><h2>Indicadores de sazonalidade</h2><p class="sub">Valores mais baixos indicam menos sazonalidade</p>
+<table class="t"><thead><tr><th>Indicador</th><th class="n">Alentejo 2019</th><th class="n">Alentejo 2025</th><th class="n">Portugal 2025</th></tr></thead>
+<tbody><tr><td>Rácio pico/vale</td><td class="n">3,6</td><td class="n">3,4</td><td class="n">2,9</td></tr>
+<tr><td>% dormidas jul–set</td><td class="n">37%</td><td class="n">36%</td><td class="n">35%</td></tr>
+<tr><td>% dormidas jun–set</td><td class="n">48%</td><td class="n">46%</td><td class="n">45%</td></tr>
+<tr><td>Gini mensal</td><td class="n">0,21</td><td class="n">0,19</td><td class="n">0,16</td></tr></tbody></table></section>
+</div>
+</main><footer class="meta"><span><strong>Fonte</strong> INE, alojamento turístico (tabelas Pista Digital)</span><span><strong>Atualizado</strong> 31/10/2026</span><span><strong>Estado</strong> 2025 provisório, anos anteriores definitivos</span><span><strong>Território</strong> Alentejo NUTS II 2024, salvo indicação</span><span><strong>Mockup</strong> valores ilustrativos</span></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script><script>
+const V=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={anil:V('--anil'),ocre:V('--ocre'),oliva:V('--oliva'),neg:V('--neg'),ink2:V('--ink-2'),ink3:V('--ink-3'),grid:V('--grid'),surface:V('--surface'),soft:V('--anil-soft')};
+Chart.defaults.color=C.ink3;Chart.defaults.font.family='"Public Sans",system-ui,sans-serif';Chart.defaults.font.size=11;
+Chart.defaults.plugins.legend.display=false;Chart.defaults.maintainAspectRatio=false;Chart.defaults.responsive=true;
+Chart.defaults.animation={duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:400};
+const AX=(o={})=>({x:{grid:{display:false},ticks:{autoSkip:false},...(o.x||{})},y:{grid:{color:C.grid},border:{display:false},...(o.y||{})}});
+const HAX=(o={})=>({x:{grid:{color:C.grid},border:{display:false},...(o.x||{})},y:{grid:{display:false},...(o.y||{})}});
+const pct=v=>v+'%';const fmt=(v,d=0)=>Number(v).toLocaleString('pt-PT',{minimumFractionDigits:d,maximumFractionDigits:d});
+function heat(el,cols,rows,max,lw){let h='<div style="display:grid;grid-template-columns:'+(lw||110)+'px repeat('+cols.length+',minmax(0,1fr));gap:3px;font-size:11px">';
+h+='<div></div>'+cols.map(m=>'<div style="text-align:center;color:var(--ink-3)">'+m+'</div>').join('');
+rows.forEach(r=>{h+='<div style="color:var(--ink-2);align-self:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r[0]+'</div>'+r[1].map(v=>{const p=Math.round(v/max*100);return '<div style="height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--anil) '+p+'%,var(--anil-soft));color:'+(p>55?'var(--surface)':'var(--ink)')+'">'+fmt(v)+'</div>'}).join('')});
+document.getElementById(el).innerHTML=h+'</div>'}
+function alpha(hex,a){const h=hex.replace('#','');const n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+
+const M=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const Y={2025:[150,175,230,300,320,360,420,510,380,290,170,155],2024:[142,166,218,282,305,342,402,492,360,276,160,148],2023:[135,158,205,270,290,330,390,480,345,262,152,140]};
+const saz=new Chart(document.getElementById('saz'),{type:'line',data:{labels:M,datasets:[
+{data:Y[2025],borderColor:C.anil,backgroundColor:alpha(C.anil,.1),fill:true,borderWidth:2,pointRadius:0,tension:.3},
+{data:[120,140,185,245,265,300,350,430,310,235,135,125],borderColor:C.ink3,borderDash:[5,4],borderWidth:2,pointRadius:0,tension:.3}]},options:{scales:AX(),interaction:{mode:'index',intersect:false}}});
+const N3=[['Alentejo Litoral',8.4],['Alentejo Central',6.2],['Alto Alentejo',3.1],['Baixo Alentejo',-1.2]],N3L=N3.concat([['Lezíria do Tejo',4.0]]);
+const nuts=new Chart(document.getElementById('nuts3'),{type:'bar',data:{labels:N3.map(r=>r[0]),datasets:[{data:N3.map(r=>r[1]),backgroundColor:N3.map(r=>r[1]<0?C.neg:C.anil),borderRadius:4,barThickness:20}]},options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:pct}}})}});
+heat('hm','JFMAMJJASOND'.split(''),[['2019',[120,140,185,245,265,300,350,430,310,235,135,125]],['2020',[115,130,70,8,25,90,210,330,180,110,40,45]],['2021',[40,30,60,120,190,240,320,420,290,210,120,110]],
+['2022',[110,130,180,250,270,310,370,460,330,250,140,130]],['2023',Y[2023]],['2024',Y[2024]],['2025',Y[2025]]],510,50);
+const TR=[['Alqueva',11.2],['Costa Vicentina',9.0],['Comporta',7.1],['Património UNESCO',4.8],['Serra de São Mamede',3.9]];
+new Chart(document.getElementById('terr'),{type:'bar',data:{labels:TR.map(r=>r[0]),datasets:[{data:TR.map(r=>r[1]),backgroundColor:C.ocre,borderRadius:4,barThickness:18}]},options:{indexAxis:'y',scales:HAX({x:{grid:{color:C.grid},ticks:{callback:pct}}})}});
+const YR=['2019','2020','2021','2022','2023','2024','2025'];
+new Chart(document.getElementById('b100'),{type:'line',data:{labels:YR,datasets:[
+{data:[100,58,82,110,116,119,124],borderColor:C.anil,borderWidth:2,pointRadius:0,tension:.25},
+{data:[100,37,55,102,112,116,121],borderColor:C.ink3,borderDash:[5,4],borderWidth:2,pointRadius:0,tension:.25},
+{data:[100,50,72,104,109,112,115],borderColor:C.ocre,borderWidth:2,pointRadius:0,tension:.25}]},options:{scales:AX()}});
+const R=[['Norte',5.2,1.75],['Centro',3.8,1.70],['A. M. Lisboa',4.1,2.30],['Alentejo',6.1,1.82],['Algarve',2.4,4.10],['Açores',7.5,2.90],['Madeira',3.0,4.70]];
+new Chart(document.getElementById('pos'),{type:'scatter',data:{datasets:[{data:R.map(r=>({x:r[1],y:r[2],n:r[0]})),pointRadius:R.map(r=>r[0]==='Alentejo'?9:6),
+backgroundColor:R.map(r=>r[0]==='Alentejo'?C.ocre:alpha(C.ink3,.5)),borderColor:C.surface,borderWidth:2}]},
+plugins:[{id:'lbl',afterDatasetsDraw(c){const x=c.ctx;x.save();x.font='11px "Public Sans",sans-serif';c.getDatasetMeta(0).data.forEach((p,i)=>{x.fillStyle=R[i][0]==='Alentejo'?C.ocre:C.ink2;x.fillText(R[i][0],p.x+10,p.y+4)});x.restore()}}],
+options:{layout:{padding:{right:60}},scales:{x:{min:1,max:9,title:{display:true,text:'Crescimento das dormidas (%)'},grid:{color:C.grid}},y:{min:1.2,max:5.2,title:{display:true,text:'Estada média (noites)'},grid:{color:C.grid}}}}});
+new Chart(document.getElementById('mix'),{type:'bar',data:{labels:['Hotelaria','Alojamento local','TER e habitação'],datasets:[
+{data:[52,24,24],backgroundColor:C.anil,borderRadius:4,barThickness:22},{data:[61,33,6],backgroundColor:alpha(C.ink3,.6),borderRadius:4,barThickness:22}]},options:{scales:AX({y:{grid:{color:C.grid},ticks:{callback:pct}}})}});
+document.getElementById('ano').addEventListener('change',e=>{saz.data.datasets[0].data=Y[e.target.value];saz.update()});
+document.querySelectorAll('.tog button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tog button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+const d=b.dataset.t==='2013'?N3L:N3;nuts.data.labels=d.map(r=>r[0]);nuts.data.datasets[0].data=d.map(r=>r[1]);nuts.data.datasets[0].backgroundColor=d.map(r=>r[1]<0?C.neg:C.anil);nuts.update();
+document.getElementById('k_dorm').textContent=b.dataset.t==='2013'?'4,05 M':'3,42 M';document.getElementById('k_hosp').textContent=b.dataset.t==='2013'?'2,31 M':'1,88 M'}));
+</script></body></html>

@@ -1,0 +1,110 @@
+/// Facto INE 0009812: Hóspedes por NUTS II (NUTS 2013), tipo de alojamento e mês. Origem: public.ine_0009812_ds. Todas as NUTS II (Portugal = soma das regiões). Mantém a linha Total do INE por tipo. Liga a 'Região NUTS II', não a 'Geografia': slicers de município ou NUTS III não o filtram.
+table 'Hóspedes mensais por tipo de alojamento (NUTS 2013)'
+	lineageTag: 38b4dbac-4fbf-568f-8129-97ade2cb032e
+
+	column nuts_i
+		dataType: string
+		isHidden
+		lineageTag: 8b36968a-f5bc-5f24-b63c-72b5ad04a25a
+		summarizeBy: none
+		sourceColumn: nuts_i
+
+	column nuts_ii
+		dataType: string
+		isHidden
+		lineageTag: f4a0f259-7ea9-5483-91a3-a78f467dfb77
+		summarizeBy: none
+		sourceColumn: nuts_ii
+
+	column tipo_alojamento
+		dataType: string
+		isHidden
+		lineageTag: f68c9505-6aa0-57ef-9555-1c6a10dd5d0d
+		summarizeBy: none
+		sourceColumn: tipo_alojamento
+
+	column subtipo_alojamento
+		dataType: string
+		isHidden
+		lineageTag: 02a1d54e-3f78-5883-84b1-d399aeb189d0
+		summarizeBy: none
+		sourceColumn: subtipo_alojamento
+
+	column ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fbb6d52f-dd44-541c-a6d2-880c0811bd89
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: string
+		isHidden
+		lineageTag: 869017a3-e4b2-5a68-8446-07707ae869c6
+		summarizeBy: none
+		sourceColumn: mes
+
+	/// Primeiro dia do mês, usado para ligar ao Calendário.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 433dda5b-bc1f-5c9e-b40e-498e1c9a975e
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hospedes
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 3c8b65bd-bb1e-57aa-93d7-4116185d084c
+		summarizeBy: none
+		sourceColumn: hospedes
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 8564fae7-9d70-53eb-9af0-4ab1fca4c5b8
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column NutsIIKey
+		dataType: string
+		isHidden
+		lineageTag: 0c95b4c4-d096-5652-8123-ebca0ab2b13e
+		summarizeBy: none
+		sourceColumn: NutsIIKey
+
+	/// Chave tipo|subtipo para a dimensão 'Tipo de alojamento'.
+	column TipoKey
+		dataType: string
+		isHidden
+		lineageTag: f128a7cc-1c9a-4159-a2e7-1a8dffc46c1c
+		summarizeBy: none
+		sourceColumn: TipoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Hóspedes mensais por tipo de alojamento (NUTS 2013)' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Tabela = Origem{[Schema = "public", Item = "ine_0009812_ds"]}[Data],
+				    Regioes = Table.SelectRows(Tabela, each [nuts_ii] <> "Total"),
+				    ComData = Table.AddColumn(Regioes, "Data", each #date([ano], Number.FromText([mes]), 1), type date),
+				    NutsII = Table.AddColumn(ComData, "NutsIIKey", each [nuts_i] & "|" & [nuts_ii], type text),
+				    TipoKey = Table.AddColumn(NutsII, "TipoKey", each [tipo_alojamento] & "|" & [subtipo_alojamento] & "|Total", type text),
+				    Colunas = Table.SelectColumns(TipoKey, {"nuts_i", "nuts_ii", "tipo_alojamento", "subtipo_alojamento", "ano", "mes", "Data", "hospedes", "update_date", "NutsIIKey", "TipoKey"})
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table

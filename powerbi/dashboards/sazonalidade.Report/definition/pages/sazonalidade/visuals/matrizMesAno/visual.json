@@ -5,8 +5,8 @@
     "x": 9.09952606635071,
     "y": 183.12796208530807,
     "z": 2000,
-    "height": 441.32701421800948,
-    "width": 631.27962085308059,
+    "height": 441.3270142180095,
+    "width": 631.2796208530806,
     "tabOrder": 2000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Calendário"
+                      "Entity": "Ano"
                     }
                   },
                   "Property": "Ano"
                 }
               },
-              "queryRef": "Calendário.Ano",
+              "queryRef": "Ano.Ano",
               "nativeQueryRef": "Ano",
               "active": true
             }
@@ -58,14 +58,15 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Dormidas mensais por segmento (0010735)"
+                      "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Dormidas mensais (segmento)"
+                  "Property": "DormidasMensaisSegmento"
                 }
               },
-              "queryRef": "Dormidas mensais por segmento (0010735).Dormidas mensais (segmento)",
-              "nativeQueryRef": "Dormidas mensais (segmento)"
+              "queryRef": "_Medidas.DormidasMensaisSegmento",
+              "nativeQueryRef": "DormidasMensaisSegmento",
+              "displayName": "Dormidas mensais (segmento)"
             }
           ]
         }
@@ -101,10 +102,10 @@
                         "Measure": {
                           "Expression": {
                             "SourceRef": {
-                              "Entity": "Dormidas mensais por segmento (0010735)"
+                              "Entity": "_Medidas"
                             }
                           },
-                          "Property": "Dormidas mensais (segmento)"
+                          "Property": "DormidasMensaisSegmento"
                         }
                       },
                       "FillRule": {
@@ -153,7 +154,7 @@
             }
           },
           "selector": {
-            "metadata": "Dormidas mensais por segmento (0010735).Dormidas mensais (segmento)"
+            "metadata": "_Medidas.DormidasMensaisSegmento"
           }
         },
         {
@@ -167,10 +168,10 @@
                         "Measure": {
                           "Expression": {
                             "SourceRef": {
-                              "Entity": "Dormidas mensais por segmento (0010735)"
+                              "Entity": "_Medidas"
                             }
                           },
-                          "Property": "Dormidas mensais (segmento)"
+                          "Property": "DormidasMensaisSegmento"
                         }
                       },
                       "FillRule": {
@@ -212,7 +213,7 @@
                 }
               }
             ],
-            "metadata": "Dormidas mensais por segmento (0010735).Dormidas mensais (segmento)"
+            "metadata": "_Medidas.DormidasMensaisSegmento"
           }
         }
       ],

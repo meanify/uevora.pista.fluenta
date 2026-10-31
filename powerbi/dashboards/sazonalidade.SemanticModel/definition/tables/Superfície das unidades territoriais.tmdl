@@ -1,0 +1,50 @@
+/// Facto INE 0008350: Superfície (km²) por município e ano. Origem: public.ine_0008350_ds. Todo o país, só linhas de município.
+table 'Superfície das unidades territoriais'
+	lineageTag: 9e429e81-ccc7-53da-9c2b-92876bc80bdf
+
+	column ano
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b89d11c2-5b7a-5f2c-8b41-0f05f1b7fde9
+		summarizeBy: none
+		sourceColumn: ano
+
+	column superficie_unidades_territoriais
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 4aa72828-67f1-5eec-abb9-38749ca03511
+		summarizeBy: none
+		sourceColumn: superficie_unidades_territoriais
+
+	column update_date
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: c7f45299-deed-566d-95f9-8923afc2f396
+		summarizeBy: none
+		sourceColumn: update_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column GeoKey
+		dataType: string
+		isHidden
+		lineageTag: 7090dc09-7cf7-5587-b492-61897b25ecaa
+		summarizeBy: none
+		sourceColumn: GeoKey
+
+	partition 'Superfície das unidades territoriais' = m
+		mode: import
+		source =
+				let
+				    Origem = PostgreSQL.Database(Servidor, BaseDados),
+				    Tabela = Origem{[Schema = "public", Item = "ine_0008350_ds"]}[Data],
+				    Municipios = Table.SelectRows(Tabela, each [municipio] <> "Total"),
+				    GeoKey = Table.AddColumn(Municipios, "GeoKey", each [nuts_i] & "|" & [nuts_ii] & "|" & [nuts_iii] & "|" & [distrito] & "|" & [municipio], type text),
+				    Colunas = Table.SelectColumns(GeoKey, {"ano", "superficie_unidades_territoriais", "update_date", "GeoKey"})
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table
