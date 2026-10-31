@@ -200,9 +200,67 @@ plus `ano`. Residence labels are `bpchar(128)` for 9183 and `bpchar(64)` for
 and `bpchar(64)` for 9874 and 9876. Indicator 8350 has no category dimension
 and allows 128 characters for district/municipality labels.
 
+INE flows with accommodation-type columns apply the former Power BI
+replacements before CSV/database output. Case-insensitive `tipo_alojamento` equal to
+`alojamento local` sets both `subtipo_alojamento` and `classificacao` to
+`Alojamento Local`. Types containing `rural` set both fields to
+`Turismo no Espaço Rural e de Habitação`; types containing `habitação` without
+`rural` replace only `classificacao`. Other values and `tipo_alojamento` itself
+remain unchanged. This applies to 9873, 9874, 9876, 9877, 9880, and 9929;
+monthly regional flows 9808, 9812, and 12093 normalize only
+`subtipo_alojamento` because they have no `classificacao` column.
+
+Accommodation flows keep the API total `T` (all three accommodation columns
+`Total`) and the most detailed categories: `dim_3` codes without
+subcategories in the metadata (e.g. `010115`, `0103`, `02`, `03`).
+Intermediate codes (`01`, `0101`, …) are dropped. INE suppresses many
+municipal values for confidentiality ("…"), so detail rows do not add up to
+`T`: use `tipo_alojamento = "Total"` for totals and exclude it for
+breakdowns.
+Levels below a detail code repeat its own label, so `0103`
+stores `Pousadas/Quintas da Madeira` as `classificacao`.
+
+Flows with a `municipio` column keep only rows whose API `geocod` is a
+seven-character municipality code, excluding Portugal, NUTS I, II and III
+aggregates from both CSV and database output.
+This applies to annual flows 8350, 9183, 9873, 9874, 9876, 9877, 9880, 9929,
+9930, and 11140, plus monthly municipal flows 10735 and 10736. Regional
+flows 9808, 9812, and 12093 have no municipality column and keep only
+two-character NUTS II codes, dropping Portugal and NUTS I rows. Segment labels in 10735/10736 are unchanged.
+Shared runners apply filtering after validation, and all output modes use the
+same result. Normalization that produces duplicate keys fails explicitly;
+rows are never silently deduplicated.
+
+Existing stored data is not automatically changed: rerun the desired periods
+to replace them with normalized, municipality-only data where applicable.
+Filtered-empty periods retain CSV headers and preserve existing database rows.
+
+To rerun **all registered INE flows for every published period**, use
+[reload-ine-flows.sh](scripts/reload-ine-flows.sh) from the repository root:
+
+```bash
+# Preview the commands (no network or database access):
+sh scripts/reload-ine-flows.sh
+# Execute database replacements using configured credentials:
+sh scripts/reload-ine-flows.sh --database
+```
+
+The script discovers indicators from the CLI registry, using `--all-years`
+for annual flows and `--all-years-months` for monthly flows. It uses
+`.venv/bin/python` by default; set `PYTHON` to an alternative interpreter if
+needed. Existing environment variables and the CLI's optional `.env` files
+provide database configuration; the script contains no credentials.
+
+Runs are sequential and stop on the first error. Each nonempty period replaces
+that period's stored rows transactionally, including removing old geographic
+aggregates. This is **not a whole-database reset**: tables are never truncated,
+empty results preserve existing data, and periods no longer published by INE
+are not deleted. Earlier periods remain committed if a later period fails;
+rerunning safely replaces them again. Full-history runs can take a long time.
+
 Metadata verified on 2026-10-24 lists these available annual periods:
 
-| Indicators | Published periods | Verified single-period CSV |
+| Indicators | Published periods | Previously verified rows before municipality filtering |
 | --- | --- | --- |
 | 9874, 9876, 9877, 9880 | 2017–2025 | 2025: 8,600 rows per indicator |
 | 9930, 11140 | 2018–2025 | 2025: 17,200 rows per indicator |

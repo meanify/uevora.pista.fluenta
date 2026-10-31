@@ -12,7 +12,7 @@ from sqlalchemy import create_engine, inspect, text
 from pistadigital.cli import ine_flows as cli
 from pistadigital.utils import ine_annual as annual
 from pistadigital.utils import ine_api, ine_output
-from pistadigital.utils.ine_transform import metric_value
+from pistadigital.utils.ine_transform import filter_detail_rows, metric_value
 
 
 INDICATORS = {
@@ -113,7 +113,9 @@ class AnnualFlowTests(unittest.TestCase):
             module = self.module(code)
             with self.subTest(code=code):
                 frame = self.process(module, [
-                    record(), record(geocod="PT", dim_3="T", valor=None),
+                    record(), record(
+                        geocod="11A0116", valor=None,
+                    ),
                     record(geocod="11A1304", valor="0"),
                     record(geocod="2004201", valor="2,5"),
                 ])
@@ -135,8 +137,11 @@ class AnnualFlowTests(unittest.TestCase):
                 elif "tipo_alojamento" in extra_lengths:
                     self.assertEqual(frame.iloc[0].tolist()[5:8],
                                      ["Hotelaria", "Hotéis", "5 estrelas"])
-                self.assertEqual(frame.iloc[1].tolist()[:5],
-                                 ["Portugal"] + ["Total"] * 4)
+                self.assertEqual(
+                    frame.iloc[1].tolist()[:5],
+                    ["Continente", "Norte", "Área Metropolitana do Porto",
+                     "Aveiro", "São João da Madeira"],
+                )
                 self.assertTrue(pd.isna(frame.iloc[1][metric]))
                 self.assertEqual(frame.iloc[2]["nuts_iii"],
                                  "Área Metropolitana do Porto")
@@ -159,6 +164,125 @@ class AnnualFlowTests(unittest.TestCase):
                 self.assertIn(f"{metric} float4 NULL", module.CREATE_TABLE_SQL)
                 self.assertIn("create_date date NULL", module.CREATE_TABLE_SQL)
                 self.assertIn("update_date date NULL", module.CREATE_TABLE_SQL)
+
+    def test_9880_powerbi_accommodation_replacements(self):
+        module = self.module("0009880")
+        rural_label = "Turismo no Espaço Rural e de Habitação"
+        cases = [
+            ("ALOJAMENTO LOCAL", "Alojamento Local", "Alojamento Local"),
+            ("Turismo RURAL", rural_label, rural_label),
+            ("Turismo rural e de habitação", rural_label, rural_label),
+            ("Turismo de HABITAÇÃO", "Subtype", rural_label),
+            ("Hotelaria", "Subtype", "Classification"),
+            ("Outro alojamento local", "Subtype", "Classification"),
+        ]
+        for label, subtype, classification in cases:
+            with self.subTest(label=label):
+                labels = {
+                    "01": label, "0101": "Subtype", "010115": "Classification",
+                }
+                result = module.transform_dimensions(record(dim_3="010115"), {
+                    "2": GEOGRAPHY, "3": labels,
+                })
+                self.assertEqual(result["tipo_alojamento"], label)
+                self.assertEqual(result["subtipo_alojamento"], subtype)
+                self.assertEqual(result["classificacao"], classification)
+                self.assertEqual(labels["0101"], "Subtype")
+                self.assertEqual(labels["010115"], "Classification")
+
+    def test_accommodation_replacements_in_processed_frames(self):
+        for code in ("0009876", "0009877", "0009880"):
+            with self.subTest(code=code):
+                frame = self.process(self.module(code), [
+                    record(dim_3="02", valor="0"),
+                    record(dim_3="03", valor="2,5"),
+                    record(dim_3="T"),
+                    record(dim_3="010115"),
+                ])
+                expected = [
+                    "Alojamento Local", "Turismo no Espaço Rural e de Habitação",
+                ]
+                for column in ("subtipo_alojamento", "classificacao"):
+                    self.assertEqual(frame[column].tolist()[:2], expected)
+                self.assertEqual(frame["tipo_alojamento"].tolist(), [
+                    ACCOMMODATION[key] for key in ("02", "03", "T", "01")
+                ])
+                self.assertEqual(frame.iloc[2]["subtipo_alojamento"], "Total")
+                self.assertEqual(frame.iloc[2]["classificacao"], "Total")
+                self.assertEqual(frame.iloc[3]["subtipo_alojamento"], "Hotéis")
+                self.assertEqual(frame.iloc[3]["classificacao"], "5 estrelas")
+                self.assertEqual(frame.iloc[0][self.module(code).VALUE_COLUMN], 0)
+                self.assertEqual(frame.iloc[1][self.module(code).VALUE_COLUMN], 2.5)
+
+    def test_detail_filter_uses_api_codes(self):
+        geocodes = ("PT", "1", "11", "111", "1111601")
+        records = [{"geocod": geocode, "dim_3": "02"} for geocode in geocodes]
+        frame = pd.DataFrame({"municipio": ["Total"] * 4 + ["Arcos"]})
+        self.assertEqual(filter_detail_rows(frame, records, {})["municipio"].tolist(),
+                         ["Arcos"])
+        codes = ("T", "01", "0101", "010115", "02", "03")
+        records = [{"geocod": "11", "dim_3": code} for code in codes]
+        frame = pd.DataFrame({"tipo_alojamento": codes})
+        self.assertEqual(
+            filter_detail_rows(frame, records, {"3": ACCOMMODATION})["tipo_alojamento"].tolist(),
+            ["T", "010115", "02", "03"],
+        )
+        regional = pd.DataFrame({"nuts_ii": ["Total", "Total", "Norte", "x", "x"]})
+        self.assertEqual(
+            filter_detail_rows(regional, [{"geocod": g} for g in geocodes], {})
+            ["nuts_ii"].tolist(), ["Norte"],
+        )
+
+    def test_geography_filter_is_applied_before_outputs(self):
+        rows = [
+            record(geocod=geocode)
+            for geocode in ("PT", "1", "11", "111", "1111601", "11A1304")
+        ]
+        for code in INDICATORS:
+            with self.subTest(code=code), \
+                    patch.object(annual, "replace_period_data") as database, \
+                    patch.object(annual, "write_csv") as csv:
+                module = self.module(code)
+                frame = self.process(module, rows, gravar_bd=True)
+                expected_count = 2
+                self.assertEqual(len(frame), expected_count)
+                self.assertEqual(frame.index.tolist(), list(range(expected_count)))
+                self.assertEqual(frame["municipio"].tolist(),
+                                 ["Arcos de Valdevez", "Maia"])
+                pd.testing.assert_frame_equal(database.call_args.args[0], frame)
+                csv.assert_not_called()
+        module = self.module("0009880")
+        with patch.object(annual, "fetch_indicator_metadata",
+                          return_value=accommodation_metadata()), \
+                patch.object(annual, "fetch_annual_indicator_data",
+                             return_value=[{"Dados": {"2025": [
+                                 record(geocod="1111601", dim_3="02"),
+                                 record(geocod="PT", dim_3="T"),
+                             ]}}]), \
+                patch.object(annual, "replace_period_data") as database, \
+                patch.object(annual, "write_csv") as csv:
+            frame = module.processar_indicador_ine(ano=2025, gravar_bd=True)
+            self.assertEqual(len(frame), 1)
+            self.assertEqual(frame.iloc[0]["classificacao"], "Alojamento Local")
+            pd.testing.assert_frame_equal(database.call_args.args[0], frame)
+            pd.testing.assert_frame_equal(csv.call_args.args[0], frame)
+
+    def test_9880_filtered_empty_csv_keeps_schema_without_database_access(self):
+        module = self.module("0009880")
+        with tempfile.TemporaryDirectory() as directory, \
+                patch.object(annual, "fetch_indicator_metadata",
+                             return_value=accommodation_metadata()), \
+                patch.object(annual, "fetch_annual_indicator_data",
+                             return_value=[{"Dados": {"2025": [
+                                 record(geocod="PT", dim_3="T"),
+                             ]}}]), \
+                patch.object(ine_output, "get_engine",
+                             side_effect=AssertionError("DB access")):
+            output = Path(directory) / "out.csv"
+            frame = module.processar_indicador_ine(ano=2025, caminho_csv=output)
+            self.assertTrue(frame.empty)
+            self.assertEqual(pd.read_csv(output).columns.tolist(),
+                             module.SCHEMA_COLUMNS)
 
     def test_null_markers_zero_and_malformed_metrics(self):
         for marker in (None, "", "..", "s.r.", "x"):

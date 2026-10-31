@@ -99,24 +99,30 @@ class LegacyFlowTests(unittest.TestCase):
         for code, (metric, year, *_) in LEGACY.items():
             with self.subTest(code=code):
                 frame = self.process(code, [
-                    record(), record("0", geocod="PT", dim_3="T"),
-                    record("..", geocod="1", dim_3="01"),
-                    record("x", geocod="11", dim_3="0101"),
-                    record(None, geocod="111", dim_3="02"),
+                    record(), record("0", dim_3="T"),
+                    record("..", dim_3="01"),
+                    record("x", dim_3="0101"),
+                    record(None, dim_3="02"),
                     record("1", geocod="11A1304"),
                     record("2", geocod="2004201"),
+                    *[record(geocod=geocode, dim_3="T")
+                      for geocode in ("PT", "1", "11", "111")],
                 ])
                 self.assertEqual(frame.columns.tolist(), self.module(code).SCHEMA_COLUMNS)
                 self.assertEqual(frame.iloc[0].tolist()[:8], [
                     "Continente", "Norte", "Alto Minho", "Viana do Castelo",
                     "Arcos de Valdevez", "Hotelaria", "Hoteis", "5 estrelas",
                 ])
-                self.assertEqual(frame.iloc[1].tolist()[:8], ["Portugal"] + ["Total"] * 7)
+                self.assertEqual(len(frame), 5)
+                self.assertEqual(frame.iloc[1].tolist()[5:8], ["Total"] * 3)
+                self.assertEqual(frame.iloc[2].tolist()[5:8], [
+                    "Alojamento local", "Alojamento Local", "Alojamento Local",
+                ])
                 self.assertEqual(frame.iloc[0][metric], 12.5)
                 self.assertEqual(frame.iloc[1][metric], 0)
-                self.assertTrue(frame[metric].iloc[2:5].isna().all())
-                self.assertEqual(frame.iloc[5]["nuts_iii"], "Porto")
-                self.assertEqual(frame.iloc[6]["distrito"], "São Miguel")
+                self.assertTrue(pd.isna(frame.iloc[2][metric]))
+                self.assertEqual(frame.iloc[3]["nuts_iii"], "Porto")
+                self.assertEqual(frame.iloc[4]["distrito"], "São Miguel")
                 self.assertTrue(frame.ano.eq(year).all())
                 self.assertRegex(frame.iloc[0]["create_date"], r"^\d{4}-\d{2}-\d{2}$")
                 self.assertTrue(frame.create_date.eq(frame.update_date).all())

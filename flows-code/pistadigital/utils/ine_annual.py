@@ -12,7 +12,7 @@ from pistadigital.utils.ine_api import (
 from pistadigital.utils.ine_output import (
     replace_period_data, validate_annual_frame, validate_period, write_csv,
 )
-from pistadigital.utils.ine_transform import metric_value
+from pistadigital.utils.ine_transform import filter_detail_rows, metric_value
 
 
 logger = logging.getLogger("pista.fluenta.ine")
@@ -53,6 +53,7 @@ def process_annual_indicator(
             for row in records
         ], columns=columns)
         validate_annual_frame(frame, columns, lengths, ano)
+        frame = filter_detail_rows(frame, records, dimensions)
     except (KeyError, TypeError, ValueError) as exc:
         raise RuntimeError(f"Invalid INE response ({varcd}, {ano}): {exc}") from exc
     if gravar_bd:

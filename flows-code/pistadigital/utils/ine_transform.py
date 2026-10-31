@@ -65,12 +65,49 @@ def nuts_i_ii_accommodation_fields(row, dimensions):
     }
 
 
+def filter_detail_rows(frame, records, dimensions):
+    """Drop API aggregates: coarser geocodes and intermediate accommodation codes.
+
+    The accommodation total ``T`` is kept because INE suppresses many detailed
+    municipal values, so the detail rows do not add up to it.
+    """
+    geocode_length = (
+        7 if "municipio" in frame.columns else 2 if "nuts_ii" in frame.columns else None
+    )
+    accommodation = "tipo_alojamento" in frame.columns
+    codes = dimensions.get("3", {})
+    leaves = {"T"} | {code for code in codes if code != "T" and not any(
+        other != code and other.startswith(code) for other in codes
+    )}
+    keep = [
+        (geocode_length is None
+         or (row["geocod"] != "PT" and len(row["geocod"]) == geocode_length))
+        and (not accommodation or row["dim_3"] in leaves)
+        for row in records
+    ]
+    return frame.loc[keep].reset_index(drop=True)
+
+
 def accommodation_fields(code, labels):
-    """Map the verified INE accommodation hierarchy without dropping totals."""
+    """Map the INE hierarchy and normalize local/rural accommodation labels.
+
+    Levels below the API code repeat that code's own label.
+    """
     if code not in labels or (code != "T" and len(code) not in (2, 4, 6)):
         raise ValueError(f"Unsupported accommodation code: {code!r}")
-    return {
-        "tipo_alojamento": labels[code[:2]] if code != "T" else labels[code],
-        "subtipo_alojamento": labels[code[:4]] if len(code) >= 4 else "Total",
-        "classificacao": labels[code] if len(code) == 6 else "Total",
+    fields = {
+        "tipo_alojamento": labels[code[:2]],
+        "subtipo_alojamento": labels[code[:4]],
+        "classificacao": labels[code],
     }
+    accommodation_type = fields["tipo_alojamento"].lower()
+    if accommodation_type == "alojamento local":
+        fields["classificacao"] = "Alojamento Local"
+        fields["subtipo_alojamento"] = "Alojamento Local"
+    else:
+        rural_label = "Turismo no Espaço Rural e de Habitação"
+        if "rural" in accommodation_type or "habitação" in accommodation_type:
+            fields["classificacao"] = rural_label
+        if "rural" in accommodation_type:
+            fields["subtipo_alojamento"] = rural_label
+    return fields
