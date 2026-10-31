@@ -16,9 +16,7 @@ table 'Comparação temporal'
 				    SELECTEDMEASURE(),
 				    VAR AnoAtual = SELECTEDVALUE('Ano'[Ano])
 				    VAR AnoBase = COALESCE(SELECTEDVALUE('Ano base'[Ano]), AnoAtual - 1)
-				    VAR ValorAtual = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal')))
-				    VAR ValorBase = IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal'), REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoBase))
-				    RETURN ValorBase
+				    RETURN IF(NOT ISBLANK(AnoAtual), CALCULATE(SELECTEDMEASURE(), REMOVEFILTERS('Comparação temporal'), REMOVEFILTERS('Ano'), 'Ano'[Ano] = AnoBase))
 				)
 			ordinal: 1
 

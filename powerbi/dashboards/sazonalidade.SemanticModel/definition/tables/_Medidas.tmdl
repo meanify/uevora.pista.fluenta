@@ -10,12 +10,10 @@ table _Medidas
 
 	/// Último ano com superfície publicada (2022 enquanto o INE não publicar a série NUTS-2024). É o ano que todas as medidas «por km²» usam.
 	measure AnoSuperficie =
-			MAXX(
-			    FILTER(
-			        CALCULATETABLE(VALUES('Ano'[Ano]), REMOVEFILTERS('Ano')),
-			        NOT ISBLANK([SuperficieKm2])
-			    ),
-			    'Ano'[Ano]
+			CALCULATE(
+			    MAX('Superfície das unidades territoriais'[ano]),
+			    REMOVEFILTERS('Ano'),
+			    NOT ISBLANK('Superfície das unidades territoriais'[superficie_unidades_territoriais])
 			)
 		formatString: #,0
 		displayFolder: Território
@@ -67,9 +65,10 @@ table _Medidas
 	/// Capacidade anual: quartos × dias do ano, somada ano a ano para suportar várias seleções de ano.
 	measure NoitesQuartoDisponiveis =
 			SUMX(
-			VALUES('Ano'[Ano]),
-			CALCULATE([Quartos])
-			* (DATEDIFF(DATE('Ano'[Ano], 1, 1), DATE('Ano'[Ano], 12, 31), DAY) + 1)
+			    VALUES('Ano'[Ano]),
+			    VAR AnoLinha = 'Ano'[Ano]
+			    VAR DiasNoAno = DATEDIFF(DATE(AnoLinha, 1, 1), DATE(AnoLinha, 12, 31), DAY) + 1
+			    RETURN [Quartos] * DiasNoAno
 			)
 		formatString: #,0
 		displayFolder: Oferta
@@ -276,11 +275,9 @@ table _Medidas
 	measure PercentilPressao =
 			VAR SelKey = SELECTEDVALUE('Município selecionado'[GeoKey])
 			VAR Valores =
-			    ADDCOLUMNS(
-			        CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia')),
-			        "@Valor",
-			            VAR Chave = 'Geografia'[GeoKey]
-			            RETURN CALCULATE([DormidasPorKm2], REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave)
+			    CALCULATETABLE(
+			        ADDCOLUMNS(VALUES('Geografia'[GeoKey]), "@Valor", [DormidasPorKm2]),
+			        REMOVEFILTERS('Geografia')
 			    )
 			VAR ComDados = FILTER(Valores, NOT ISBLANK([@Valor]))
 			VAR ValorSel = MAXX(FILTER(ComDados, 'Geografia'[GeoKey] = SelKey), [@Valor])
@@ -302,15 +299,10 @@ table _Medidas
 
 	/// Quantos municípios da região filtrada publicam dormidas por km². Denominador de [PercentilPressao].
 	measure MunicipiosComDadosPressao =
-			VAR Municipios = CALCULATETABLE(VALUES('Geografia'[GeoKey]), REMOVEFILTERS('Geografia'))
-			RETURN
-			    COUNTROWS(
-			        FILTER(
-			            Municipios,
-			            VAR Chave = 'Geografia'[GeoKey]
-			            RETURN NOT ISBLANK(CALCULATE([DormidasPorKm2], REMOVEFILTERS('Geografia'), 'Geografia'[GeoKey] = Chave))
-			        )
-			    )
+			CALCULATE(
+			    COUNTROWS(FILTER(VALUES('Geografia'[GeoKey]), NOT ISBLANK([DormidasPorKm2]))),
+			    REMOVEFILTERS('Geografia')
+			)
 		formatString: #,0
 		displayFolder: Pressão turística
 		lineageTag: 70a67312-3fbb-580f-9da2-c43cb8ff6543
@@ -340,8 +332,7 @@ table _Medidas
 			        REMOVEFILTERS('Calendário'),
 			        Anos
 			    )
-			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
-			RETURN DIVIDE([DormidasMensaisSegmento], MAXX(Meses, [@Dormidas])) * 100
+			RETURN DIVIDE([DormidasMensaisSegmento], MAXX(PorMes, [@Dormidas])) * 100
 		displayFolder: Sazonalidade
 		formatString: #,0
 		lineageTag: d815582b-9136-46cf-8e93-34d5d62343a4
@@ -525,13 +516,13 @@ table _Medidas
 
 	/// Crescimento das dormidas menos crescimento dos quartos desde o 'Ano base', em p.p. Em branco com menos de 20 quartos no ano base (taxas instáveis).
 	measure GapOfertaProcura =
-			VAR CrescDormidas = CALCULATE([DormidasTipo], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
-			VAR CrescQuartos = CALCULATE([Quartos], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
 			VAR QuartosBase = CALCULATE([Quartos], 'Comparação temporal'[Período de comparação] = "Valor no ano base")
 			RETURN
 			    IF(
-			        QuartosBase >= 20 && NOT ISBLANK(CrescDormidas) && NOT ISBLANK(CrescQuartos),
-			        (CrescDormidas - CrescQuartos) * 100
+			        QuartosBase >= 20,
+			        VAR CrescQuartos = DIVIDE([Quartos] - QuartosBase, QuartosBase)
+			        VAR CrescDormidas = CALCULATE([DormidasTipo], 'Comparação temporal'[Período de comparação] = "Variação face ao ano base")
+			        RETURN IF(NOT ISBLANK(CrescDormidas), (CrescDormidas - CrescQuartos) * 100)
 			    )
 		formatString: +#,0.0;-#,0.0;0.0
 		displayFolder: Oferta e procura
@@ -610,7 +601,7 @@ table _Medidas
 			VAR Mercados = CALCULATETABLE(VALUES('Residência'[Local de residência]), 'Residência'[Mercado individual] = TRUE())
 			VAR PorMercado = FILTER(ADDCOLUMNS(Mercados, "@Hospedes", [HospedesResidencia]), NOT ISBLANK([@Hospedes]))
 			VAR Top8 = TOPN(8, PorMercado, [@Hospedes], DESC)
-			RETURN COUNTROWS(FILTER(Top8, CALCULATE([CrescimentoHospedesMercado]) > 0)) + 0
+			RETURN COUNTROWS(FILTER(Top8, [CrescimentoHospedesMercado] > 0)) + 0
 		formatString: #,0
 		displayFolder: Mercados
 		lineageTag: fd1305ba-104a-4b91-8e26-1d52681e4f38
@@ -660,8 +651,7 @@ table _Medidas
 			        REMOVEFILTERS('Calendário'),
 			        Anos
 			    )
-			VAR Meses = FILTER(PorMes, NOT ISBLANK([@Dormidas]))
-			RETURN MAXX(Meses, [@Dormidas])
+			RETURN MAXX(PorMes, [@Dormidas])
 		formatString: #,0
 		displayFolder: Sazonalidade
 		lineageTag: a4bee835-8306-4924-b07a-8a496c1bba29
