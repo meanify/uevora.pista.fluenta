@@ -21,7 +21,7 @@
                   {
                     "value": "HOTELEIROS E GESTORES DE ALOJAMENTO",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#C9960F",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Barómetro do empresário",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "15pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -47,7 +47,7 @@
                   {
                     "value": "O meu concelho e segmento, mês a mês.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }

@@ -396,7 +396,7 @@ PISTA Digital embodies a professional, institutional approach to sustainable tou
 
 ### Font Family
 **Primary:** Montserrat (https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,700,700i&display=swap)
-Fallback stack: `Montserrat, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
+Fallback stack: `Montserrat, -apple-system, BlinkMacSystemFont, 'Arial', sans-serif`
 
 ### Hierarchy
 

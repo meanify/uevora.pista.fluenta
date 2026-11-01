@@ -21,7 +21,7 @@
                   {
                     "value": "Raio-X do concelho",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "22pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Para as câmaras municipais: pressão turística, calendário, mercados e evolução, sempre comparados com concelhos vizinhos.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#545F6E"
                     }

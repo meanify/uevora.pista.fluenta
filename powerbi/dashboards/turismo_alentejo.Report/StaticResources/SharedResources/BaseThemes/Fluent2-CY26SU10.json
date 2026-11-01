@@ -57,7 +57,7 @@
   "textClasses": {
     "callout": {
       "fontSize": 21,
-      "fontFace": "Segoe UI Semibold",
+      "fontFace": "Arial Semibold",
       "color": "#242424"
     },
     "title": {
@@ -67,12 +67,12 @@
     },
     "header": {
       "fontSize": 12,
-      "fontFace": "Segoe UI Semibold",
+      "fontFace": "Arial Semibold",
       "color": "#242424"
     },
     "label": {
       "fontSize": 10.5,
-      "fontFace": "Segoe UI",
+      "fontFace": "Arial",
       "color": "#242424"
     }
   },
@@ -1382,7 +1382,7 @@
         "referenceLabelDetail": [
           {
             "$id": "default",
-            "detailFontFamily": "'Segoe UI', wf_segoe-ui_normal, helvetica, arial, sans-serif",
+            "detailFontFamily": "'Arial', wf_segoe-ui_normal, helvetica, arial, sans-serif",
             "detailFontSize": 10.5,
             "detailFontColor": {
               "solid": {
@@ -1411,7 +1411,7 @@
         "referenceLabelValue": [
           {
             "$id": "default",
-            "valueFontFamily": "'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
+            "valueFontFamily": "'Arial Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
             "valueFontSize": 10.5,
             "valueFontColor": {
               "solid": {

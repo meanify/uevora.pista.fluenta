@@ -21,7 +21,7 @@
                   {
                     "value": "Indicadores a integrar",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Para medir campanhas e reputação",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#545F6E"
                     }
@@ -46,7 +46,7 @@
                   {
                     "value": " ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -58,7 +58,7 @@
                   {
                     "value": "Gasto por nacionalidade",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -66,7 +66,7 @@
                   {
                     "value": "  —  SIBS",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
@@ -78,7 +78,7 @@
                   {
                     "value": "Reputação online por concelho",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -86,7 +86,7 @@
                   {
                     "value": "  —  Booking, Google",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
@@ -98,7 +98,7 @@
                   {
                     "value": "Participantes em eventos e feiras",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -106,7 +106,7 @@
                   {
                     "value": "  —  ERT Alentejo",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
@@ -118,7 +118,7 @@
                   {
                     "value": "Tráfego dos sites de promoção",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -126,7 +126,7 @@
                   {
                     "value": "  —  Analytics da ERT",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }

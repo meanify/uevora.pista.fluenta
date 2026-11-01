@@ -21,7 +21,7 @@
                   {
                     "value": "Calendário de pressão",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Dormidas mensais em índice (mês máximo = 100) · ine_0010735_ds",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#545F6E"
                     }

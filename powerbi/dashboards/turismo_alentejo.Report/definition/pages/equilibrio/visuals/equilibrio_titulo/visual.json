@@ -21,7 +21,7 @@
                   {
                     "value": "Noites e Quartos",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "22pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Oferta e procura de alojamento no Alentejo, ligadas por um indicador de referência: as noites por quarto.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#545F6E"
                     }

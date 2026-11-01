@@ -21,7 +21,7 @@
                   {
                     "value": "DECISORES POLÍTICOS, CCDR, TURISMO DO ALENTEJO",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#C9960F",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Pulso do Alentejo",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "15pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -47,7 +47,7 @@
                   {
                     "value": "Volume, sazonalidade e peso da região no país.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }

@@ -21,7 +21,7 @@
                   {
                     "value": "–",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "18pt",
                       "color": "#858E9B",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Nova fonte: INE ocupação",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#6B5310"
                     }

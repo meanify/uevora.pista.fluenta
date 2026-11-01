@@ -21,7 +21,7 @@
                   {
                     "value": "< 1 500 baixa · 1 500–2 500 moderada · > 2 500 alta",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E"
                     }

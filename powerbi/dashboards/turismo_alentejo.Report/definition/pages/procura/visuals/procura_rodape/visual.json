@@ -21,7 +21,7 @@
                   {
                     "value": "Fonte ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E",
                       "fontWeight": "bold"
@@ -30,7 +30,7 @@
                   {
                     "value": "INE, alojamento turístico (tabelas Pista Digital)     ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E"
                     }
@@ -38,7 +38,7 @@
                   {
                     "value": "Estado ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E",
                       "fontWeight": "bold"
@@ -47,7 +47,7 @@
                   {
                     "value": "último ano provisório, anteriores definitivos     ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E"
                     }
@@ -55,7 +55,7 @@
                   {
                     "value": "Território ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E",
                       "fontWeight": "bold"
@@ -64,7 +64,7 @@
                   {
                     "value": "Alentejo NUTS II 2013, salvo indicação",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "8pt",
                       "color": "#545F6E"
                     }

@@ -21,7 +21,7 @@
                   {
                     "value": "▍",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#1F4FA3"
                     }
@@ -29,7 +29,7 @@
                   {
                     "value": "Página 1: visão geral",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1F4FA3",
                       "fontWeight": "bold"

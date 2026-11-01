@@ -21,7 +21,7 @@
                   {
                     "value": "Ação sugerida",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": " ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -46,7 +46,7 @@
                   {
                     "value": "Estrelas  ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -55,7 +55,7 @@
                   {
                     "value": "reforçar promoção",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -67,7 +67,7 @@
                   {
                     "value": "De passagem  ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -76,7 +76,7 @@
                   {
                     "value": "alongar a estada com rotas e pacotes",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -88,7 +88,7 @@
                   {
                     "value": "Fiéis  ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -97,7 +97,7 @@
                   {
                     "value": "fidelizar e manter presença",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -109,7 +109,7 @@
                   {
                     "value": "A rever  ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -118,7 +118,7 @@
                   {
                     "value": "rever investimento",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }

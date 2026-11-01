@@ -74,7 +74,7 @@
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI'"
+                  "Value": "'Arial'"
                 }
               }
             },

@@ -21,7 +21,7 @@
                   {
                     "value": "Indicadores a integrar",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Exigem fontes fora das tabelas INE atuais",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#545F6E"
                     }
@@ -46,7 +46,7 @@
                   {
                     "value": " ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -58,7 +58,7 @@
                   {
                     "value": "Alojamento local no parque habitacional",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -66,7 +66,7 @@
                   {
                     "value": "  —  RNAL + Censos",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
@@ -78,7 +78,7 @@
                   {
                     "value": "Visitantes em museus e equipamentos municipais",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -86,7 +86,7 @@
                   {
                     "value": "  —  Dados da câmara",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
@@ -98,7 +98,7 @@
                   {
                     "value": "Gasto com cartões estrangeiros",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -106,7 +106,7 @@
                   {
                     "value": "  —  SIBS",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
@@ -118,7 +118,7 @@
                   {
                     "value": "Avaliação online dos alojamentos",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -126,7 +126,7 @@
                   {
                     "value": "  —  Booking, Google",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }

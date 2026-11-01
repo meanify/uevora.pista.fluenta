@@ -11,10 +11,10 @@
   "center": "#E3EBF8",
   "minimum": "#FFFFFF",
   "textClasses": {
-    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 12, "color": "#1B2230" },
-    "label": { "fontFace": "Segoe UI", "fontSize": 9, "color": "#545F6E" },
-    "callout": { "fontFace": "Segoe UI Bold", "fontSize": 24, "color": "#1B2230" },
-    "header": { "fontFace": "Segoe UI Semibold", "fontSize": 12, "color": "#1B2230" }
+    "title": { "fontFace": "Arial Semibold", "fontSize": 12, "color": "#1B2230" },
+    "label": { "fontFace": "Arial", "fontSize": 9, "color": "#545F6E" },
+    "callout": { "fontFace": "Arial Bold", "fontSize": 24, "color": "#1B2230" },
+    "header": { "fontFace": "Arial Semibold", "fontSize": 12, "color": "#1B2230" }
   },
   "visualStyles": {
     "*": {

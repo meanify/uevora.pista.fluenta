@@ -21,7 +21,7 @@
                   {
                     "value": "Pipeline de oferta",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "11pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -34,7 +34,7 @@
                   {
                     "value": "Novos registos e projetos em licenciamento",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#545F6E"
                     }
@@ -46,7 +46,7 @@
                   {
                     "value": " ",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#1B2230"
                     }
@@ -58,7 +58,7 @@
                   {
                     "value": "Requer RNT e RNAL (Turismo de Portugal), com georreferenciação. Visual sugerido: mapa de pontos e barras por ano de registo.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }

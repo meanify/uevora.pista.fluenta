@@ -21,7 +21,7 @@
                   {
                     "value": "Capítulo 3 de 5",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#545F6E"
                     }
@@ -33,7 +33,7 @@
                   {
                     "value": "Duas regiões turísticas numa só",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "17pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -46,7 +46,7 @@
                   {
                     "value": "O litoral vive do verão; o interior distribui melhor as visitas ao longo do ano.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }

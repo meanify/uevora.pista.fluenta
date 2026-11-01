@@ -21,7 +21,7 @@
                   {
                     "value": "Capítulo 1 de 5",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "9pt",
                       "color": "#545F6E"
                     }
@@ -33,7 +33,7 @@
                   {
                     "value": "Dez anos de dormidas",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "17pt",
                       "color": "#1B2230",
                       "fontWeight": "bold"
@@ -46,7 +46,7 @@
                   {
                     "value": "A pandemia interrompeu o crescimento; a recuperação compara-se aqui com o resto do país. Índice 2015 = 100.",
                     "textStyle": {
-                      "fontFamily": "Segoe UI",
+                      "fontFamily": "Arial",
                       "fontSize": "10pt",
                       "color": "#545F6E"
                     }
